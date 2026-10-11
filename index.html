@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Schichtbuch</title>
 <meta name="description" content="Arbeitszeiten, Montage, Fahrten und Kosten erfassen und als Excel-Datei für die Steuererklärung exportieren.">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="copyright" content="© 2026 alhotmanndevhub-code. Alle Rechte vorbehalten.">
+<!-- © 2026 alhotmanndevhub-code. Alle Rechte vorbehalten. Kopieren, Weitergeben und Veröffentlichen nur mit Erlaubnis. Siehe LICENSE. -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -267,6 +271,7 @@ details.multi[open] summary{margin-bottom:6px}
           <p class="hint">Alle Einträge liegen nur auf diesem Gerät. Die App schickt nichts an einen Server, es gibt keine Werbung und kein Tracking. Sie funktioniert auch ohne Netz.</p>
           <p class="hint">Alle Beträge sind Schätzungen nach den eingestellten Pauschalen und ersetzen keine Steuerberatung.</p>
           <p class="hint" id="about-ver"></p>
+          <p class="hint">© 2026 alhotmanndevhub-code. Alle Rechte vorbehalten. Kopieren, Weitergeben oder Veröffentlichen der App nur mit Erlaubnis.</p>
           <button class="btn block" id="install-btn2" type="button" hidden>App auf dem Startbildschirm installieren</button>
         </div>
       </div>
@@ -424,7 +429,7 @@ details.multi[open] summary{margin-bottom:6px}
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.0.1';
 const KEY = 'sakra-schichtbuch-v1';
 const EXCEL_URL = 'exceljs.min.js';
 const TYPES = [['arbeit','Arbeit'],['schulung','Schulung'],['reise','Reisetag'],['frei','Frei'],['urlaub','Urlaub'],['krank','Krank']];

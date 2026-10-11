@@ -1,5 +1,5 @@
 /* Schichtbuch – Offline-Speicher. Bei jeder neuen Version VERSION hochzählen. */
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const CACHE = 'schichtbuch-' + VERSION;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './exceljs.min.js',
