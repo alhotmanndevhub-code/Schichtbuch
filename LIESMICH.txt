@@ -1,0 +1,63 @@
+SAKRA Schichtbuch – eigenständige Web-App (Version 1.0.0)
+=========================================================
+
+Was in diesem Ordner liegt
+--------------------------
+index.html              die App
+sw.js                   sorgt dafür, dass die App offline läuft
+manifest.webmanifest    Name und Symbol für den Startbildschirm
+exceljs.min.js          Baustein für den Excel-Export
+barlow-*.woff2          Schriften (liegen bei, damit nichts von fremden Servern geladen wird)
+icon-*.png, apple-touch-icon.png   App-Symbole
+LICENSE-*.txt           Lizenzen der Schrift (SIL OFL) und des Excel-Bausteins (MIT)
+
+Alle Dateien müssen zusammen im selben Ordner liegen. Keine Unterordner anlegen.
+
+
+Online stellen mit GitHub Pages (kostenlos)
+-------------------------------------------
+1. Auf github.com ein kostenloses Konto anlegen.
+2. Ein neues Repository anlegen, zum Beispiel mit dem Namen "schichtbuch".
+   Sichtbarkeit: Public.
+3. Im Repository "Add file" > "Upload files" wählen, alle Dateien aus diesem
+   Ordner hochladen und mit "Commit changes" bestätigen.
+4. Im Repository unter "Settings" > "Pages" bei "Branch" den Zweig "main" und
+   den Ordner "/ (root)" wählen und speichern.
+5. Nach ein bis zwei Minuten ist die App erreichbar unter:
+   https://DEIN-GITHUB-NAME.github.io/schichtbuch/
+   Diesen Link schickst du deinem Freund.
+
+Die Seite selbst enthält keine Daten. Was dein Freund einträgt, bleibt auf
+seinem Handy.
+
+
+Auf dem Handy installieren
+--------------------------
+Android (Chrome): Link öffnen, dann den Hinweis "Installieren" in der App
+antippen oder im Menü (drei Punkte) "App installieren" wählen.
+
+iPhone (Safari): Link öffnen, unten auf das Teilen-Symbol tippen und
+"Zum Home-Bildschirm" wählen. Auf dem iPhone unbedingt so installieren,
+sonst kann Safari die Daten nach einiger Zeit ohne Nutzung löschen.
+
+Nach dem Installieren startet die App vom Startbildschirm und läuft auch
+ohne Netz.
+
+
+Wichtig zu den Daten
+--------------------
+Alle Einträge liegen nur auf dem jeweiligen Handy. Deshalb regelmäßig unter
+"Export" > "Sicherung speichern" eine Sicherung anlegen und in die Cloud
+legen oder per Mail verschicken. Die App erinnert daran nach 30 Tagen.
+Auf einem neuen Handy: App öffnen, "Sicherung laden".
+
+Daten aus der Claude-Version übernehmen: dort unter "Export" eine Sicherung
+speichern, hier mit "Sicherung laden" einlesen.
+
+
+Neue Version veröffentlichen
+----------------------------
+Geänderte Dateien wieder hochladen und in sw.js die Zeile
+const VERSION = '1.0.0';
+hochzählen (z. B. auf '1.0.1'). Beim nächsten Start zeigt die App
+"Neue Version verfügbar" an.
