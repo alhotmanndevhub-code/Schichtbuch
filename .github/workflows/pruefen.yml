@@ -20,8 +20,8 @@ jobs:
     name: Prüftests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -51,7 +51,7 @@ jobs:
           if [ "$t" != "workflow" ]; then
             echo "::notice::GitHub Pages veröffentlicht noch direkt aus dem Branch (build_type=$t). Settings > Pages > Source auf 'GitHub Actions' stellen, damit nur geprüfte Versionen live gehen."
           fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: steps.mode.outputs.build_type == 'workflow'
       - name: Webseite zusammenstellen (ohne Tests)
         if: steps.mode.outputs.build_type == 'workflow'
