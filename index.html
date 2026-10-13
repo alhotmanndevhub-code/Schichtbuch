@@ -141,6 +141,8 @@ label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;a
 .kpi{background:var(--surface);border-radius:10px;padding:12px}
 .kpi b{display:block;font-family:var(--f-display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
 .kpi span{font-size:13px;color:var(--muted)}
+.kpi.wide{grid-column:1/-1;display:flex;align-items:baseline;gap:10px}
+.kpi.wide b{display:inline;font-size:24px}
 .ttable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .ttable td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
 .ttable td.n{text-align:right;white-space:nowrap;padding-left:12px}
@@ -263,6 +265,12 @@ details.multi[open] summary{margin-bottom:6px}
             <label>Arbeitnehmer-Pauschbetrag (€)<input id="s-wkp" inputmode="decimal"></label>
           </div>
           <p class="hint">Stand 2026: Verpflegung 14 € und 28 €, Dienstfahrt 0,30 € je gefahrenem km, Entfernungspauschale 0,38 € je km, Arbeitnehmer-Pauschbetrag 1.230 €.</p>
+          <div class="grid2" style="gap:6px 10px">
+            <span class="blk-h" style="grid-column:1/-1">Auslöse vom Arbeitgeber</span>
+            <label>Ganzer Tag (€)<input id="s-aus-full" inputmode="decimal" placeholder="0,00"></label>
+            <label>An- und Abreisetag (€)<input id="s-aus-half" inputmode="decimal" placeholder="0,00"></label>
+          </div>
+          <p class="hint">Was deine Firma pro Montagetag zahlt. Die App trägt den Betrag an Montagetagen von selbst ein, ändern kannst du ihn bei jedem Tag. Er zählt als steuerfrei und wird mit den Reisekosten verrechnet. Leer lassen, wenn es keine Auslöse gibt.</p>
           <button class="btn primary block" type="submit">Einstellungen speichern</button>
         </form>
 
@@ -303,6 +311,7 @@ details.multi[open] summary{margin-bottom:6px}
         <div class="block" id="b-time">
           <span class="blk-h">Schicht</span>
           <div class="seg" id="g-shift"></div>
+          <p class="hint" id="h-shift" hidden>Schicht ist ausgefallen. Werden Stunden bezahlt, trag Beginn und Ende ein. Sonst leer lassen.</p>
           <div class="grid2">
             <label>Beginn<input type="time" id="f-start"></label>
             <label>Ende<input type="time" id="f-end"></label>
@@ -312,6 +321,12 @@ details.multi[open] summary{margin-bottom:6px}
             <div class="pauserow"><div class="seg" id="g-pause"></div><input id="f-pause" inputmode="numeric" aria-label="Pause in Minuten"><span class="hint">Min.</span></div>
           </div>
           <div class="calc" id="c-work"></div>
+        </div>
+
+        <div class="block" id="b-travel" hidden>
+          <span class="blk-h">Fahrzeit</span>
+          <label><span id="l-travel">Stunden für die Fahrt</span><input id="f-travel" inputmode="decimal" placeholder="z. B. 5 oder 4,5" autocomplete="off"></label>
+          <p class="hint">Die Stunden, die dir für die Fahrt angerechnet werden. Sie zählen zu deinen Stunden, auf die Steuer haben sie keinen Einfluss.</p>
         </div>
 
         <div class="block" id="b-place">
@@ -357,7 +372,8 @@ details.multi[open] summary{margin-bottom:6px}
 
         <div class="block" id="b-money">
           <span class="blk-h">Geld</span>
-          <label>Spesen / Auslöse vom Arbeitgeber, steuerfrei (€)<input id="f-allowance" inputmode="decimal" placeholder="0,00"></label>
+          <label>Auslöse / Spesen vom Arbeitgeber, steuerfrei (€)<input id="f-allowance" inputmode="decimal" placeholder="0,00"></label>
+          <p class="hint" id="h-allow" hidden></p>
           <div class="grid2">
             <label>Sonstige Ausgaben (€)<input id="f-other" inputmode="decimal" placeholder="0,00"></label>
             <label>Wofür?<input id="f-otherNote" placeholder="Parken, Ticket" autocomplete="off"></label>
@@ -429,15 +445,17 @@ details.multi[open] summary{margin-bottom:6px}
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.2.0';
 const KEY = 'sakra-schichtbuch-v1';
 const EXCEL_URL = 'exceljs.min.js';
-const TYPES = [['arbeit','Arbeit'],['schulung','Schulung'],['reise','Reisetag'],['frei','Frei'],['urlaub','Urlaub'],['krank','Krank']];
+const TYPES = [['arbeit','Arbeit'],['anreise','Anreise'],['abreise','Abreise'],['schulung','Schulung'],['frei','Frei'],['urlaub','Urlaub'],['krank','Krank']];
 const TYPE_L = Object.fromEntries(TYPES);
 const WORK = new Set(['arbeit','schulung']);
+const TRAVEL = new Set(['anreise','abreise']);
 const OFF = new Set(['urlaub','krank']);
 const SHIFTS = [['frueh','Früh'],['tag','Tag'],['spaet','Spät'],['nacht','Nacht']];
-const SHIFT_L = Object.fromEntries(SHIFTS);
+const SHIFT_BTNS = SHIFTS.concat([['ausfall','Ausfall']]);
+const SHIFT_L = Object.fromEntries(SHIFT_BTNS);
 const AWAY = [['none','Nein'],['tag','Tagestour'],['an','Anreise'],['voll','Ganzer Tag'],['ab','Abreise']];
 const AWAY_CHIP = {tag:'Tagestour', an:'Anreise', voll:'Auswärts', ab:'Abreise'};
 const AWAY_X = {none:'', tag:'Tagestour ohne Übernachtung', an:'Anreisetag', voll:'Ganzer Tag auswärts', ab:'Abreisetag'};
@@ -463,7 +481,7 @@ const STATE_L = Object.fromEntries(STATES);
 const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MON3 = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const DOW = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-const DEF = {name:'', employer:'', home:'', state:'', pause:30, rateSmall:14, rateFull:28, kmRate:0.30, commuteRate:0.38, wkp:1230,
+const DEF = {name:'', employer:'', home:'', state:'', pause:30, rateSmall:14, rateFull:28, kmRate:0.30, commuteRate:0.38, wkp:1230, ausFull:42, ausHalf:21,
   shifts:{frueh:['05:00','13:30'], tag:['07:00','15:30'], spaet:['13:30','22:00'], nacht:['22:00','06:00']}};
 
 /* ---------- Hilfen ---------- */
@@ -539,11 +557,12 @@ function mergeSettings(s) {
   ['name','employer','home'].forEach(k => { if (s[k] != null) o[k] = txt(s[k]); });
   if (STATE_L[s.state] != null) o.state = s.state;
   ['pause','rateSmall','rateFull','kmRate','commuteRate','wkp'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = num(s[k]); });
+  ['ausFull','ausHalf'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = Math.max(0, num(s[k])); });
   if (s.shifts) Object.keys(o.shifts).forEach(k => { const v = s.shifts[k]; if (Array.isArray(v) && v.length === 2) o.shifts[k] = [txt(v[0], 5), txt(v[1], 5)]; });
   return o;
 }
 function blankEntry(date) {
-  return {id:'', date, year:+date.slice(0, 4), type:'arbeit', shift:'', start:'', end:'', pause:S.settings.pause,
+  return {id:'', date, year:+date.slice(0, 4), type:'arbeit', shift:'', start:'', end:'', pause:S.settings.pause, travelMin:0,
     place:'', line:'', project:'', away:'none', depart:'', ret:'', meals:{b:false, l:false, d:false},
     lodging:0, lodgingName:'', vehicle:'', trip:'dienst', meet:'', km:0, allowance:0, otherCost:0, otherNote:'', note:'', updated:''};
 }
@@ -551,7 +570,10 @@ function normEntry(x) {
   const date = validDate(x.date) ? x.date : today();
   const e = blankEntry(date);
   e.id = txt(x.id, 100);
-  e.type = TYPE_L[x.type] ? x.type : 'arbeit';
+  // früherer „Reisetag“ wird zu Anreise bzw. Abreise
+  const ty = x.type === 'reise' ? (x.away === 'ab' ? 'abreise' : 'anreise') : x.type;
+  e.type = TYPE_L[ty] ? ty : 'arbeit';
+  e.travelMin = Math.min(1440, Math.max(0, Math.round(num(x.travelMin))));
   e.shift = SHIFT_L[x.shift] ? x.shift : '';
   e.away = AWAY_X[x.away] != null ? x.away : 'none';
   e.vehicle = VEH_L[x.vehicle] != null ? x.vehicle : '';
@@ -602,7 +624,22 @@ function askPersistent() {
 const isAway = e => !OFF.has(e.type) && !!e.away && e.away !== 'none';
 const workMin = e => WORK.has(e.type) ? Math.max(0, spanF(e.start, e.end) - (e.pause || 0)) : 0;
 const absMin = e => isAway(e) && e.away === 'tag' ? spanF(e.depart, e.ret) : 0;
+// Fahrzeit (angerechnete Stunden für An- und Abreise): bei Anreise/Abreise und an Arbeitstagen mit An- oder Abreise
+const hasTravel = e => TRAVEL.has(e.type) || (WORK.has(e.type) && (e.away === 'an' || e.away === 'ab'));
+const travelOf = e => hasTravel(e) ? e.travelMin || 0 : 0;
+const parseHours = v => {
+  v = String(v || '').trim(); if (!v) return 0;
+  const m = v.match(/^(\d{1,2}):(\d{2})$/);
+  const min = m ? +m[1] * 60 + +m[2] : Math.round(num(v) * 60);
+  return Math.min(1440, Math.max(0, min));
+};
+const hoursIn = min => min ? nf(min / 60, 2).replace(/\./g, '') : '';
 const lodgingOf = e => isAway(e) && (e.away === 'an' || e.away === 'voll') ? e.lodging : 0;
+// Auslöse laut Einstellungen: ganzer Tag auf Montage voll, An- und Abreisetag der kleinere Betrag
+const autoAllow = (away, type) => OFF.has(type) ? 0 : away === 'voll' ? S.settings.ausFull : away === 'an' || away === 'ab' ? S.settings.ausHalf : 0;
+const sameMoney = (a, b) => Math.abs((a || 0) - (b || 0)) < 0.005;
+// Hat schon ein anderer Eintrag am selben Tag Auslöse? Dann nicht doppelt eintragen.
+const allowTaken = (date, id) => Object.values(S.entries).some(x => x.date === date && x.id !== id && isAway(x) && x.allowance > 0);
 const isSammel = e => e.vehicle === 'pkw' && e.trip === 'sammel' && !OFF.has(e.type);
 const kmCost = e => e.vehicle === 'pkw' && e.trip !== 'sammel' && isAway(e) ? r2(e.km * S.settings.kmRate) : 0;
 const commuteCost = e => isSammel(e) ? r2(e.km * S.settings.commuteRate) : 0;
@@ -638,6 +675,7 @@ function dayVma(arr) {
   return res;
 }
 function agg() { return {workDays:0, trainDays:0, travelDays:0, freeDays:0, vacDays:0, sickDays:0, entries:0, min:0, nightShifts:0, awayDays:0, nights:0,
+  ausfall:0, ausfallMin:0, travelMin:0, tot:0,
   n_tag:0, n_an:0, n_ab:0, n_voll:0, vmaBase:0, vmaCut:0, vma:0, km:0, kmCost:0, kmOther:0, lodging:0, other:0, allowance:0,
   commuteDays:0, commuteKm:0, commuteCost:0, exp:0, cat:{}, travel:0, travelNet:0, gross:0, total:0, totalNoGew:0}; }
 const sortAsc = (a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (tmin(a.start) || 0) - (tmin(b.start) || 0);
@@ -655,7 +693,7 @@ function computeYear(list, exps) {
     [T, M[m]].forEach(a => {
       if (types.has('arbeit')) a.workDays++;
       if (types.has('schulung')) a.trainDays++;
-      if (types.has('reise')) a.travelDays++;
+      if (types.has('anreise') || types.has('abreise')) a.travelDays++;
       if (types.has('frei')) a.freeDays++;
       if (types.has('urlaub')) a.vacDays++;
       if (types.has('krank')) a.sickDays++;
@@ -667,7 +705,9 @@ function computeYear(list, exps) {
       arr.forEach(e => {
         a.entries++;
         a.min += workMin(e);
+        if (!OFF.has(e.type)) a.travelMin += travelOf(e);
         if (WORK.has(e.type) && e.shift === 'nacht' && workMin(e) > 0) a.nightShifts++;
+        if (WORK.has(e.type) && e.shift === 'ausfall') { a.ausfall++; a.ausfallMin += workMin(e); }
         if (e.vehicle === 'pkw' && e.trip !== 'sammel' && !OFF.has(e.type)) { if (isAway(e)) { a.km += e.km; a.kmCost += kmCost(e); } else a.kmOther += e.km; }
         a.lodging += lodgingOf(e);
         if (!OFF.has(e.type)) { a.other += e.otherCost; a.allowance += e.allowance; }
@@ -678,6 +718,7 @@ function computeYear(list, exps) {
   [T, ...M].forEach(a => {
     ['vmaBase','vmaCut','vma','kmCost','lodging','other','allowance','km','kmOther','commuteKm','commuteCost','exp'].forEach(k => a[k] = r2(a[k]));
     Object.keys(a.cat).forEach(k => a.cat[k] = r2(a.cat[k]));
+    a.tot = a.min + a.travelMin;
     a.travel = r2(a.vma + a.kmCost + a.lodging + a.other);
     a.travelNet = r2(Math.max(0, a.travel - a.allowance));
     a.gross = r2(a.travel + a.commuteCost + a.exp);
@@ -792,14 +833,17 @@ function plateHTML(d) {
   return `<span class="plate${we ? ' we' : ''}" aria-hidden="true"><span class="dw">${DOW[dowOf(d)]}</span><span class="dd">${d.slice(8, 10)}</span></span>`;
 }
 function rowHTML(e, day) {
-  const d = e.date, work = WORK.has(e.type), wm = workMin(e), dv = day && day[d];
+  const d = e.date, work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, dv = day && day[d];
   let l1 = '';
   if (work) {
     const label = e.type === 'schulung' ? 'Schulung' : (SHIFT_L[e.shift] || 'Arbeit');
-    l1 += `<span class="chip${e.shift === 'nacht' ? ' nacht' : ''}">${esc(label)}</span>`;
+    l1 += `<span class="chip${e.shift === 'nacht' ? ' nacht' : e.shift === 'ausfall' ? ' off' : ''}">${esc(e.shift === 'ausfall' ? 'Ausfallschicht' : label)}</span>`;
     if (e.start && e.end) l1 += `<span>${esc(e.start)}–${esc(e.end)}</span>`;
-  } else l1 += `<span class="chip${OFF.has(e.type) || e.type === 'frei' ? ' off' : ''}">${esc(TYPE_L[e.type])}</span>`;
-  if (isAway(e)) l1 += `<span class="chip away">${AWAY_CHIP[e.away]}</span>`;
+  } else l1 += `<span class="chip${OFF.has(e.type) || e.type === 'frei' ? ' off' : TRAVEL.has(e.type) ? ' away' : ''}">${esc(TYPE_L[e.type])}</span>`;
+  // bei Anreise/Abreise steht die Auswärts-Angabe schon im Namen
+  const dupAway = (e.type === 'anreise' && e.away === 'an') || (e.type === 'abreise' && e.away === 'ab');
+  if (isAway(e) && !dupAway) l1 += `<span class="chip away">${AWAY_CHIP[e.away]}</span>`;
+  if (tr) l1 += `<span>Fahrt ${nf(tr / 60, 2)} h</span>`;
   const hol = holiday(d);
   const l2parts = OFF.has(e.type) ? [hol, e.note] : [hol, e.place, e.project || e.line, e.lodgingName && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : ''];
   const l2 = l2parts.filter(Boolean).join(' · ');
@@ -882,7 +926,7 @@ function renderDayList() {
     const m = M[+t.slice(5, 7) - 1];
     h += `<div class="mini" aria-label="${MONTHS[+t.slice(5, 7) - 1]} bisher">
       <div><b>${m.workDays + m.trainDays}</b><span>Arbeitstage</span></div>
-      <div><b>${nf(m.min / 60, 1)}</b><span>Stunden</span></div>
+      <div><b>${nf(m.tot / 60, 1)}</b><span>Stunden</span></div>
       <div><b>${m.awayDays}</b><span>auswärts</span></div>
       <div><b>${eurS(m.vma)}</b><span>Verpflegung</span></div></div>`;
   }
@@ -900,7 +944,8 @@ function renderDayList() {
     list.forEach(e => (groups[e.date.slice(5, 7)] = groups[e.date.slice(5, 7)] || []).push(e));
     Object.keys(groups).sort().reverse().forEach(mm => {
       const m = M[+mm - 1];
-      h += `<div class="mhead"><h2>${MONTHS[+mm - 1]}</h2><span>${m.workDays + m.trainDays} Tage · ${nf(m.min / 60, 1)} h · ${eurS(m.vma)}</span></div>
+      const nd = m.workDays + m.trainDays;
+      h += `<div class="mhead"><h2>${MONTHS[+mm - 1]}</h2><span>${nd} ${nd === 1 ? 'Tag' : 'Tage'} · ${nf(m.tot / 60, 1)} h · ${eurS(m.vma)}</span></div>
         <div class="rows">${groups[mm].map(e => rowHTML(e, day)).join('')}</div>`;
     });
   }
@@ -938,7 +983,7 @@ function renderStats() {
     return;
   }
   const {T, M} = computeYear(list, exps);
-  const maxH = Math.max(1, ...M.map(m => m.min));
+  const maxH = Math.max(1, ...M.map(m => m.tot));
   const pl = placeStats(list).slice(0, 12);
   const row = (l, v, cls = '') => `<tr class="${cls}"><td>${l}</td><td class="n">${v}</td></tr>`;
   const sec = l => `<tr class="sec"><td colspan="2">${l}</td></tr>`;
@@ -953,7 +998,7 @@ function renderStats() {
   if (T.km) tax += row(`${nf(T.km, 1)} km × ${nf2(st.kmRate)} €`, '', 'sub');
   tax += row('Übernachtung (selbst bezahlt)', eur(T.lodging));
   tax += row('Reisenebenkosten (Parken, Tickets)', eur(T.other));
-  if (T.allowance) tax += row('abzüglich steuerfreie Spesen vom Arbeitgeber', '− ' + eur(T.allowance));
+  if (T.allowance) tax += row('abzüglich steuerfreie Auslöse / Spesen vom Arbeitgeber', '− ' + eur(T.allowance));
   tax += row('Reisekosten', eur(T.travelNet), 'sum');
   if (T.commuteDays) {
     tax += sec('Fester Sammelpunkt');
@@ -971,7 +1016,7 @@ function renderStats() {
     : `Deine Werbungskosten${gew ? ' ohne Gewerkschaft' : ''} liegen bisher unter dem Arbeitnehmer-Pauschbetrag von ${eurS(st.wkp)}, den das Finanzamt ohnehin abzieht.`;
   if (gew) pb += ` Gewerkschaftsbeiträge (${eur(gew)}) zählen ab dem Steuerjahr 2026 zusätzlich.`;
 
-  const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.min / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.min ? nf(m.min / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
+  const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
   const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
     <span class="d">${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}${p.alias.length ? ' · auch als ' + esc(p.alias.join(', ')) : ''}</span>
     ${p.warnFrom ? `<span class="warn">Seit ${dDot(p.warnFrom)} länger als drei Monate auswärts an diesem Ort. Ab dem vierten Monat gibt es hier meist keine Verpflegungspauschale mehr. Bitte prüfen.</span>` : ''}</div>`).join('');
@@ -979,11 +1024,13 @@ function renderStats() {
   el.innerHTML = `<div class="stack">
     <div class="kpis">
       <div class="kpi"><b>${T.workDays + T.trainDays}</b><span>Arbeitstage</span></div>
-      <div class="kpi"><b>${nf(T.min / 60, 1)}</b><span>Stunden</span></div>
+      <div class="kpi"><b>${nf(T.tot / 60, 1)}</b><span>Stunden</span></div>
       <div class="kpi"><b>${T.nightShifts}</b><span>Nachtschichten</span></div>
       <div class="kpi"><b>${T.awayDays}</b><span>Tage auswärts</span></div>
       <div class="kpi"><b>${T.nights}</b><span>Übernachtungen</span></div>
       <div class="kpi"><b>${nf(T.km, 0)}</b><span>km Dienstfahrten</span></div>
+      ${T.travelMin ? `<div class="kpi wide"><b>${nf(T.travelMin / 60, 1)}</b><span>Std. Fahrzeit bei An- und Abreise (in den Stunden enthalten)</span></div>` : ''}
+      ${T.ausfall ? `<div class="kpi wide"><b>${T.ausfall}</b><span>${T.ausfall === 1 ? 'Ausfallschicht' : 'Ausfallschichten'}${T.ausfallMin ? `, davon ${nf(T.ausfallMin / 60, 2)} Std. bezahlt (in den Stunden enthalten)` : ', ohne Stunden'}</span></div>` : ''}
     </div>
     <div class="card"><h3>Für die Steuererklärung ${year}</h3>
       <p class="hint">Werbungskosten für die Anlage N, geschätzt nach den eingestellten Pauschalen.</p>
@@ -992,16 +1039,17 @@ function renderStats() {
       ${T.kmOther ? `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>` : ''}
     </div>
     <div class="card"><h3>Monate</h3>
-      <div class="mtab"><div class="mrow h"><span></span><span>Arbeitsstunden</span><span class="n">Std.</span><span class="n">Verpfl.</span></div>${months}</div>
-      <p class="hint">Urlaub ${T.vacDays} · krank ${T.sickDays} · Schulung ${T.trainDays} · Reisetage ${T.travelDays}</p>
+      <div class="mtab"><div class="mrow h"><span></span><span>Stunden mit Fahrzeit</span><span class="n">Std.</span><span class="n">Verpfl.</span></div>${months}</div>
+      <p class="hint">Urlaub ${T.vacDays} · krank ${T.sickDays} · Schulung ${T.trainDays} · An-/Abreisetage ${T.travelDays} · Ausfallschichten ${T.ausfall} · Arbeitszeit ${nf(T.min / 60, 1)} h · Fahrzeit ${nf(T.travelMin / 60, 1)} h</p>
     </div>
     ${places ? `<div class="card"><h3>Einsatzorte</h3><div class="places">${places}</div></div>` : ''}
     <details class="card"><summary>So rechnet das Schichtbuch</summary>
       <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(st.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(st.rateSmall)} und für jeden vollen Tag dazwischen ${eurS(st.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(st.rateFull * 0.2)} (Frühstück) bzw. ${eur(st.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
+      <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie sind für deine eigene Übersicht und zum Vergleich mit der Lohnabrechnung.</p>
       <p><b>Nachtschicht.</b> Eine Nachtschicht ohne Übernachtung trägst du an dem Tag ein, an dem du losfährst. Die Zeit über Mitternacht wird zusammengerechnet und gibt einmal die Pauschale. Gleicher Beginn und gleiches Ende gilt als 24-Stunden-Schicht.</p>
       <p><b>Fahrten.</b> Fährst du mit dem eigenen Auto direkt zur Baustelle oder zu wechselnden Treffpunkten, ist das eine Dienstfahrt: Jeder gefahrene Kilometer zählt mit ${nf2(st.kmRate)} €, auch Heimfahrten am Wochenende. Schickt dich der Arbeitgeber dauerhaft zum selben Sammelpunkt, zählt für diese Strecke nur die einfache Entfernung mit ${nf2(st.commuteRate)} € (Entfernungspauschale). Ab dem Sammelpunkt bist du trotzdem auswärts tätig.</p>
       <p><b>Übernachtung.</b> Nur selbst bezahlte Kosten eintragen. Ist das Frühstück im Zimmerpreis enthalten und nicht extra ausgewiesen, zieh ${eur(st.rateFull * 0.2)} pro Nacht ab.</p>
-      <p><b>Spesen.</b> Was der Arbeitgeber steuerfrei als Spesen oder Auslöse zahlt, wird von den Reisekosten abgezogen. Steuerfreie Verpflegungszuschüsse stehen auch auf der Lohnsteuerbescheinigung, vergleiche die Summe.</p>
+      <p><b>Auslöse und Spesen.</b> Was der Arbeitgeber steuerfrei als Auslöse oder Spesen zahlt, wird von den Reisekosten abgezogen, denn dieses Geld hast du schon ohne Steuer bekommen. ${st.ausFull || st.ausHalf ? `An Montagetagen trägt die App die Auslöse aus den Einstellungen ein: ${eurS(st.ausFull)} für einen ganzen Tag, ${eurS(st.ausHalf)} für An- und Abreisetage. ` : ''}Steuerfreie Verpflegungszuschüsse stehen auch auf der Lohnsteuerbescheinigung, vergleiche die Summe.</p>
       <p><b>Drei Monate.</b> Wer länger als drei Monate an derselben Stelle arbeitet, bekommt dort ab dem vierten Monat keine Verpflegungspauschale mehr. Eine Unterbrechung von mindestens vier Wochen startet die Frist neu. Orte wie „Hamm“ und „Hamm (Westf)“ werden dabei zusammengefasst.</p>
       <p><b>Pauschbetrag.</b> Das Finanzamt zieht ohnehin ${eurS(st.wkp)} Werbungskosten ab. Erst was darüber liegt, senkt deine Steuer zusätzlich. Gewerkschaftsbeiträge zählen ab dem Steuerjahr 2026 zusätzlich.</p>
       <p class="hint">Alle Beträge sind Schätzungen und ersetzen keine Steuerberatung.</p>
@@ -1029,13 +1077,15 @@ function fillSettings() {
   SHIFTS.forEach(([k]) => { $('#s-' + k + '-a').value = s.shifts[k][0]; $('#s-' + k + '-b').value = s.shifts[k][1]; });
   $('#s-small').value = nf2(s.rateSmall); $('#s-full').value = nf2(s.rateFull); $('#s-km').value = nf2(s.kmRate);
   $('#s-commute').value = nf2(s.commuteRate); $('#s-wkp').value = nf2(s.wkp).replace(/\./g, '');
+  $('#s-aus-full').value = inMoney(s.ausFull); $('#s-aus-half').value = inMoney(s.ausHalf);
 }
 $('#settings').addEventListener('submit', ev => {
   ev.preventDefault();
   const sh = {}; SHIFTS.forEach(([k]) => sh[k] = [$('#s-' + k + '-a').value || DEF.shifts[k][0], $('#s-' + k + '-b').value || DEF.shifts[k][1]]);
   S.settings = mergeSettings({name: $('#s-name').value.trim(), employer: $('#s-employer').value.trim(), home: $('#s-home').value.trim(), state: $('#s-state').value,
     pause: num($('#s-pause').value), rateSmall: num($('#s-small').value) || DEF.rateSmall, rateFull: num($('#s-full').value) || DEF.rateFull,
-    kmRate: num($('#s-km').value) || DEF.kmRate, commuteRate: num($('#s-commute').value) || DEF.commuteRate, wkp: num($('#s-wkp').value) || DEF.wkp, shifts: sh});
+    kmRate: num($('#s-km').value) || DEF.kmRate, commuteRate: num($('#s-commute').value) || DEF.commuteRate, wkp: num($('#s-wkp').value) || DEF.wkp, shifts: sh,
+    ausFull: num($('#s-aus-full').value), ausHalf: num($('#s-aus-half').value)});
   persist(); fillSettings(); renderAll();
   toast('Einstellungen gespeichert');
 });
@@ -1134,13 +1184,20 @@ window.addEventListener('popstate', () => { if (F) { history.pushState({f: 1}, '
 function lastWorkBefore(date) {
   let best = null;
   Object.values(S.entries).forEach(e => {
-    if (e.date < date && WORK.has(e.type) && dayDiff(e.date, date) <= 21 && (!best || e.date > best.date || (e.date === best.date && e.updated > best.updated))) best = e;
+    if (e.date < date && WORK.has(e.type) && e.shift !== 'ausfall' && dayDiff(e.date, date) <= 21 && (!best || e.date > best.date || (e.date === best.date && e.updated > best.updated))) best = e;
   });
   return best;
 }
 function prefill(e) {
-  const lw = lastWorkBefore(e.date); if (!lw) return null;
+  const lw = lastWorkBefore(e.date);
   const prevDay = Object.values(S.entries).filter(x => x.date === addDays(e.date, -1) && isAway(x));
+  if (!lw) {
+    // noch kein Arbeitstag als Vorlage, aber gestern Anreise: heute ganzer Tag auf Montage
+    const pv = prevDay.find(x => x.away === 'an' || x.away === 'voll');
+    if (pv) Object.assign(e, {away: 'voll', place: pv.place, line: pv.line, project: pv.project, lodging: pv.lodging, lodgingName: pv.lodgingName,
+      vehicle: pv.vehicle, trip: pv.trip, meals: Object.assign({}, pv.meals), allowance: allowTaken(e.date, null) ? 0 : autoAllow('voll', e.type)});
+    return null;
+  }
   let away = 'none';
   if (prevDay.some(x => x.away === 'an' || x.away === 'voll')) away = 'voll';
   else if (lw.away === 'ab') away = 'an';
@@ -1151,7 +1208,16 @@ function prefill(e) {
   if (away === 'an' || away === 'voll') { e.lodging = lw.lodging; e.lodgingName = lw.lodgingName; e.meals = Object.assign({}, lw.meals); }
   if (away === 'an') e.depart = lw.depart;
   if (away === 'voll' && lw.trip !== 'sammel') e.km = 0;
+  // Auslöse: war sie am letzten Tag leer oder automatisch, passt sie sich an den neuen Tag an; selbst eingetragene Beträge bleiben
+  if (!lw.allowance || sameMoney(lw.allowance, autoAllow(lw.away, lw.type))) e.allowance = allowTaken(e.date, null) ? 0 : autoAllow(away, e.type);
   return lw.date;
+}
+// Auslöse im Formular nachziehen, wenn sich Auswärts oder Tagesart ändert. Selbst eingetragene Beträge bleiben stehen.
+function syncAllowance(prevAway, prevType) {
+  const e = F.e, cur = e.allowance;
+  if (cur && !sameMoney(cur, autoAllow(prevAway, prevType))) return;
+  const v = allowTaken(e.date, F.id) ? 0 : autoAllow(e.away, e.type);
+  e.allowance = v; $('#f-allowance').value = inMoney(v);
 }
 function openForm(id, date) {
   const isNew = !id || !S.entries[id];
@@ -1163,14 +1229,21 @@ function openForm(id, date) {
   markFormHistory();
 }
 const SEGS = {
-  'g-type': {items: TYPES, get: () => F.e.type, set: v => { F.e.type = v; if (v === 'reise' && F.e.away === 'none') F.e.away = 'an'; }},
-  'g-shift': {items: SHIFTS, get: () => F.e.shift, set: v => {
+  'g-type': {items: TYPES, get: () => F.e.type, set: v => {
+    const pa = F.e.away, pt = F.e.type;
+    F.e.type = v;
+    if (v === 'anreise') F.e.away = 'an';
+    if (v === 'abreise') F.e.away = 'ab';
+    syncAllowance(pa, pt);
+  }},
+  'g-shift': {items: SHIFT_BTNS, get: () => F.e.shift, set: v => {
     const isDef = Object.values(S.settings.shifts).some(s => s[0] === F.e.start && s[1] === F.e.end);
     F.e.shift = F.e.shift === v ? '' : v;
-    if (F.e.shift && (!F.e.start || !F.e.end || isDef)) { const d = S.settings.shifts[v]; F.e.start = d[0]; F.e.end = d[1]; $('#f-start').value = d[0]; $('#f-end').value = d[1]; }
+    const d = S.settings.shifts[F.e.shift];
+    if (d && (!F.e.start || !F.e.end || isDef)) { F.e.start = d[0]; F.e.end = d[1]; $('#f-start').value = d[0]; $('#f-end').value = d[1]; }
   }},
   'g-pause': {items: PAUSES.map(p => [String(p), p + ' min']), get: () => String(F.e.pause), set: v => { F.e.pause = +v; $('#f-pause').value = v; }},
-  'g-away': {items: AWAY, get: () => F.e.away, set: v => { F.e.away = v; }},
+  'g-away': {items: AWAY, get: () => F.e.away, set: v => { const pa = F.e.away; F.e.away = v; syncAllowance(pa, F.e.type); }},
   'g-meals': {items: MEALS, multi: true, get: v => F.e.meals && F.e.meals[v], set: v => { F.e.meals[v] = !F.e.meals[v]; }},
   'g-vehicle': {items: VEH, get: () => F.e.vehicle, set: v => { F.e.vehicle = v; }},
   'g-trip': {items: TRIPS, get: () => F.e.trip, set: v => { F.e.trip = v; }},
@@ -1205,6 +1278,7 @@ function fillForm() {
   Object.entries(FIELDS).forEach(([k, id]) => $('#' + id).value = e[k] || '');
   Object.entries(MONEY).forEach(([k, id]) => $('#' + id).value = inMoney(e[k]));
   $('#f-pause').value = e.pause;
+  $('#f-travel').value = hoursIn(e.travelMin);
   $('#f-km').value = e.km ? nf(e.km, 1).replace(/\./g, '') : '';
   $('#f-title').textContent = F.isNew ? 'Neuer Eintrag' : dShort(e.date);
   $('#f-prefill').hidden = !F.prefilled;
@@ -1221,6 +1295,7 @@ function readInputs() {
   Object.entries(MONEY).forEach(([k, id]) => e[k] = Math.max(0, num($('#' + id).value)));
   e.pause = Math.max(0, Math.round(num($('#f-pause').value)));
   e.km = Math.max(0, num($('#f-km').value));
+  e.travelMin = parseHours($('#f-travel').value);
 }
 function guessShift(t) {
   const m = tmin(t); if (m == null) return '';
@@ -1231,17 +1306,27 @@ function updateForm() {
   const e = F.e, st = S.settings, t = e.type, work = WORK.has(t), off = OFF.has(t), a = e.away;
   $('#b-time').hidden = !work;
   ['#b-place','#b-away','#b-drive','#b-money'].forEach(s => $(s).hidden = off);
+  $('#b-travel').hidden = off || !hasTravel(e);
+  $('#l-travel').textContent = a === 'ab' || t === 'abreise' ? 'Stunden für die Heimfahrt' : a === 'an' || t === 'anreise' ? 'Stunden für die Anfahrt' : 'Stunden für die Fahrt';
+  // Mehrere Tage auf einmal passt nicht zu einem einzelnen An- oder Abreisetag
+  const multiOk = F.isNew && !TRAVEL.has(t);
+  $('#b-multi').hidden = !multiOk; if (!multiOk) $('#b-multi').open = false;
   $('#w-depart').hidden = !(a === 'tag' || a === 'an');
   $('#w-ret').hidden = !(a === 'tag' || a === 'ab');
   $('#w-lodging').hidden = !(a === 'an' || a === 'voll');
   $('#w-meals').hidden = a === 'none';
   $('#w-trip').hidden = e.vehicle !== 'pkw';
   const hol = holiday(e.date); $('#f-hol').hidden = !hol; $('#f-hol').textContent = hol ? 'Feiertag: ' + hol : '';
+  $('#h-shift').hidden = e.shift !== 'ausfall';
+  const ausTxt = v => v ? ` Auslöse der Firma: ${eurS(v)}.` : '';
   $('#h-away').textContent = {none: 'Kein Auswärtseinsatz an diesem Tag.',
     tag: `Morgens los, abends wieder zu Hause. Mehr als 8 Std. weg: ${eurS(st.rateSmall)}.`,
-    an: `Erster Tag der Montage, Übernachtung auswärts: ${eurS(st.rateSmall)}.`,
-    voll: `Ganzer Tag (24 Std.) auswärts, auch Wochenende auf Montage: ${eurS(st.rateFull)}.`,
-    ab: `Letzter Tag der Montage, heute zurück nach Hause: ${eurS(st.rateSmall)}.`}[a];
+    an: `Erster Tag der Montage, Übernachtung auswärts. Pauschale fürs Finanzamt: ${eurS(st.rateSmall)}.${ausTxt(st.ausHalf)}`,
+    voll: `Ganzer Tag (24 Std.) auswärts, auch Wochenende auf Montage. Pauschale fürs Finanzamt: ${eurS(st.rateFull)}.${ausTxt(st.ausFull)}`,
+    ab: `Letzter Tag der Montage, heute zurück nach Hause. Pauschale fürs Finanzamt: ${eurS(st.rateSmall)}.${ausTxt(st.ausHalf)}`}[a];
+  const hA = $('#h-allow'), showA = !!(st.ausFull || st.ausHalf);
+  hA.hidden = !showA;
+  if (showA) hA.textContent = `An Montagetagen trägt die App die Auslöse von selbst ein (ganzer Tag ${eurS(st.ausFull)}, An- und Abreisetag ${eurS(st.ausHalf)}). Du kannst den Betrag hier ändern.`;
   $('#h-trip').textContent = e.trip === 'sammel'
     ? 'Nur wählen, wenn dich der Arbeitgeber dauerhaft zum selben Treffpunkt schickt. Dann zählt die einfache Strecke mit der Entfernungspauschale.'
     : 'Direkt zur Baustelle oder zu wechselnden Treffpunkten ist eine Dienstfahrt. Jeder gefahrene Kilometer zählt, hin und zurück.';
@@ -1250,8 +1335,9 @@ function updateForm() {
   let cw = '';
   if (work) {
     const sp = spanF(e.start, e.end);
-    if (sp) cw = `<span>Arbeitszeit <b>${nf(workMin(e) / 60, 2)} h</b></span>` + (sp === 1440 ? '<span class="hint">24-Stunden-Schicht</span>' : tmin(e.end) < tmin(e.start) ? '<span class="hint">über Mitternacht</span>' : '');
-    else cw = '<span class="hint">Beginn und Ende eintragen</span>';
+    const lbl = e.shift === 'ausfall' ? 'Bezahlt' : 'Arbeitszeit';
+    if (sp) cw = `<span>${lbl} <b>${nf(workMin(e) / 60, 2)} h</b></span>` + (sp === 1440 ? '<span class="hint">24-Stunden-Schicht</span>' : tmin(e.end) < tmin(e.start) ? '<span class="hint">über Mitternacht</span>' : '');
+    else cw = e.shift === 'ausfall' ? '<span class="hint">Ausfallschicht ohne Stunden</span>' : '<span class="hint">Beginn und Ende eintragen</span>';
   }
   $('#c-work').innerHTML = cw;
 
@@ -1264,7 +1350,8 @@ function updateForm() {
     if (a === 'tag' && !absMin(cur)) ca = '<span class="hint">Abfahrt und Rückkehr eintragen, dann rechnet das Schichtbuch die Pauschale.</span>';
     else {
       if (a === 'tag') ca += `<span>Unterwegs <b>${nf(dv.abs / 60, 2)} h</b></span>`;
-      ca += `<span>Verpflegung ${shared ? 'für den Tag ' : ''}<b>${eur(dv.val)}</b></span>`;
+      ca += `<span>Verpflegungspauschale ${shared ? 'für den Tag ' : ''}<b>${eur(dv.val)}</b></span>`;
+      if (e.allowance) ca += `<span>Auslöse <b>${eur(e.allowance)}</b></span>`;
       if (a === 'tag' && !dv.base) ca += '<span class="hint">8 Std. oder weniger: keine Pauschale</span>';
       if (shared) ca += '<span class="hint">mit dem anderen Eintrag an diesem Tag zusammengerechnet</span>';
       if (dv.cut) ca += `<span class="hint">${eur(dv.base)} minus ${eur(dv.cut)} für gestellte Mahlzeiten</span>`;
@@ -1303,11 +1390,12 @@ function updateMultiInfo() {
   let s = `Legt ${n} ${n === 1 ? 'Eintrag' : 'Einträge'} an (${dShort(ds[0])} bis ${dShort(ds[ds.length - 1])}).`;
   if (n < ds.length) s += ` ${ds.length - n} ${ds.length - n === 1 ? 'Tag hat' : 'Tage haben'} schon einen Eintrag und ${ds.length - n === 1 ? 'bleibt' : 'bleiben'}, wie ${ds.length - n === 1 ? 'er ist' : 'sie sind'}.`;
   if (F.we === 'away') s += ' Samstag und Sonntag werden als frei mit ganzem Tag auswärts gespeichert, ohne Arbeitszeit.';
+  if ($('#m-montage').checked && montageGoesOn(ds[0])) s += ` Am ${dShort(addDays(ds[0], -1))} bist du schon auf Montage eingetragen, deshalb zählt ${dShort(ds[0])} als ganzer Tag auswärts.`;
   if ($('#m-montage').checked && F.e.km && F.e.trip !== 'sammel') s += ' Kilometer werden nur am An- und Abreisetag übernommen.';
   if (F.e.otherCost) s += ' Sonstige Ausgaben nur am ersten Tag.';
   el.textContent = s;
 }
-['f-date','f-start','f-end','f-pause','f-place','f-line','f-project','f-depart','f-ret','f-lodging','f-lodgingName','f-km','f-allowance','f-other','f-otherNote','f-note','f-meet','m-until','m-montage']
+['f-date','f-start','f-end','f-pause','f-travel','f-place','f-line','f-project','f-depart','f-ret','f-lodging','f-lodgingName','f-km','f-allowance','f-other','f-otherNote','f-note','f-meet','m-until','m-montage']
   .forEach(id => $('#' + id).addEventListener('input', () => {
     if (!F || F.kind !== 'day') return;
     if (id === 'f-start' && !F.e.shift) { const g = guessShift($('#f-start').value); if (g) F.e.shift = g; }
@@ -1320,10 +1408,16 @@ function shiftDate(n) { const d = $('#f-date').value; if (!validDate(d)) return;
 $('#f-dup').addEventListener('click', ev => { const b = ev.target.closest('[data-open]'); if (b) { dropDraft(); openForm(b.dataset.open); } });
 $('#f-clear').addEventListener('click', () => { const d = F.e.date; F.e = blankEntry(validDate(d) ? d : today()); F.prefilled = null; fillForm(); touch(); });
 
+const montageGoesOn = d => !!d && Object.values(S.entries).some(x => x.date === addDays(d, -1) && isAway(x) && (x.away === 'an' || x.away === 'voll'));
 function montageAway(dates) {
   // zusammenhängende Tage bilden einen Block: erster Anreise, letzter Abreise, dazwischen ganzer Tag
+  // Ist am Vortag schon eine Anreise (oder ein ganzer Tag) eingetragen, läuft die Montage weiter: erster Tag ist dann ein ganzer Tag
   const res = {}; let block = [];
-  const end = () => { block.forEach((d, i) => res[d] = block.length === 1 ? 'tag' : i === 0 ? 'an' : i === block.length - 1 ? 'ab' : 'voll'); block = []; };
+  const end = () => {
+    const c = montageGoesOn(block[0]);
+    block.forEach((d, i) => res[d] = block.length === 1 ? (c ? 'ab' : 'tag') : i === 0 ? (c ? 'voll' : 'an') : i === block.length - 1 ? 'ab' : 'voll');
+    block = [];
+  };
   dates.forEach(d => { if (block.length && dayDiff(block[block.length - 1], d) !== 1) end(); block.push(d); });
   end(); return res;
 }
@@ -1335,6 +1429,7 @@ function tidy(e) {
   if (!(e.away === 'tag' || e.away === 'ab')) e.ret = '';
   if (!(e.away === 'an' || e.away === 'voll')) { e.lodging = 0; e.lodgingName = ''; }
   if (e.vehicle !== 'pkw') { e.km = 0; e.trip = 'dienst'; e.meet = ''; }
+  if (OFF.has(e.type) || !hasTravel(e)) e.travelMin = 0;
   return e;
 }
 const saveMsg = () => storageOk ? 'Gespeichert' : 'Konnte nicht gespeichert werden';
@@ -1351,16 +1446,18 @@ function saveDay() {
     const taken = new Set(Object.values(S.entries).map(x => x.date));
     const free = ds.filter(d => !taken.has(d));
     const pattern = $('#m-montage').checked ? montageAway(ds) : null;
+    const autoA = !base.allowance || sameMoney(base.allowance, autoAllow(base.away, base.type));
     free.forEach((d, i) => {
       const e = normEntry(Object.assign(clone(base), {id: newId(), date: d, updated: now}));
       const weAway = F.we === 'away' && isWeekend(d);
       if (pattern) e.away = pattern[d]; else if (weAway) e.away = 'voll';
-      if (weAway) e.type = e.away === 'an' || e.away === 'ab' ? 'reise' : 'frei';
+      if (weAway) e.type = e.away === 'an' ? 'anreise' : e.away === 'ab' ? 'abreise' : 'frei';
       if (e.trip !== 'sammel' && ((pattern && e.away === 'voll') || (weAway && e.away === 'voll'))) e.km = 0;
       if (weAway && e.trip === 'sammel') e.km = 0;
       if (i > 0) { e.otherCost = 0; e.otherNote = ''; }
       if (e.away === 'an' && !e.depart) e.depart = base.depart;
       if (e.away === 'ab' && !e.ret) e.ret = base.ret;
+      if (autoA) e.allowance = autoAllow(e.away, e.type);
       tidy(e); S.entries[e.id] = e;
     });
     savedYear = +(free[0] || ds[0]).slice(0, 4);
@@ -1471,16 +1568,19 @@ function addSheet(wb, name, rows, widths, opt = {}) {
 }
 const mealsTxt = e => isAway(e) ? MEALS.filter(([k]) => e.meals[k]).map(([, l]) => l).join(', ') : '';
 const ENTRY_COLS = [['Datum',11],['Tag',5],['Tagesart',10],['Schicht',8],['Beginn',7],['Ende',7],['Pause (Min.)',8],['Arbeitszeit (Std.)',10],
+  ['Fahrzeit (Std.)',9],['Stunden gesamt',9],
   ['Einsatzort',22],['Strecke / km',16],['Auftrag / Baustelle',24],['Auswärts',24],['Abfahrt',8],['Rückkehr',9],['Abwesenheit (Std.)',10],
   ['Mahlzeiten gestellt',18],['Verpflegung (€)',12],['Unterkunft',18],['Übernachtung (€)',12],['Fahrzeug',13],['Treffpunkt',18],
-  ['km Dienstfahrt',10],['Fahrtkosten (€)',12],['km einfach Sammelpunkt',12],['Entfernungspauschale (€)',13],['Sonstige Ausgaben (€)',12],['Wofür',16],['Spesen vom AG (€)',12],['Notiz',30]];
+  ['km Dienstfahrt',10],['Fahrtkosten (€)',12],['km einfach Sammelpunkt',12],['Entfernungspauschale (€)',13],['Sonstige Ausgaben (€)',12],['Wofür',16],['Auslöse / Spesen vom AG (€)',14],['Notiz',30]];
 function entryRow(e, day) {
   const work = WORK.has(e.type), aw = isAway(e), dv = day[e.date] || {};
   const v = dv.carrier === e.id ? dv.val : 0, cc = dv.commuteId === e.id ? commuteCost(e) : 0;
   const pkw = e.vehicle === 'pkw' && !OFF.has(e.type);
+  const tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e);
   return [
     cD(e.date), DOW[dowOf(e.date)] + (holiday(e.date) ? ' (Feiertag)' : ''), TYPE_L[e.type], work ? (SHIFT_L[e.shift] || '') : '',
-    work ? cT(e.start) : '', work ? cT(e.end) : '', work && e.start ? cN(e.pause, Z.i) : '', work && workMin(e) ? cN(workMin(e) / 60, Z.h) : '',
+    work ? cT(e.start) : '', work ? cT(e.end) : '', work && e.start ? cN(e.pause, Z.i) : '', work && wm ? cN(wm / 60, Z.h) : '',
+    tr ? cN(tr / 60, Z.h) : '', wm + tr ? cN((wm + tr) / 60, Z.h) : '',
     e.place, e.line, e.project, aw ? AWAY_X[e.away] : '', aw ? cT(e.depart) : '', aw ? cT(e.ret) : '', absMin(e) ? cN(absMin(e) / 60, Z.h) : '',
     mealsTxt(e), cE(v), aw && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : '', cE(lodgingOf(e)),
     e.vehicle ? VEH_L[e.vehicle] : '', pkw ? e.meet : '',
@@ -1494,8 +1594,10 @@ function overviewRows(T, list, exps) {
   const rows = [
     [B('Schichtbuch ' + year, 16)], ['Name', st.name], ['Arbeitgeber', st.employer], ['Wohnort', st.home], ['Bundesland (Feiertage)', STATE_L[st.state]],
     ['Erstellt am', cD(today())], [],
-    [B('Arbeitszeit')], ['Arbeitstage', n(T.workDays)], ['Schulungstage', n(T.trainDays)], ['Reisetage', n(T.travelDays)], ['Urlaubstage', n(T.vacDays)],
-    ['Krankheitstage', n(T.sickDays)], ['Arbeitsstunden', n(T.min / 60, Z.h)], ['Nachtschichten', n(T.nightShifts)], [],
+    [B('Arbeitszeit')], ['Arbeitstage', n(T.workDays)], ['Schulungstage', n(T.trainDays)], ['An- und Abreisetage ohne Arbeit', n(T.travelDays)], ['Urlaubstage', n(T.vacDays)],
+    ['Krankheitstage', n(T.sickDays)], ['Arbeitsstunden', n(T.min / 60, Z.h)], ['Fahrstunden (An- und Abreise)', n(T.travelMin / 60, Z.h)],
+    [B('Stunden gesamt'), Object.assign(n(T.tot / 60, Z.h), {b: true})], ['Nachtschichten', n(T.nightShifts)],
+    ['Ausfallschichten', n(T.ausfall)], ['davon bezahlte Stunden (in den Arbeitsstunden enthalten)', n(T.ausfallMin / 60, Z.h)], [],
     [B('Auswärtstätigkeit')], ['Tage auswärts', n(T.awayDays)], ['Tage mit mehr als 8 Std. unterwegs (je ' + nf2(st.rateSmall) + ' €)', n(T.n_tag)],
     ['Anreisetage (je ' + nf2(st.rateSmall) + ' €)', n(T.n_an)], ['Abreisetage (je ' + nf2(st.rateSmall) + ' €)', n(T.n_ab)],
     ['Volle Tage 24 Std. (je ' + nf2(st.rateFull) + ' €)', n(T.n_voll)], ['Übernachtungen', n(T.nights)], [],
@@ -1503,8 +1605,8 @@ function overviewRows(T, list, exps) {
     ['Verpflegungspauschalen', n(T.vmaBase, Z.eur)], ['Kürzung für gestellte Mahlzeiten', n(-T.vmaCut, Z.eur)], ['Verpflegungsmehraufwand', n(T.vma, Z.eur)],
     ['Gefahrene km Dienstfahrten eigenes Auto', n(T.km, Z.km)], ['Fahrtkosten (' + nf2(st.kmRate) + ' € je km)', n(T.kmCost, Z.eur)],
     ['Übernachtungskosten selbst bezahlt', n(T.lodging, Z.eur)], ['Reisenebenkosten (Parken, Tickets)', n(T.other, Z.eur)],
-    ['Summe Reisekosten', n(T.travel, Z.eur)], ['Steuerfrei vom Arbeitgeber erhalten (Spesen, Auslöse)', n(-T.allowance, Z.eur)],
-    [B('Reisekosten nach Abzug der Spesen'), Object.assign(n(T.travelNet, Z.eur), {b: true})], []
+    ['Summe Reisekosten', n(T.travel, Z.eur)], ['Steuerfrei vom Arbeitgeber erhalten (Auslöse, Spesen)', n(-T.allowance, Z.eur)],
+    [B('Reisekosten nach Abzug der Auslöse'), Object.assign(n(T.travelNet, Z.eur), {b: true})], []
   ];
   if (T.commuteDays) rows.push([B('Fahrten zum festen Sammelpunkt (Entfernungspauschale)')], ['Tage', n(T.commuteDays)],
     ['km einfache Strecke zusammen', n(T.commuteKm, Z.km)], [B('Entfernungspauschale (' + nf2(st.commuteRate) + ' € je km)'), Object.assign(n(T.commuteCost, Z.eur), {b: true})], []);
@@ -1531,8 +1633,12 @@ async function buildWorkbook(EX, list, exps) {
   addSheet(wb, 'Übersicht', overviewRows(T, list, exps), [62, 18]);
   const er = [head(ENTRY_COLS.map(c => c[0]))].concat(list.map(e => entryRow(e, day)));
   const last = er.length;
-  const sums = [[7, Z.h, T.min / 60], [16, Z.eur, T.vma], [18, Z.eur, T.lodging], [21, Z.km, T.km + T.kmOther], [22, Z.eur, T.kmCost],
-    [23, Z.km, list.filter(isSammel).reduce((s, e) => s + e.km, 0)], [24, Z.eur, T.commuteCost], [25, Z.eur, T.other], [27, Z.eur, T.allowance]];
+  const ci = name => ENTRY_COLS.findIndex(c => c[0] === name);
+  const sums = [[ci('Arbeitszeit (Std.)'), Z.h, T.min / 60], [ci('Fahrzeit (Std.)'), Z.h, T.travelMin / 60], [ci('Stunden gesamt'), Z.h, T.tot / 60],
+    [ci('Verpflegung (€)'), Z.eur, T.vma], [ci('Übernachtung (€)'), Z.eur, T.lodging], [ci('km Dienstfahrt'), Z.km, T.km + T.kmOther], [ci('Fahrtkosten (€)'), Z.eur, T.kmCost],
+    [ci('km einfach Sammelpunkt'), Z.km, list.filter(isSammel).reduce((s, e) => s + e.km, 0)], [ci('Entfernungspauschale (€)'), Z.eur, T.commuteCost],
+    [ci('Sonstige Ausgaben (€)'), Z.eur, T.other], [ci('Auslöse / Spesen vom AG (€)'), Z.eur, T.allowance]];
+  if (sums.some(s => s[0] < 0)) throw new Error('Spalte fehlt');
   const sumRow = ENTRY_COLS.map(() => ''); sumRow[0] = B('Summe');
   if (list.length) sums.forEach(([ci, z, v]) => sumRow[ci] = {v: r2(v), z, f: `SUM(${colL(ci)}2:${colL(ci)}${last})`, b: true});
   er.push([], sumRow);
@@ -1543,13 +1649,13 @@ async function buildWorkbook(EX, list, exps) {
   xr.push([], [B('Summe'), '', '', exps.length ? {v: T.exp, z: Z.eur, f: `SUM(D2:D${xl})`, b: true} : cN(0, Z.eur)]);
   CATS.forEach(([k, l]) => { if (T.cat[k]) xr.push(['', l, '', cN(T.cat[k], Z.eur)]); });
   addSheet(wb, 'Ausgaben', xr, [11, 16, 30, 12, 30], {freeze: 1});
-  const mh = ['Monat','Arbeitstage','Schulungstage','Arbeitsstunden','Nachtschichten','Tage auswärts','Übernachtungen','Verpflegung (€)','km Dienstfahrten',
-    'Fahrtkosten (€)','Übernachtung (€)','Reisenebenkosten (€)','Entfernungspauschale (€)','Weitere Ausgaben (€)','Summe vor Spesen (€)','Spesen vom AG (€)'];
-  const mz = [null, Z.i, Z.i, Z.h, Z.i, Z.i, Z.i, Z.eur, Z.km, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur];
-  const mv = a => [a.workDays, a.trainDays, a.min / 60, a.nightShifts, a.awayDays, a.nights, a.vma, a.km, a.kmCost, a.lodging, a.other, a.commuteCost, a.exp, a.gross, a.allowance];
+  const mh = ['Monat','Arbeitstage','Schulungstage','Arbeitsstunden','Fahrstunden','Stunden gesamt','Nachtschichten','Ausfallschichten','Tage auswärts','Übernachtungen','Verpflegung (€)','km Dienstfahrten',
+    'Fahrtkosten (€)','Übernachtung (€)','Reisenebenkosten (€)','Entfernungspauschale (€)','Weitere Ausgaben (€)','Summe vor Auslöse (€)','Auslöse / Spesen vom AG (€)'];
+  const mz = [null, Z.i, Z.i, Z.h, Z.h, Z.h, Z.i, Z.i, Z.i, Z.i, Z.eur, Z.km, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur];
+  const mv = a => [a.workDays, a.trainDays, a.min / 60, a.travelMin / 60, a.tot / 60, a.nightShifts, a.ausfall, a.awayDays, a.nights, a.vma, a.km, a.kmCost, a.lodging, a.other, a.commuteCost, a.exp, a.gross, a.allowance];
   const mr = [head(mh)].concat(M.map((a, i) => [MONTHS[i]].concat(mv(a).map((v, j) => cN(v, mz[j + 1])))));
   mr.push([B('Summe')].concat(mv(T).map((v, j) => ({v: r2(v), z: mz[j + 1], f: `SUM(${colL(j + 1)}2:${colL(j + 1)}13)`, b: true}))));
-  addSheet(wb, 'Monate', mr, [12, 11, 13, 14, 13, 13, 14, 15, 15, 14, 15, 17, 18, 17, 17, 15], {freeze: 1});
+  addSheet(wb, 'Monate', mr, [12, 11, 13, 14, 12, 13, 13, 14, 13, 14, 15, 15, 14, 15, 17, 18, 17, 17, 18], {freeze: 1});
   const pr = [head(['Einsatzort', 'Tage', 'Erster Tag', 'Letzter Tag', 'Auch eingetragen als', 'Hinweis'])].concat(placeStats(list).map(p =>
     [p.name, cN(p.days, Z.i), cD(p.first), cD(p.last), p.alias.join(', '), p.warnFrom ? 'Länger als drei Monate auswärts seit ' + dDot(p.warnFrom) + ', Pauschale prüfen' : '']));
   addSheet(wb, 'Einsatzorte', pr, [28, 7, 12, 12, 24, 52], {freeze: 1});
