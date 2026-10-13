@@ -66,10 +66,19 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .mark{flex:none;width:22px;height:34px;border-radius:4px;background:linear-gradient(var(--accent) 0 28%,var(--reflect) 28% 40%,var(--accent) 40% 60%,var(--reflect) 60% 72%,var(--accent) 72%)}
 h1{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1;margin:0;letter-spacing:.01em}
-.sync{margin:3px 0 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.sync::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.brand>div{min-width:0}
+.sync{margin:3px 0 0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:1px;border-radius:50%;background:var(--muted)}
 .sync.ok::before{background:var(--good)} .sync.wait::before{background:var(--accent)} .sync.local::before{background:var(--warn-ink)}
-.yearsel select{width:auto;min-height:40px;padding:6px 30px 6px 12px;font:600 18px var(--f-display);border-radius:8px}
+.topr{display:flex;align-items:center;gap:2px}
+.gear{color:var(--ink)}
+.gear svg{width:26px;height:26px;display:block}
+.gear[aria-current="page"]{color:var(--accent-ink)}
+.q{display:grid;gap:8px}
+.q-h{font-weight:600;font-size:16px}
+#prof .q{padding-top:12px;border-top:1px solid var(--line)}
+#prof .q .q{padding-top:0;border-top:0}
+.yearsel select{width:auto;min-height:40px;padding:6px 26px 6px 10px;font:600 18px var(--f-display);border-radius:8px}
 
 /* Grundelemente */
 input,select,textarea{font:16px var(--f-body);width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
@@ -174,7 +183,7 @@ details.card p{margin:0;max-width:65ch}
 .form{display:grid;gap:12px;margin-top:12px}
 .block{background:var(--surface);border-radius:14px;padding:16px;display:grid;gap:14px}
 .blk-h{margin:0;font-family:var(--f-display);font-weight:600;font-size:15px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:end}
 .daterow{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;gap:8px}
 .daterow button{border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:22px;line-height:1}
 .pauserow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -208,9 +217,12 @@ details.multi[open] summary{margin-bottom:6px}
   <header class="top" id="top">
     <div class="brand">
       <span class="mark" aria-hidden="true"></span>
-      <div><h1>Schichtbuch</h1><p class="sync ok" id="sync">Auf diesem Handy gespeichert</p></div>
+      <div><h1>Schichtbuch</h1><p class="sync ok" id="sync">Gespeichert</p></div>
     </div>
-    <label class="yearsel"><span class="sr">Jahr</span><select id="year"></select></label>
+    <div class="topr">
+      <label class="yearsel"><span class="sr">Jahr</span><select id="year"></select></label>
+      <button class="iconbtn gear" id="nav-settings" type="button" aria-label="Einstellungen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
   </header>
 
   <main>
@@ -242,37 +254,11 @@ details.multi[open] summary{margin-bottom:6px}
           <p class="hint" id="b-status" role="status"></p>
         </div>
 
-        <form class="card" id="settings" autocomplete="off">
+        <div class="card">
           <h3>Einstellungen</h3>
-          <label>Dein Name<input id="s-name" placeholder="Steht oben in der Excel-Datei"></label>
-          <label>Arbeitgeber<input id="s-employer" placeholder="z. B. Sicherungsfirma GmbH"></label>
-          <label>Wohnort<input id="s-home" placeholder="Startpunkt deiner Fahrten"></label>
-          <label>Bundesland (für Feiertage)<select id="s-state"></select></label>
-          <label>Übliche Pause (Minuten)<input id="s-pause" inputmode="numeric"></label>
-          <div class="grid2" style="gap:6px 10px">
-            <span class="blk-h" style="grid-column:1/-1">Schichtzeiten zum Vorausfüllen</span>
-            <label>Früh von<input type="time" id="s-frueh-a"></label><label>bis<input type="time" id="s-frueh-b"></label>
-            <label>Tag von<input type="time" id="s-tag-a"></label><label>bis<input type="time" id="s-tag-b"></label>
-            <label>Spät von<input type="time" id="s-spaet-a"></label><label>bis<input type="time" id="s-spaet-b"></label>
-            <label>Nacht von<input type="time" id="s-nacht-a"></label><label>bis<input type="time" id="s-nacht-b"></label>
-          </div>
-          <div class="grid2" style="gap:6px 10px">
-            <span class="blk-h" style="grid-column:1/-1">Pauschalen</span>
-            <label>Über 8 Std. / An- und Abreise (€)<input id="s-small" inputmode="decimal"></label>
-            <label>Ganzer Tag 24 Std. (€)<input id="s-full" inputmode="decimal"></label>
-            <label>Dienstfahrt je gefahrenem km (€)<input id="s-km" inputmode="decimal"></label>
-            <label>Fester Sammelpunkt je km einfach (€)<input id="s-commute" inputmode="decimal"></label>
-            <label>Arbeitnehmer-Pauschbetrag (€)<input id="s-wkp" inputmode="decimal"></label>
-          </div>
-          <p class="hint">Stand 2026: Verpflegung 14 € und 28 €, Dienstfahrt 0,30 € je gefahrenem km, Entfernungspauschale 0,38 € je km, Arbeitnehmer-Pauschbetrag 1.230 €.</p>
-          <div class="grid2" style="gap:6px 10px">
-            <span class="blk-h" style="grid-column:1/-1">Auslöse vom Arbeitgeber</span>
-            <label>Ganzer Tag (€)<input id="s-aus-full" inputmode="decimal" placeholder="0,00"></label>
-            <label>An- und Abreisetag (€)<input id="s-aus-half" inputmode="decimal" placeholder="0,00"></label>
-          </div>
-          <p class="hint">Was deine Firma pro Montagetag zahlt. Die App trägt den Betrag an Montagetagen von selbst ein, ändern kannst du ihn bei jedem Tag. Er zählt als steuerfrei und wird mit den Reisekosten verrechnet. Leer lassen, wenn es keine Auslöse gibt.</p>
-          <button class="btn primary block" type="submit">Einstellungen speichern</button>
-        </form>
+          <p class="hint">Wie deine Firma Sammelpunkt, Auslöse und Unterkunft regelt, dazu Name, Bundesland und Schichtzeiten.</p>
+          <button class="btn block" type="button" data-go="settings">Einstellungen öffnen</button>
+        </div>
 
         <div class="card">
           <h3>Über die App</h3>
@@ -285,6 +271,97 @@ details.multi[open] summary{margin-bottom:6px}
       </div>
     </section>
 
+
+    <section id="v-settings" class="view" aria-label="Einstellungen" hidden>
+      <form id="settings" class="stack" autocomplete="off">
+        <div class="card" id="prof">
+          <h3>Deine Arbeit</h3>
+          <p class="hint">Stell einmal ein, wie deine Firma es regelt. Die App füllt damit neue Tage vor und rechnet danach. Jeden Tag kannst du trotzdem einzeln ändern. Änderungen werden sofort gespeichert.</p>
+
+          <div class="q">
+            <span class="q-h">Wie kommst du meistens zur Arbeit?</span>
+            <div class="seg" data-pset="veh"></div>
+            <p class="hint">Mitfahrer heißt: im Privatauto eines Kollegen.</p>
+          </div>
+
+          <div class="q">
+            <span class="q-h">Steht im Arbeitsvertrag ein fester Ort, zu dem du jeden Arbeitstag fährst?</span>
+            <div class="seg" data-pset="fixed"></div>
+            <div class="grid2" id="p-fixed-w">
+              <label>Name des Orts<input id="p-fixed-name" placeholder="z. B. Bf Soest, Lager Hamm" autocomplete="off"></label>
+              <label>Entfernung von zu Hause, einfache Strecke (km)<input id="p-fixed-km" inputmode="decimal" placeholder="z. B. 24"></label>
+            </div>
+            <p class="hint" id="p-fixed-h"></p>
+          </div>
+
+          <div class="q">
+            <span class="q-h">Zahlt deine Firma Auslöse oder Spesen?</span>
+            <div class="seg" data-pset="ausOn"></div>
+            <div id="p-aus-w" class="q">
+              <div class="grid2">
+                <label>Ganzer Tag auf Montage (€)<input id="s-aus-full" inputmode="decimal" placeholder="0,00"></label>
+                <label>An- und Abreisetag (€)<input id="s-aus-half" inputmode="decimal" placeholder="0,00"></label>
+                <label>Tagestour ohne Übernachtung (€)<input id="s-aus-day" inputmode="decimal" placeholder="0,00"></label>
+              </div>
+              <p class="hint">Die App trägt die Beträge an solchen Tagen von selbst ein. Für die Steuer wird die Auslöse mit der Verpflegungspauschale verrechnet und, wenn du die Unterkunft selbst zahlst, mit der Übernachtung. Deine Fahrtkosten bleiben davon unberührt.</p>
+              <button class="btn block" id="p-aus-fill" type="button" hidden></button>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="q-h">Wer bezahlt auf Montage die Unterkunft?</span>
+            <div class="seg" data-pset="lodgingBy"></div>
+          </div>
+
+          <div class="q">
+            <span class="q-h">Zahlt die Firma Kilometergeld, wenn du mit deinem Auto zur Baustelle fährst?</span>
+            <div class="seg" data-pset="kmOn"></div>
+            <label id="p-km-w">Kilometergeld je km (€)<input id="p-kmgeld" inputmode="decimal" placeholder="z. B. 0,30"></label>
+          </div>
+
+          <div class="q">
+            <span class="q-h">Werden dir Stunden für An- und Abreise angerechnet?</span>
+            <div class="seg" data-pset="travelPaid"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Persönliches</h3>
+          <label>Dein Name<input id="s-name" placeholder="Steht oben in der Excel-Datei"></label>
+          <label>Arbeitgeber<input id="s-employer" placeholder="z. B. Sicherungsfirma GmbH"></label>
+          <label>Wohnort<input id="s-home" placeholder="Startpunkt deiner Fahrten"></label>
+          <label>Bundesland (für Feiertage)<select id="s-state"></select></label>
+        </div>
+
+        <div class="card">
+          <h3>Arbeitszeit</h3>
+          <label>Übliche Pause (Minuten)<input id="s-pause" inputmode="numeric"></label>
+          <div class="grid2" style="gap:6px 10px">
+            <span class="blk-h" style="grid-column:1/-1">Schichtzeiten zum Vorausfüllen</span>
+            <label>Früh von<input type="time" id="s-frueh-a"></label><label>bis<input type="time" id="s-frueh-b"></label>
+            <label>Tag von<input type="time" id="s-tag-a"></label><label>bis<input type="time" id="s-tag-b"></label>
+            <label>Spät von<input type="time" id="s-spaet-a"></label><label>bis<input type="time" id="s-spaet-b"></label>
+            <label>Nacht von<input type="time" id="s-nacht-a"></label><label>bis<input type="time" id="s-nacht-b"></label>
+          </div>
+        </div>
+
+        <details class="card">
+          <summary>Steuerliche Pauschalen</summary>
+          <p class="hint">Gelten für alle und stehen im Gesetz. Nur ändern, wenn sich das Gesetz ändert.</p>
+          <div class="grid2" style="gap:6px 10px">
+            <label>Über 8 Std. / An- und Abreise (€)<input id="s-small" inputmode="decimal"></label>
+            <label>Ganzer Tag 24 Std. (€)<input id="s-full" inputmode="decimal"></label>
+            <label>Dienstfahrt je gefahrenem km (€)<input id="s-km" inputmode="decimal"></label>
+            <label>Sammelpunkt / Betrieb je km einfach (€)<input id="s-commute" inputmode="decimal"></label>
+            <label>Arbeitnehmer-Pauschbetrag (€)<input id="s-wkp" inputmode="decimal"></label>
+          </div>
+          <p class="hint">Stand 2026: Verpflegung 14 € und 28 €, Dienstfahrt 0,30 € je gefahrenem km, Entfernungspauschale 0,38 € je km ab dem ersten km, Arbeitnehmer-Pauschbetrag 1.230 €.</p>
+        </details>
+
+        <button class="btn primary block" type="submit">Speichern</button>
+        <p class="hint" id="s-status" role="status"></p>
+      </form>
+    </section>
     <section id="v-form" class="view" aria-label="Arbeitstag" hidden>
       <div class="formbar">
         <button class="iconbtn" id="f-back" type="button">‹ Zurück</button>
@@ -345,7 +422,7 @@ details.multi[open] summary{margin-bottom:6px}
             <label id="w-ret">Zurück zu Hause<input type="time" id="f-ret"></label>
           </div>
           <div class="grid2" id="w-lodging">
-            <label>Übernachtung selbst bezahlt (€)<input id="f-lodging" inputmode="decimal" placeholder="0,00"></label>
+            <label id="w-lodging-cost">Übernachtung selbst bezahlt (€)<input id="f-lodging" inputmode="decimal" placeholder="0,00"></label>
             <label>Unterkunft<input id="f-lodgingName" list="dl-lodging" placeholder="Hotel, Pension" autocomplete="off"></label>
           </div>
           <div id="w-meals" style="display:grid;gap:6px">
@@ -365,7 +442,7 @@ details.multi[open] summary{margin-bottom:6px}
               <p class="hint" id="h-trip"></p>
             </div>
             <label>Treffpunkt / Sammelpunkt<input id="f-meet" list="dl-meet" placeholder="z. B. Bf Soest, Parkplatz P2" autocomplete="off"></label>
-            <label><span id="l-km">Gefahrene Kilometer an diesem Tag</span><input id="f-km" inputmode="decimal" placeholder="z. B. 124"></label>
+            <label id="w-km"><span id="l-km">Gefahrene Kilometer an diesem Tag</span><input id="f-km" inputmode="decimal" placeholder="z. B. 124"></label>
           </div>
           <div class="calc" id="c-drive"></div>
         </div>
@@ -445,7 +522,7 @@ details.multi[open] summary{margin-bottom:6px}
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.3.0';
 const KEY = 'sakra-schichtbuch-v1';
 const EXCEL_URL = 'exceljs.min.js';
 const TYPES = [['arbeit','Arbeit'],['anreise','Anreise'],['abreise','Abreise'],['schulung','Schulung'],['frei','Frei'],['urlaub','Urlaub'],['krank','Krank']];
@@ -459,21 +536,24 @@ const SHIFT_L = Object.fromEntries(SHIFT_BTNS);
 const AWAY = [['none','Nein'],['tag','Tagestour'],['an','Anreise'],['voll','Ganzer Tag'],['ab','Abreise']];
 const AWAY_CHIP = {tag:'Tagestour', an:'Anreise', voll:'Auswärts', ab:'Abreise'};
 const AWAY_X = {none:'', tag:'Tagestour ohne Übernachtung', an:'Anreisetag', voll:'Ganzer Tag auswärts', ab:'Abreisetag'};
-const VEH = [['','Keine'],['pkw','Eigenes Auto'],['firma','Firmenwagen'],['mit','Mitfahrer'],['oepnv','Bahn / ÖPNV']];
+const VEH = [['','Keine'],['pkw','Eigenes Auto'],['firma','Firmenwagen / -bus'],['mit','Mitfahrer'],['oepnv','Bahn / ÖPNV']];
 const VEH_L = Object.fromEntries(VEH);
-const TRIPS = [['dienst','Baustelle / Treffpunkt'],['sammel','Fester Sammelpunkt']];
+// Entfernungspauschale zum festen Sammelpunkt/Betrieb gibt es mit jedem Verkehrsmittel, nur nicht bei Sammelbeförderung durch die Firma
+const SAMMEL_VEH = new Set(['pkw','mit','oepnv']);
+const COMMUTE_CAP = 4500; // Höchstbetrag Entfernungspauschale ohne eigenes Auto (§ 9 Abs. 2 EStG)
+const TRIPS = [['dienst','Baustelle / Treffpunkt'],['sammel','Fester Sammelpunkt / Betrieb']];
 const WEOPT = [['skip','Auslassen'],['work','Gearbeitet'],['away','Frei, aber auswärts']];
 const MEALS = [['b','Frühstück'],['l','Mittag'],['d','Abendessen']];
 const PAUSES = [0, 30, 45, 60];
 const CATS = [['kleidung','Arbeitskleidung'],['mittel','Arbeitsmittel'],['bildung','Fortbildung'],['gew','Gewerkschaft'],['fahrt','Fahrt / Ticket'],['sonst','Sonstiges']];
 const CAT_L = Object.fromEntries(CATS);
 const CAT_HINT = {
-  kleidung: 'Typische Berufskleidung wie Warnschutzkleidung, Sicherheitsschuhe, Helm oder Regenschutz. Normale Alltagskleidung zählt nicht.',
-  mittel: 'Werkzeug, Lampe, Fachliteratur, Tasche oder der berufliche Anteil am Handy.',
+  kleidung: 'Typische Berufskleidung wie Warnschutzkleidung, Sicherheitsschuhe, Helm oder Regenschutz. Auch das Waschen und Reinigen der Warnschutzkleidung zählt. Normale Alltagskleidung zählt nicht.',
+  mittel: 'Werkzeug, Lampe, Funkgerät, Fachliteratur, Tasche. Handy und Telefon: ohne Nachweis 20 % der Rechnung, höchstens 20 € im Monat. Kostet ein Gerät mehr als 952 € (mit Mehrwertsteuer), wird es über mehrere Jahre abgesetzt, Computer und Laptop ausgenommen.',
   bildung: 'Lehrgänge, Fortbildungen und Prüfungsgebühren, die du selbst bezahlst.',
   gew: 'Gewerkschaftsbeiträge zählen ab dem Steuerjahr 2026 zusätzlich zum Arbeitnehmer-Pauschbetrag.',
   fahrt: 'Fahrten, die zu keinem Arbeitstag gehören, z. B. zur Tauglichkeitsuntersuchung oder zu einer Prüfung.',
-  sonst: 'Alles andere, was beruflich veranlasst ist, z. B. Bewerbungskosten.'
+  sonst: 'Alles andere, was beruflich veranlasst ist, z. B. Bewerbungskosten. Kontoführung: Viele Finanzämter erkennen 16 € im Jahr ohne Nachweis an.'
 };
 const STATES = [['','Nur bundesweite Feiertage'],['BW','Baden-Württemberg'],['BY','Bayern'],['BE','Berlin'],['BB','Brandenburg'],['HB','Bremen'],['HH','Hamburg'],['HE','Hessen'],
   ['MV','Mecklenburg-Vorpommern'],['NI','Niedersachsen'],['NW','Nordrhein-Westfalen'],['RP','Rheinland-Pfalz'],['SL','Saarland'],['SN','Sachsen'],['ST','Sachsen-Anhalt'],['SH','Schleswig-Holstein'],['TH','Thüringen']];
@@ -481,7 +561,9 @@ const STATE_L = Object.fromEntries(STATES);
 const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const MON3 = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const DOW = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-const DEF = {name:'', employer:'', home:'', state:'', pause:30, rateSmall:14, rateFull:28, kmRate:0.30, commuteRate:0.38, wkp:1230, ausFull:42, ausHalf:21,
+const DEF = {name:'', employer:'', home:'', state:'', pause:30, rateSmall:14, rateFull:28, kmRate:0.30, commuteRate:0.38, wkp:1230,
+  // „Deine Arbeit“: einmal einstellen, gilt für neue Einträge und die Berechnung
+  veh:'', fixed:'none', fixedName:'', fixedKm:0, ausOn:false, ausFull:0, ausHalf:0, ausDay:0, lodgingBy:'self', kmOn:false, kmGeld:0, travelPaid:true, profSeen:false,
   shifts:{frueh:['05:00','13:30'], tag:['07:00','15:30'], spaet:['13:30','22:00'], nacht:['22:00','06:00']}};
 
 /* ---------- Hilfen ---------- */
@@ -491,6 +573,7 @@ const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.get
 const today = () => iso(new Date());
 const parseD = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
 const addDays = (s, n) => { const d = parseD(s); d.setDate(d.getDate() + n); return iso(d); };
+const addMonths = (s, n) => { const [y, m, d] = s.split('-').map(Number); const last = new Date(y, m - 1 + n + 1, 0).getDate(); return iso(new Date(y, m - 1 + n, Math.min(d, last))); };
 const utc = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
 const dayDiff = (a, b) => Math.round((utc(b) - utc(a)) / 864e5);
 const dowOf = s => parseD(s).getDay();
@@ -536,7 +619,7 @@ function holidays(y) {
   add(y + '-01-01', 'Neujahr'); add(y + '-01-06', 'Heilige Drei Könige', ['BW','BY','ST']); add(y + '-03-08', 'Frauentag', ['BE','MV']);
   add(addDays(E, -2), 'Karfreitag'); add(addDays(E, 1), 'Ostermontag'); add(y + '-05-01', 'Tag der Arbeit');
   add(addDays(E, 39), 'Christi Himmelfahrt'); add(addDays(E, 50), 'Pfingstmontag'); add(addDays(E, 60), 'Fronleichnam', ['BW','BY','HE','NW','RP','SL']);
-  add(y + '-08-15', 'Mariä Himmelfahrt', ['SL']); add(y + '-09-20', 'Weltkindertag', ['TH']); add(y + '-10-03', 'Tag der Deutschen Einheit');
+  add(y + '-08-15', 'Mariä Himmelfahrt', ['SL']); add(y + '-08-15', 'Mariä Himmelfahrt (in vielen Gemeinden)', ['BY']); add(y + '-09-20', 'Weltkindertag', ['TH']); add(y + '-10-03', 'Tag der Deutschen Einheit');
   add(y + '-10-31', 'Reformationstag', ['BB','HB','HH','MV','NI','SN','ST','SH','TH']); add(y + '-11-01', 'Allerheiligen', ['BW','BY','NW','RP','SL']);
   if (st === 'SN') { let d = y + '-11-22'; while (dowOf(d) !== 3) d = addDays(d, -1); m[d] = 'Buß- und Bettag'; }
   add(y + '-12-25', '1. Weihnachtstag'); add(y + '-12-26', '2. Weihnachtstag');
@@ -557,7 +640,15 @@ function mergeSettings(s) {
   ['name','employer','home'].forEach(k => { if (s[k] != null) o[k] = txt(s[k]); });
   if (STATE_L[s.state] != null) o.state = s.state;
   ['pause','rateSmall','rateFull','kmRate','commuteRate','wkp'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = num(s[k]); });
-  ['ausFull','ausHalf'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = Math.max(0, num(s[k])); });
+  ['ausFull','ausHalf','ausDay','fixedKm','kmGeld'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = Math.max(0, num(s[k])); });
+  o.ausOn = s.ausOn != null ? !!s.ausOn : (o.ausFull > 0 || o.ausHalf > 0 || o.ausDay > 0);
+  o.kmOn = s.kmOn != null ? !!s.kmOn : o.kmGeld > 0;
+  if (s.veh != null && VEH_L[s.veh] != null) o.veh = s.veh;
+  if (['none','sammel','betrieb'].includes(s.fixed)) o.fixed = s.fixed;
+  if (s.fixedName != null) o.fixedName = txt(s.fixedName);
+  if (s.lodgingBy === 'firma' || s.lodgingBy === 'self') o.lodgingBy = s.lodgingBy;
+  if (s.travelPaid != null) o.travelPaid = !!s.travelPaid;
+  o.profSeen = !!s.profSeen;
   if (s.shifts) Object.keys(o.shifts).forEach(k => { const v = s.shifts[k]; if (Array.isArray(v) && v.length === 2) o.shifts[k] = [txt(v[0], 5), txt(v[1], 5)]; });
   return o;
 }
@@ -594,25 +685,103 @@ function normExp(x) {
   e.text = txt(x.text); e.note = txt(x.note, 1000); e.updated = txt(x.updated, 40);
   return e;
 }
+/* Speichern mit Schutz gegen zwei offene Fenster: Jeder Schreibvorgang bekommt eine Nummer (rev).
+   Hat inzwischen ein anderes Fenster gespeichert, werden beide Stände Eintrag für Eintrag zusammengeführt statt überschrieben. */
+const REV_KEY = KEY + '-rev', BROKEN_KEY = KEY + '-defekt';
+let base = {rev: 0, e: {}, x: {}, s: ''};
+let loadError = false, storeBlocked = false, brokenRaw = '';
+const strMap = (obj, norm) => { const m = {}; Object.values(obj || {}).forEach(x => { if (x && x.id) m[x.id] = JSON.stringify(norm(x)); }); return m; };
+const curMaps = () => ({e: strMap(S.entries, normEntry), x: strMap(S.expenses, normExp), s: JSON.stringify(S.settings)});
+const storedMaps = o => ({e: strMap(o.entries, normEntry), x: strMap(o.expenses, normExp), s: JSON.stringify(mergeSettings(o.settings))});
+const readRev = () => { try { return +(localStorage.getItem(REV_KEY) || 0); } catch (e) { return 0; } };
+function legacySettings(o) {
+  // Daten aus Version 1.0 bis 1.2: dort war die Auslöse 42 / 21 € fest eingestellt
+  if (o && o.settings && !('ausFull' in o.settings)) Object.assign(o.settings, {ausFull: 42, ausHalf: 21, ausOn: true});
+  return o;
+}
+function applyStored(o, keepDraft) {
+  legacySettings(o);
+  const ent = {}, exp = {};
+  Object.values(o.entries || {}).forEach(x => { if (x && x.id) ent[x.id] = normEntry(x); });
+  Object.values(o.expenses || {}).forEach(x => { if (x && x.id) exp[x.id] = normExp(x); });
+  S.entries = ent; S.expenses = exp;
+  S.settings = mergeSettings(o.settings);
+  if (!keepDraft) S.draft = o.draft && o.draft.e && validDate(o.draft.e.date) ? o.draft : null;
+  S.lastBackup = txt(o.lastBackup, 40);
+  S.installHintClosed = !!o.installHintClosed;
+}
+function setBase(rev, maps) { base = Object.assign({rev}, maps || curMaps()); }
 function loadLocal() {
-  try {
-    const raw = localStorage.getItem(KEY); if (!raw) return;
-    const o = JSON.parse(raw);
-    Object.values(o.entries || {}).forEach(x => { if (x && x.id) S.entries[x.id] = normEntry(x); });
-    Object.values(o.expenses || {}).forEach(x => { if (x && x.id) S.expenses[x.id] = normExp(x); });
-    S.settings = mergeSettings(o.settings);
-    S.draft = o.draft && o.draft.e && validDate(o.draft.e.date) ? o.draft : null;
-    S.lastBackup = txt(o.lastBackup, 40);
-    S.installHintClosed = !!o.installHintClosed;
-  } catch (e) { storageOk = false; }
+  let raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) { storageOk = false; return; }
+  if (!raw) return;
+  let o;
+  try { o = JSON.parse(raw); if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('Format'); }
+  catch (e) {
+    // Daten lassen sich nicht lesen: Kopie aufheben, bevor irgendetwas überschrieben wird
+    loadError = true; brokenRaw = raw;
+    try { if (!localStorage.getItem(BROKEN_KEY)) localStorage.setItem(BROKEN_KEY, raw); } catch (e2) { storeBlocked = true; }
+    return;
+  }
+  applyStored(o);
+  setBase(+(o.rev || readRev() || 0));
+}
+// Drei-Wege-Zusammenführung: was nur ein Fenster geändert hat, gewinnt; haben beide denselben Eintrag geändert, gewinnt die neuere Änderung
+function merge3(o, t, b) {
+  const out = {};
+  new Set([...Object.keys(o), ...Object.keys(t), ...Object.keys(b)]).forEach(id => {
+    const oc = o[id] !== b[id], tc = t[id] !== b[id];
+    let v;
+    if (!tc) v = o[id]; else if (!oc) v = t[id];
+    else if (o[id] == null) v = t[id]; else if (t[id] == null) v = o[id];
+    else v = (JSON.parse(t[id]).updated || '') > (JSON.parse(o[id]).updated || '') ? t[id] : o[id];
+    if (v != null) out[id] = v;
+  });
+  return out;
+}
+function mergeFrom(o) {
+  legacySettings(o);
+  const c = curMaps(), t = storedMaps(o);
+  const ent = merge3(c.e, t.e, base.e), exp = merge3(c.x, t.x, base.x);
+  S.entries = {}; Object.keys(ent).forEach(id => S.entries[id] = JSON.parse(ent[id]));
+  S.expenses = {}; Object.keys(exp).forEach(id => S.expenses[id] = JSON.parse(exp[id]));
+  if (c.s === base.s) S.settings = mergeSettings(o.settings);
+  if ((o.lastBackup || '') > (S.lastBackup || '')) S.lastBackup = txt(o.lastBackup, 40);
+  S.installHintClosed = S.installHintClosed || !!o.installHintClosed;
+  return t;
 }
 function persist() {
+  if (storeBlocked) { storageOk = false; renderSync(); return; }
   try {
-    localStorage.setItem(KEY, JSON.stringify({version: 3, entries: S.entries, expenses: S.expenses, settings: S.settings, draft: S.draft,
+    const stored = readRev();
+    if (stored !== base.rev) {
+      // ein anderes Fenster hat inzwischen gespeichert
+      const raw = localStorage.getItem(KEY);
+      let o = null; try { o = raw ? JSON.parse(raw) : null; } catch (e) { o = null; }
+      if (o) mergeFrom(o);
+    }
+    const rev = Math.max(stored, base.rev) + 1;
+    localStorage.setItem(KEY, JSON.stringify({version: 4, rev, entries: S.entries, expenses: S.expenses, settings: S.settings, draft: S.draft,
       lastBackup: S.lastBackup, installHintClosed: S.installHintClosed}));
+    localStorage.setItem(REV_KEY, String(rev));
+    setBase(rev);
     storageOk = true;
   } catch (e) { storageOk = false; }
   renderSync();
+}
+// Ein anderes Fenster (oder die installierte App neben dem Browser) hat gespeichert: Stand übernehmen
+function reloadFromStorage() {
+  if (loadError || storeBlocked) return;
+  const stored = readRev(); if (stored === base.rev) return;
+  let o; try { const raw = localStorage.getItem(KEY); if (!raw) return; o = JSON.parse(raw); } catch (e) { return; }
+  const t = mergeFrom(o);
+  const sameMap = (a, b) => { const ka = Object.keys(a); return ka.length === Object.keys(b).length && ka.every(k => a[k] === b[k]); };
+  const c = curMaps(), same = sameMap(c.e, t.e) && sameMap(c.x, t.x) && c.s === t.s;
+  setBase(+(o.rev || stored), t);
+  if (!same) persist();
+  Object.keys(HOL).forEach(k => delete HOL[k]);
+  renderYears(); fillDatalists();
+  if (!F && view !== 'settings') renderAll();
 }
 // Den Browser bitten, die Daten nicht automatisch zu löschen
 function askPersistent() {
@@ -635,30 +804,47 @@ const parseHours = v => {
 };
 const hoursIn = min => min ? nf(min / 60, 2).replace(/\./g, '') : '';
 const lodgingOf = e => isAway(e) && (e.away === 'an' || e.away === 'voll') ? e.lodging : 0;
-// Auslöse laut Einstellungen: ganzer Tag auf Montage voll, An- und Abreisetag der kleinere Betrag
-const autoAllow = (away, type) => OFF.has(type) ? 0 : away === 'voll' ? S.settings.ausFull : away === 'an' || away === 'ab' ? S.settings.ausHalf : 0;
+// Auslöse laut „Deine Arbeit“: ganzer Tag, An-/Abreisetag, Tagestour
+const autoAllow = (away, type) => {
+  const s = S.settings; if (!s.ausOn || OFF.has(type)) return 0;
+  return away === 'voll' ? s.ausFull : away === 'an' || away === 'ab' ? s.ausHalf : away === 'tag' ? s.ausDay : 0;
+};
 const sameMoney = (a, b) => Math.abs((a || 0) - (b || 0)) < 0.005;
 // Hat schon ein anderer Eintrag am selben Tag Auslöse? Dann nicht doppelt eintragen.
 const allowTaken = (date, id) => Object.values(S.entries).some(x => x.date === date && x.id !== id && isAway(x) && x.allowance > 0);
-const isSammel = e => e.vehicle === 'pkw' && e.trip === 'sammel' && !OFF.has(e.type);
+const isSammel = e => SAMMEL_VEH.has(e.vehicle) && e.trip === 'sammel' && !OFF.has(e.type);
 const kmCost = e => e.vehicle === 'pkw' && e.trip !== 'sammel' && isAway(e) ? r2(e.km * S.settings.kmRate) : 0;
+// Kilometergeld der Firma ist bis zur Höhe der Fahrtkosten steuerfrei und wird damit verrechnet
+const kmRefund = e => S.settings.kmOn && S.settings.kmGeld > 0 ? Math.min(kmCost(e), r2(e.km * S.settings.kmGeld)) : 0;
 const commuteCost = e => isSammel(e) ? r2(e.km * S.settings.commuteRate) : 0;
+// Mitternachtsregel: Eine Tagestour über Mitternacht zählt für den Kalendertag, an dem man länger unterwegs war
+function vmaDate(e) {
+  if (!(isAway(e) && e.away === 'tag')) return e.date;
+  const s = tmin(e.depart), r = tmin(e.ret);
+  if (s == null || r == null || r > s) return e.date;
+  return r > 1440 - s ? addDays(e.date, 1) : e.date;
+}
+// Abwesenheit einer Tagestour als Zeitspanne bezogen auf den Kalendertag d (Minuten ab 0 Uhr)
+function absIv(e, d) {
+  const s = tmin(e.depart), r = tmin(e.ret); if (s == null || r == null) return null;
+  let a = s, b = r <= s ? r + 1440 : r;
+  if (e.date !== d) { a -= 1440; b -= 1440; }
+  return [a, b];
+}
 // Abwesenheiten mehrerer Tagestouren am selben Tag zusammenrechnen (Überschneidungen nur einmal)
-function unionAbs(list) {
-  const iv = [];
-  list.forEach(e => { const s = tmin(e.depart), r = tmin(e.ret); if (s == null || r == null) return; let end = r; if (end <= s) end += 1440; iv.push([s, end]); });
-  iv.sort((a, b) => a[0] - b[0]);
+function unionAbs(list, d) {
+  const iv = list.map(e => absIv(e, d)).filter(Boolean).sort((a, b) => a[0] - b[0]);
   let tot = 0, cs = null, ce = null;
   iv.forEach(([s, e]) => { if (cs === null) { cs = s; ce = e; } else if (s <= ce) ce = Math.max(ce, e); else { tot += ce - cs; cs = s; ce = e; } });
   if (cs !== null) tot += ce - cs;
   return tot;
 }
-// Verpflegungspauschale für einen Kalendertag (alle Einträge dieses Datums)
-function dayVma(arr) {
+// Verpflegungspauschale für einen Kalendertag d (alle Einträge, die diesem Tag zugerechnet werden)
+function dayVma(arr, d) {
   const st = S.settings, aw = arr.filter(isAway);
   const res = {base:0, cut:0, val:0, kind:'', abs:0, carrier:null, n: aw.length};
   if (!aw.length) return res;
-  res.abs = unionAbs(aw.filter(e => e.away === 'tag'));
+  res.abs = unionAbs(aw.filter(e => e.away === 'tag'), d);
   const find = k => aw.find(e => e.away === k);
   let c = find('voll');
   if (c) { res.base = st.rateFull; res.kind = 'voll'; }
@@ -672,22 +858,33 @@ function dayVma(arr) {
     res.cut = r2(Math.min(cut, res.base));
   }
   res.val = r2(res.base - res.cut);
+  // Auslöse: zuerst mit der Verpflegung verrechnen, ein Rest höchstens mit selbst bezahlter Übernachtung, nie mit Fahrtkosten
+  const allow = r2(aw.reduce((s, e) => s + (e.allowance || 0), 0)), lodg = r2(aw.reduce((s, e) => s + lodgingOf(e), 0));
+  res.allow = allow;
+  res.offV = r2(Math.min(allow, res.val));
+  res.offL = r2(Math.min(allow - res.offV, lodg));
   return res;
 }
 function agg() { return {workDays:0, trainDays:0, travelDays:0, freeDays:0, vacDays:0, sickDays:0, entries:0, min:0, nightShifts:0, awayDays:0, nights:0,
   ausfall:0, ausfallMin:0, travelMin:0, tot:0,
-  n_tag:0, n_an:0, n_ab:0, n_voll:0, vmaBase:0, vmaCut:0, vma:0, km:0, kmCost:0, kmOther:0, lodging:0, other:0, allowance:0,
-  commuteDays:0, commuteKm:0, commuteCost:0, exp:0, cat:{}, travel:0, travelNet:0, gross:0, total:0, totalNoGew:0}; }
+  n_tag:0, n_an:0, n_ab:0, n_voll:0, vmaBase:0, vmaCut:0, vma:0, km:0, kmCost:0, kmOther:0, kmOff:0, lodging:0, other:0, allowance:0, offV:0, offL:0,
+  commuteDays:0, commuteKm:0, commuteCost:0, commuteNoCar:0, commuteCapped:false, exp:0, cat:{}, travel:0, travelNet:0, gross:0, total:0, totalNoGew:0}; }
 const sortAsc = (a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (tmin(a.start) || 0) - (tmin(b.start) || 0);
 function computeYear(list, exps) {
-  const T = agg(), M = MONTHS.map(agg), day = {}, byDate = {};
+  const T = agg(), M = MONTHS.map(agg), day = {}, byDate = {}, groups = {}, vmaOf = {}, commuteOf = {};
+  const yr = String(year);
+  // Nachtschichten vom 31.12. des Vorjahres, die nach der Mitternachtsregel ins neue Jahr fallen
+  const carry = Object.values(S.entries).filter(e => e.date === (year - 1) + '-12-31' && vmaDate(e) !== e.date);
   list.forEach(e => (byDate[e.date] = byDate[e.date] || []).push(e));
-  Object.keys(byDate).forEach(date => {
-    const arr = byDate[date].slice().sort(sortAsc), m = +date.slice(5, 7) - 1;
-    const dv = dayVma(arr);
+  list.concat(carry).forEach(e => { const d = vmaDate(e); (groups[d] = groups[d] || []).push(e); });
+  const dates = [...new Set(Object.keys(byDate).concat(Object.keys(groups)))].filter(d => d.slice(0, 4) === yr).sort();
+  dates.forEach(date => {
+    const arr = (byDate[date] || []).slice().sort(sortAsc), m = +date.slice(5, 7) - 1;
+    const dv = dayVma(groups[date] || [], date);
+    if (dv.carrier && dv.val) vmaOf[dv.carrier] = dv.val;
     let cm = null;
-    arr.forEach(e => { const c = commuteCost(e); if (c > 0 && (!cm || c > cm.c)) cm = {c, id: e.id, km: e.km}; });
-    dv.commuteId = cm ? cm.id : null;
+    arr.forEach(e => { const c = commuteCost(e); if (c > 0 && (!cm || c > cm.c)) cm = {c, id: e.id, km: e.km, car: e.vehicle === 'pkw'}; });
+    if (cm) commuteOf[cm.id] = cm.c;
     day[date] = dv;
     const types = new Set(arr.map(e => e.type));
     [T, M[m]].forEach(a => {
@@ -701,14 +898,15 @@ function computeYear(list, exps) {
       if (arr.some(e => isAway(e) && (e.away === 'an' || e.away === 'voll'))) a.nights++;
       if (dv.kind && dv.base > 0) a['n_' + dv.kind]++;
       a.vmaBase += dv.base; a.vmaCut += dv.cut; a.vma += dv.val;
-      if (cm) { a.commuteDays++; a.commuteKm += cm.km; a.commuteCost += cm.c; }
+      a.offV += dv.offV || 0; a.offL += dv.offL || 0;
+      if (cm) { a.commuteDays++; a.commuteKm += cm.km; a.commuteCost += cm.c; if (!cm.car) a.commuteNoCar += cm.c; }
       arr.forEach(e => {
         a.entries++;
         a.min += workMin(e);
         if (!OFF.has(e.type)) a.travelMin += travelOf(e);
         if (WORK.has(e.type) && e.shift === 'nacht' && workMin(e) > 0) a.nightShifts++;
         if (WORK.has(e.type) && e.shift === 'ausfall') { a.ausfall++; a.ausfallMin += workMin(e); }
-        if (e.vehicle === 'pkw' && e.trip !== 'sammel' && !OFF.has(e.type)) { if (isAway(e)) { a.km += e.km; a.kmCost += kmCost(e); } else a.kmOther += e.km; }
+        if (e.vehicle === 'pkw' && e.trip !== 'sammel' && !OFF.has(e.type)) { if (isAway(e)) { a.km += e.km; a.kmCost += kmCost(e); a.kmOff += kmRefund(e); } else a.kmOther += e.km; }
         a.lodging += lodgingOf(e);
         if (!OFF.has(e.type)) { a.other += e.otherCost; a.allowance += e.allowance; }
       });
@@ -716,16 +914,21 @@ function computeYear(list, exps) {
   });
   (exps || []).forEach(x => { const m = +x.date.slice(5, 7) - 1; [T, M[m]].forEach(a => { a.exp += x.amount; a.cat[x.cat] = (a.cat[x.cat] || 0) + x.amount; }); });
   [T, ...M].forEach(a => {
-    ['vmaBase','vmaCut','vma','kmCost','lodging','other','allowance','km','kmOther','commuteKm','commuteCost','exp'].forEach(k => a[k] = r2(a[k]));
+    ['vmaBase','vmaCut','vma','kmCost','kmOff','lodging','other','allowance','offV','offL','km','kmOther','commuteKm','commuteCost','commuteNoCar','exp'].forEach(k => a[k] = r2(a[k]));
     Object.keys(a.cat).forEach(k => a.cat[k] = r2(a.cat[k]));
+  });
+  // Ohne eigenes Auto ist die Entfernungspauschale auf 4.500 € im Jahr begrenzt
+  if (T.commuteNoCar > COMMUTE_CAP) { T.commuteCost = r2(T.commuteCost - (T.commuteNoCar - COMMUTE_CAP)); T.commuteCapped = true; }
+  [T, ...M].forEach(a => {
     a.tot = a.min + a.travelMin;
     a.travel = r2(a.vma + a.kmCost + a.lodging + a.other);
-    a.travelNet = r2(Math.max(0, a.travel - a.allowance));
+    a.refund = r2(a.offV + a.offL + a.kmOff);
+    a.travelNet = r2(Math.max(0, a.travel - a.refund));
     a.gross = r2(a.travel + a.commuteCost + a.exp);
     a.total = r2(a.travelNet + a.commuteCost + a.exp);
     a.totalNoGew = r2(a.total - (a.cat.gew || 0));
   });
-  return {T, M, day};
+  return {T, M, day, vmaOf, commuteOf};
 }
 // Orte zusammenfassen: "Hamm", "Hamm (Westf)" und "Hamm Hbf" gelten als derselbe Ort
 const STATION = new Set(['hbf','hauptbahnhof','bf','bhf','bahnhof','pbf','gbf','rbf']);
@@ -753,11 +956,17 @@ function placeStats(list) {
     if (e.date >= p.nameDate) { p.name = n; p.nameDate = e.date; }
   });
   return Object.entries(m).map(([k, p]) => {
-    // Dreimonatsfrist: Auswärtstage an diesem Ort über alle Jahre, Lücke von mehr als 4 Wochen startet neu
+    // Dreimonatsfrist: zählt nur in Wochen mit mindestens 3 Tagen an diesem Ort; eine Unterbrechung von 4 Wochen startet neu
     const ds = [...new Set(all.filter(e => e.place && gm[e.place.trim()] === k && isAway(e)).map(e => e.date))].sort();
-    let runStart = null, prev = null, warn = null;
-    ds.forEach(d => { if (!prev || dayDiff(prev, d) > 28) runStart = d; if (!warn && dayDiff(runStart, d) >= 91 && d.slice(0, 4) === String(year)) warn = runStart; prev = d; });
-    return {name: p.name, alias: [...p.names].filter(n => n !== p.name), days: p.dates.size, first: p.first, last: p.last, warnFrom: warn};
+    const monday = d => addDays(d, -((dowOf(d) + 6) % 7));
+    const perWeek = {}; ds.forEach(d => perWeek[monday(d)] = (perWeek[monday(d)] || 0) + 1);
+    let runStart = null, prev = null, warn = null, warnAt = null;
+    ds.filter(d => perWeek[monday(d)] >= 3).forEach(d => {
+      if (!prev || dayDiff(prev, d) > 28) runStart = d;
+      if (!warn && d >= addMonths(runStart, 3) && d.slice(0, 4) === String(year)) { warn = runStart; warnAt = addMonths(runStart, 3); }
+      prev = d;
+    });
+    return {name: p.name, alias: [...p.names].filter(n => n !== p.name), days: p.dates.size, first: p.first, last: p.last, warnFrom: warn, warnAt};
   }).sort((a, b) => b.days - a.days || a.name.localeCompare(b.name, 'de'));
 }
 const yearList = y => Object.values(S.entries).filter(e => e.year === y);
@@ -811,13 +1020,17 @@ window.addEventListener('online', () => renderSync());
 window.addEventListener('offline', () => renderSync());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') saveDraft(); });
 window.addEventListener('pagehide', () => saveDraft());
+// Zweites Fenster (z. B. Browser-Tab neben der installierten App) hat gespeichert: Stand übernehmen
+window.addEventListener('storage', ev => { if (ev.key === KEY || ev.key === REV_KEY) reloadFromStorage(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reloadFromStorage(); });
+window.addEventListener('focus', () => reloadFromStorage());
 
 /* ---------- Anzeige: Kopf ---------- */
 function renderSync() {
   const el = $('#sync'); if (!el) return;
-  let cls = 'ok', t = 'Auf diesem Handy gespeichert';
+  let cls = 'ok', t = 'Gespeichert';
   if (!storageOk) { cls = 'local'; t = 'Speichern nicht möglich'; }
-  else if (offline()) { cls = 'ok'; t = 'Offline · auf dem Handy gespeichert'; }
+  else if (offline()) { cls = 'ok'; t = 'Offline gespeichert'; }
   el.className = 'sync ' + cls; el.textContent = t;
 }
 function renderYears() {
@@ -832,8 +1045,8 @@ function plateHTML(d) {
   const we = isWeekend(d) || !!holiday(d);
   return `<span class="plate${we ? ' we' : ''}" aria-hidden="true"><span class="dw">${DOW[dowOf(d)]}</span><span class="dd">${d.slice(8, 10)}</span></span>`;
 }
-function rowHTML(e, day) {
-  const d = e.date, work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, dv = day && day[d];
+function rowHTML(e, R) {
+  const d = e.date, work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, vma = R && R.vmaOf[e.id];
   let l1 = '';
   if (work) {
     const label = e.type === 'schulung' ? 'Schulung' : (SHIFT_L[e.shift] || 'Arbeit');
@@ -848,7 +1061,7 @@ function rowHTML(e, day) {
   const l2parts = OFF.has(e.type) ? [hol, e.note] : [hol, e.place, e.project || e.line, e.lodgingName && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : ''];
   const l2 = l2parts.filter(Boolean).join(' · ');
   const money = [];
-  if (dv && dv.carrier === e.id && dv.val) money.push(eurS(dv.val));
+  if (vma) money.push(eurS(vma));
   if (e.vehicle === 'pkw' && e.km && !OFF.has(e.type)) money.push(nf(e.km, 1) + (e.trip === 'sammel' ? ' km einf.' : ' km'));
   return `<button class="row" type="button" data-id="${esc(e.id)}">
     ${plateHTML(d)}
@@ -875,15 +1088,19 @@ function missingWorkdays() {
   for (; d < t; d = addDays(d, 1)) if (!isWeekend(d) && !holiday(d) && !have.has(d)) out.push(d);
   return out;
 }
+// Erinnerung an die Datensicherung: einmal pro Woche, sobald es ein paar Einträge gibt
 function backupDue() {
   const n = Object.keys(S.entries).length + Object.keys(S.expenses).length;
-  if (n < 10) return null;
+  if (n < 3) return null;
   if (!S.lastBackup) return 'noch nie';
   const days = Math.floor((Date.now() - Date.parse(S.lastBackup)) / 864e5);
-  return days >= 30 ? `vor ${days} Tagen` : null;
+  return days >= 7 ? `vor ${days} Tagen` : null;
 }
 function topCards() {
   let h = '';
+  if (loadError) h += `<div class="warn barnote"><span>Die gespeicherten Daten auf diesem Handy ließen sich nicht lesen. ${storeBlocked ? 'Damit nichts verloren geht, speichert die App im Moment nichts.' : 'Eine Kopie davon ist aufgehoben.'} Lade am besten deine letzte Sicherung (Export &gt; Sicherung laden).</span>
+    <button class="linkbtn" type="button" data-broken="dl">Defekte Daten herunterladen</button>${storeBlocked ? '<button class="linkbtn" type="button" data-broken="reset">Trotzdem neu beginnen</button>' : ''}</div>`;
+  if (!S.settings.profSeen && !loadError) h += `<div class="note"><span>Stell einmal ein, wie deine Firma es regelt: Sammelpunkt, Auslöse, Unterkunft. Dann füllt die App neue Tage passend vor und rechnet genauer.</span><button class="linkbtn" type="button" data-go="settings">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button></div>`;
   if (!storageOk) h += `<p class="warn">Dieses Handy lässt gerade nichts speichern, zum Beispiel im privaten Modus des Browsers. Öffne die App normal oder installiere sie auf dem Startbildschirm.</p>`;
   if (S.draft && !F) {
     const k = S.draft.kind === 'exp';
@@ -895,7 +1112,7 @@ function topCards() {
     else if (isIOS()) h += `<div class="note"><span>Zum Installieren unten auf das Teilen-Symbol tippen und „Zum Home-Bildschirm“ wählen. Erst dann bleiben die Daten auf dem iPhone sicher gespeichert.</span><button class="linkbtn" type="button" data-hint-close="1">Verstanden</button></div>`;
   }
   const due = backupDue();
-  if (due) h += `<div class="warn barnote"><span>Letzte Datensicherung: ${due}. Die Einträge liegen nur auf diesem Handy.</span><button class="linkbtn" type="button" data-backup="1">Jetzt sichern</button></div>`;
+  if (due) h += `<div class="warn barnote"><span>Letzte Datensicherung: ${due}. Die Einträge liegen nur auf diesem Handy. Leg jede Woche eine Sicherung in deine Cloud oder schick sie dir per Mail.</span><button class="linkbtn" type="button" data-backup="${canShareFiles ? 'share' : 'save'}">${canShareFiles ? 'Jetzt sichern (Drive, Mail …)' : 'Jetzt sichern'}</button></div>`;
   h += `<div class="switch" role="group" aria-label="Ansicht"><button type="button" data-mode="days" aria-pressed="${listMode === 'days'}">Arbeitstage</button><button type="button" data-mode="exp" aria-pressed="${listMode === 'exp'}">Ausgaben</button></div>`;
   return h;
 }
@@ -905,14 +1122,14 @@ function renderList() {
 }
 function renderDayList() {
   const list = yearList(year).sort((a, b) => sortAsc(b, a));
-  const {M, day} = computeYear(list);
+  const R = computeYear(list), {M} = R;
   const t = today(), cur = String(year) === t.slice(0, 4);
   let h = `<div class="listtop">${topCards()}`;
   if (cur) {
     const todays = list.filter(e => e.date === t), hol = holiday(t);
     h += `<div class="today"><span class="eyebrow">Heute · ${dShort(t)}${hol ? ' · ' + esc(hol) : ''}</span>`;
     if (todays.length) {
-      h += `<div class="rows">${todays.map(e => rowHTML(e, day)).join('')}</div>
+      h += `<div class="rows">${todays.map(e => rowHTML(e, R)).join('')}</div>
         <button class="btn block" type="button" data-new="${t}">Zweiten Eintrag für heute</button>`;
     } else {
       h += `<p class="t-q">Noch nichts eingetragen.</p><button class="btn primary block" type="button" data-new="${t}">Heute eintragen</button>`;
@@ -946,7 +1163,7 @@ function renderDayList() {
       const m = M[+mm - 1];
       const nd = m.workDays + m.trainDays;
       h += `<div class="mhead"><h2>${MONTHS[+mm - 1]}</h2><span>${nd} ${nd === 1 ? 'Tag' : 'Tage'} · ${nf(m.tot / 60, 1)} h · ${eurS(m.vma)}</span></div>
-        <div class="rows">${groups[mm].map(e => rowHTML(e, day)).join('')}</div>`;
+        <div class="rows">${groups[mm].map(e => rowHTML(e, R)).join('')}</div>`;
     });
   }
   return h;
@@ -994,15 +1211,18 @@ function renderStats() {
   if (T.n_voll) tax += row(`${T.n_voll} × ganzer Tag à ${eurS(st.rateFull)}`, eur(T.n_voll * st.rateFull), 'sub');
   if (T.n_ab) tax += row(`${T.n_ab} × Abreisetag à ${eurS(st.rateSmall)}`, eur(T.n_ab * st.rateSmall), 'sub');
   if (T.vmaCut) tax += row('abzüglich gestellte Mahlzeiten', '− ' + eur(T.vmaCut), 'sub');
+  if (T.offV) tax += row('abzüglich steuerfreie Auslöse für Verpflegung', '− ' + eur(T.offV), 'sub');
   tax += row('Fahrtkosten Dienstfahrten', eur(T.kmCost));
   if (T.km) tax += row(`${nf(T.km, 1)} km × ${nf2(st.kmRate)} €`, '', 'sub');
+  if (T.kmOff) tax += row('abzüglich Kilometergeld der Firma', '− ' + eur(T.kmOff), 'sub');
   tax += row('Übernachtung (selbst bezahlt)', eur(T.lodging));
+  if (T.offL) tax += row('abzüglich Auslöse für Übernachtung', '− ' + eur(T.offL), 'sub');
   tax += row('Reisenebenkosten (Parken, Tickets)', eur(T.other));
-  if (T.allowance) tax += row('abzüglich steuerfreie Auslöse / Spesen vom Arbeitgeber', '− ' + eur(T.allowance));
-  tax += row('Reisekosten', eur(T.travelNet), 'sum');
+  tax += row('Reisekosten nach Erstattungen', eur(T.travelNet), 'sum');
   if (T.commuteDays) {
-    tax += sec('Fester Sammelpunkt');
+    tax += sec(S.settings.fixed === 'betrieb' ? 'Fester Betrieb' : 'Fester Sammelpunkt');
     tax += row(`${T.commuteDays} ${T.commuteDays === 1 ? 'Tag' : 'Tage'}, zusammen ${nf(T.commuteKm, 1)} km einfach × ${nf2(st.commuteRate)} €`, eur(T.commuteCost), 'sum');
+    if (T.commuteCapped) tax += row(`ohne eigenes Auto höchstens ${eurS(COMMUTE_CAP)} im Jahr`, '', 'sub');
   }
   if (T.exp) {
     tax += sec('Weitere Ausgaben');
@@ -1019,7 +1239,7 @@ function renderStats() {
   const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
   const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
     <span class="d">${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}${p.alias.length ? ' · auch als ' + esc(p.alias.join(', ')) : ''}</span>
-    ${p.warnFrom ? `<span class="warn">Seit ${dDot(p.warnFrom)} länger als drei Monate auswärts an diesem Ort. Ab dem vierten Monat gibt es hier meist keine Verpflegungspauschale mehr. Bitte prüfen.</span>` : ''}</div>`).join('');
+    ${p.warnFrom ? `<span class="warn">Seit ${dDot(p.warnFrom)} regelmäßig an mindestens 3 Tagen pro Woche an diesem Ort. Ab ${dDot(p.warnAt)} gibt es hier meist keine Verpflegungspauschale mehr (Dreimonatsfrist). Bitte prüfen.</span>` : ''}</div>`).join('');
 
   el.innerHTML = `<div class="stack">
     <div class="kpis">
@@ -1036,6 +1256,8 @@ function renderStats() {
       <p class="hint">Werbungskosten für die Anlage N, geschätzt nach den eingestellten Pauschalen.</p>
       <table class="ttable">${tax}</table>
       <p class="hint">${pb}</p>
+      ${T.allowance ? `<p class="hint">Auslöse und Spesen erhalten: ${eur(T.allowance)}. Davon mit Kosten verrechnet: ${eur(T.offV + T.offL)}. ${T.allowance - T.offV - T.offL > 0.004 ? `Der Rest (${eur(T.allowance - T.offV - T.offL)}) liegt über den steuerlichen Pauschalen und mindert hier nichts.` : ''}</p>` : ''}
+      <p class="hint">Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
       ${T.kmOther ? `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>` : ''}
     </div>
     <div class="card"><h3>Monate</h3>
@@ -1046,11 +1268,11 @@ function renderStats() {
     <details class="card"><summary>So rechnet das Schichtbuch</summary>
       <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(st.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(st.rateSmall)} und für jeden vollen Tag dazwischen ${eurS(st.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(st.rateFull * 0.2)} (Frühstück) bzw. ${eur(st.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
       <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie sind für deine eigene Übersicht und zum Vergleich mit der Lohnabrechnung.</p>
-      <p><b>Nachtschicht.</b> Eine Nachtschicht ohne Übernachtung trägst du an dem Tag ein, an dem du losfährst. Die Zeit über Mitternacht wird zusammengerechnet und gibt einmal die Pauschale. Gleicher Beginn und gleiches Ende gilt als 24-Stunden-Schicht.</p>
-      <p><b>Fahrten.</b> Fährst du mit dem eigenen Auto direkt zur Baustelle oder zu wechselnden Treffpunkten, ist das eine Dienstfahrt: Jeder gefahrene Kilometer zählt mit ${nf2(st.kmRate)} €, auch Heimfahrten am Wochenende. Schickt dich der Arbeitgeber dauerhaft zum selben Sammelpunkt, zählt für diese Strecke nur die einfache Entfernung mit ${nf2(st.commuteRate)} € (Entfernungspauschale). Ab dem Sammelpunkt bist du trotzdem auswärts tätig.</p>
+      <p><b>Nachtschicht.</b> Eine Nachtschicht ohne Übernachtung trägst du an dem Tag ein, an dem du losfährst. Die Zeit über Mitternacht wird zusammengerechnet und gibt einmal die Pauschale. Sie zählt für den Kalendertag, an dem du länger unterwegs warst (Mitternachtsregel). Gleicher Beginn und gleiches Ende gilt als 24-Stunden-Schicht.</p>
+      <p><b>Fahrten.</b> Fährst du mit dem eigenen Auto direkt zur Baustelle oder zu wechselnden Treffpunkten, ist das eine Dienstfahrt: Jeder gefahrene Kilometer zählt mit ${nf2(st.kmRate)} €, auch Heimfahrten am Wochenende. Als Mitfahrer oder mit Bahn und Bus gibt es dafür keine Kilometer, Tickets trägst du als Ausgabe ein. Steht im Vertrag ein fester Sammelpunkt oder ein fester Betrieb, zu dem du jeden Tag fährst, zählt dafür nur die einfache Entfernung mit ${nf2(st.commuteRate)} € (Entfernungspauschale). Die gibt es auch als Mitfahrer und mit Bahn oder Bus, dann höchstens ${eurS(COMMUTE_CAP)} im Jahr. Bringt dich die Firma mit ihrem Bus hin (Sammelbeförderung), gibt es dafür nichts. Ab dem Sammelpunkt bist du trotzdem auswärts tätig.</p>
       <p><b>Übernachtung.</b> Nur selbst bezahlte Kosten eintragen. Ist das Frühstück im Zimmerpreis enthalten und nicht extra ausgewiesen, zieh ${eur(st.rateFull * 0.2)} pro Nacht ab.</p>
-      <p><b>Auslöse und Spesen.</b> Was der Arbeitgeber steuerfrei als Auslöse oder Spesen zahlt, wird von den Reisekosten abgezogen, denn dieses Geld hast du schon ohne Steuer bekommen. ${st.ausFull || st.ausHalf ? `An Montagetagen trägt die App die Auslöse aus den Einstellungen ein: ${eurS(st.ausFull)} für einen ganzen Tag, ${eurS(st.ausHalf)} für An- und Abreisetage. ` : ''}Steuerfreie Verpflegungszuschüsse stehen auch auf der Lohnsteuerbescheinigung, vergleiche die Summe.</p>
-      <p><b>Drei Monate.</b> Wer länger als drei Monate an derselben Stelle arbeitet, bekommt dort ab dem vierten Monat keine Verpflegungspauschale mehr. Eine Unterbrechung von mindestens vier Wochen startet die Frist neu. Orte wie „Hamm“ und „Hamm (Westf)“ werden dabei zusammengefasst.</p>
+      <p><b>Auslöse und Spesen.</b> Was die Firma steuerfrei zahlt, hast du schon ohne Steuer bekommen. Deshalb wird die Auslöse jeden Tag zuerst mit der Verpflegungspauschale verrechnet, höchstens bis auf 0. Was darüber liegt, wird nur noch mit einer selbst bezahlten Übernachtung verrechnet, nie mit deinen Fahrtkosten. Kilometergeld der Firma wird mit den Fahrtkosten verrechnet. ${st.ausOn && (st.ausFull || st.ausHalf || st.ausDay) ? `An Montagetagen trägt die App die Auslöse aus „Deine Arbeit“ ein: ${eurS(st.ausFull)} für einen ganzen Tag, ${eurS(st.ausHalf)} für An- und Abreisetage${st.ausDay ? `, ${eurS(st.ausDay)} für Tagestouren` : ''}. ` : ''}Den steuerfreien Verpflegungsteil findest du auch auf der Lohnsteuerbescheinigung unter Nummer 20, vergleiche die Summe.</p>
+      <p><b>Drei Monate.</b> Wer länger als drei Monate regelmäßig, also an mindestens drei Tagen pro Woche, an derselben Stelle arbeitet, bekommt dort danach keine Verpflegungspauschale mehr. Eine Unterbrechung von mindestens vier Wochen startet die Frist neu. Orte wie „Hamm“ und „Hamm (Westf)“ werden dabei zusammengefasst. Die App rechnet die Pauschale trotzdem weiter und zeigt nur einen Hinweis, prüfe den Fall selbst.</p>
       <p><b>Pauschbetrag.</b> Das Finanzamt zieht ohnehin ${eurS(st.wkp)} Werbungskosten ab. Erst was darüber liegt, senkt deine Steuer zusätzlich. Gewerkschaftsbeiträge zählen ab dem Steuerjahr 2026 zusätzlich.</p>
       <p class="hint">Alle Beträge sind Schätzungen und ersetzen keine Steuerberatung.</p>
     </details>
@@ -1070,6 +1292,69 @@ function renderMore() {
   $('#install-btn2').hidden = !installEvt || isStandalone();
 }
 $('#s-state').innerHTML = STATES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+/* ---------- Einstellungen und „Deine Arbeit“ ---------- */
+const PSETS = {
+  veh: [['pkw','Eigenes Auto'],['mit','Mitfahrer'],['firma','Firmenwagen / Firmenbus'],['oepnv','Bahn / Bus']],
+  fixed: [['none','Nein, wechselnde Baustellen'],['sammel','Ja, fester Sammelpunkt'],['betrieb','Ja, fester Betrieb']],
+  ausOn: [['0','Nein'],['1','Ja']],
+  lodgingBy: [['firma','Die Firma'],['self','Ich selbst']],
+  kmOn: [['0','Nein'],['1','Ja']],
+  travelPaid: [['1','Ja'],['0','Nein']]
+};
+let PV = {}; // Auswahl auf der Einstellungsseite
+document.querySelectorAll('[data-pset]').forEach(el => {
+  const k = el.dataset.pset;
+  el.setAttribute('role', 'group');
+  el.innerHTML = PSETS[k].map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="false">${l}</button>`).join('');
+  el.addEventListener('click', ev => {
+    const b = ev.target.closest('button'); if (!b) return;
+    PV[k] = PV[k] === b.dataset.v && k === 'veh' ? '' : b.dataset.v;
+    syncProf(); saveSettings(true);
+  });
+});
+// Liste „Deine Arbeit“ für Auswertung und Excel
+function profileLines() {
+  const s = S.settings, out = [];
+  out.push(['Meistens unterwegs', s.veh ? ({pkw: 'mit eigenem Auto', mit: 'als Mitfahrer', firma: 'mit Firmenwagen oder Firmenbus', oepnv: 'mit Bahn oder Bus'})[s.veh] : 'nicht angegeben']);
+  out.push(['Fester Ort laut Vertrag', s.fixed === 'none' ? 'keiner, wechselnde Baustellen'
+    : (s.fixed === 'sammel' ? 'Sammelpunkt' : 'Betrieb') + (s.fixedName ? ' ' + s.fixedName : '') + (s.fixedKm ? ', ' + nf(s.fixedKm, 1) + ' km einfach' : '')]);
+  out.push(['Auslöse', s.ausOn && (s.ausFull || s.ausHalf || s.ausDay)
+    ? `ganzer Tag ${eurS(s.ausFull)}, An-/Abreise ${eurS(s.ausHalf)}${s.ausDay ? ', Tagestour ' + eurS(s.ausDay) : ''}` : 'keine']);
+  out.push(['Unterkunft zahlt', s.lodgingBy === 'firma' ? 'die Firma' : 'du selbst']);
+  out.push(['Kilometergeld', s.kmOn && s.kmGeld ? nf2(s.kmGeld) + ' € je km' : 'keins']);
+  return out;
+}
+function syncProf() {
+  Object.keys(PSETS).forEach(k => document.querySelectorAll(`[data-pset="${k}"] button`).forEach(b => b.setAttribute('aria-pressed', PV[k] === b.dataset.v ? 'true' : 'false')));
+  const fx = PV.fixed || 'none';
+  $('#p-fixed-w').hidden = fx === 'none';
+  $('#p-fixed-h').textContent = fx === 'none'
+    ? 'Dann sind Fahrten mit dem eigenen Auto zur Baustelle Dienstfahrten: jeder gefahrene Kilometer zählt mit 0,30 €.'
+    : 'Für die Fahrt dorthin gibt es die Entfernungspauschale: 0,38 € je km der einfachen Strecke, einmal pro Tag, auch als Mitfahrer oder mit Bahn und Bus. Bringt dich die Firma mit ihrem Bus hin (Sammelbeförderung), gibt es dafür nichts.' +
+      (fx === 'betrieb' ? ' Fährst du vom Betrieb aus weiter zu einer Baustelle, zählt für die Verpflegungspauschale die Zeit ab Abfahrt am Betrieb.' : '');
+  $('#p-aus-w').hidden = PV.ausOn !== '1';
+  $('#p-km-w').hidden = PV.kmOn !== '1';
+  // Auslöse bei alten Tagen nachtragen
+  const n = PV.ausOn === '1' ? allowFillList().length : 0, fb = $('#p-aus-fill');
+  fb.hidden = !n; fb.textContent = `Bei ${n} ${n === 1 ? 'bisherigen Tag' : 'bisherigen Tagen'} ohne Auslöse nachtragen`;
+}
+function allowFillList() {
+  const taken = new Set();
+  return Object.values(S.entries).sort(sortAsc).filter(e => {
+    if (!isAway(e) || e.allowance > 0 || !(autoAllow(e.away, e.type) > 0)) return false;
+    if (allowTaken(e.date, e.id) || taken.has(e.date)) return false;
+    taken.add(e.date); return true;
+  });
+}
+$('#p-aus-fill').addEventListener('click', () => {
+  const list = allowFillList(); if (!list.length) return;
+  const before = {}; list.forEach(e => { before[e.id] = e.allowance; e.allowance = autoAllow(e.away, e.type); e.updated = new Date().toISOString(); });
+  persist(); syncProf();
+  toastAct(`Auslöse bei ${list.length} ${list.length === 1 ? 'Tag' : 'Tagen'} nachgetragen`, 'Rückgängig', () => {
+    Object.keys(before).forEach(id => { if (S.entries[id]) { S.entries[id].allowance = before[id]; S.entries[id].updated = new Date().toISOString(); } });
+    persist(); syncProf(); toast('Rückgängig gemacht');
+  });
+});
 function fillSettings() {
   const s = S.settings;
   $('#s-name').value = s.name; $('#s-employer').value = s.employer; $('#s-home').value = s.home; $('#s-state').value = s.state;
@@ -1077,29 +1362,44 @@ function fillSettings() {
   SHIFTS.forEach(([k]) => { $('#s-' + k + '-a').value = s.shifts[k][0]; $('#s-' + k + '-b').value = s.shifts[k][1]; });
   $('#s-small').value = nf2(s.rateSmall); $('#s-full').value = nf2(s.rateFull); $('#s-km').value = nf2(s.kmRate);
   $('#s-commute').value = nf2(s.commuteRate); $('#s-wkp').value = nf2(s.wkp).replace(/\./g, '');
-  $('#s-aus-full').value = inMoney(s.ausFull); $('#s-aus-half').value = inMoney(s.ausHalf);
+  $('#s-aus-full').value = inMoney(s.ausFull); $('#s-aus-half').value = inMoney(s.ausHalf); $('#s-aus-day').value = inMoney(s.ausDay);
+  $('#p-fixed-name').value = s.fixedName; $('#p-fixed-km').value = s.fixedKm ? nf(s.fixedKm, 1).replace(/\./g, '') : '';
+  $('#p-kmgeld').value = s.kmGeld ? nf2(s.kmGeld) : '';
+  PV = {veh: s.veh, fixed: s.fixed, ausOn: s.ausOn ? '1' : '0', lodgingBy: s.lodgingBy, kmOn: s.kmOn ? '1' : '0', travelPaid: s.travelPaid ? '1' : '0'};
+  syncProf();
 }
-$('#settings').addEventListener('submit', ev => {
-  ev.preventDefault();
+function saveSettings(quiet) {
   const sh = {}; SHIFTS.forEach(([k]) => sh[k] = [$('#s-' + k + '-a').value || DEF.shifts[k][0], $('#s-' + k + '-b').value || DEF.shifts[k][1]]);
   S.settings = mergeSettings({name: $('#s-name').value.trim(), employer: $('#s-employer').value.trim(), home: $('#s-home').value.trim(), state: $('#s-state').value,
     pause: num($('#s-pause').value), rateSmall: num($('#s-small').value) || DEF.rateSmall, rateFull: num($('#s-full').value) || DEF.rateFull,
     kmRate: num($('#s-km').value) || DEF.kmRate, commuteRate: num($('#s-commute').value) || DEF.commuteRate, wkp: num($('#s-wkp').value) || DEF.wkp, shifts: sh,
-    ausFull: num($('#s-aus-full').value), ausHalf: num($('#s-aus-half').value)});
-  persist(); fillSettings(); renderAll();
-  toast('Einstellungen gespeichert');
-});
+    ausFull: num($('#s-aus-full').value), ausHalf: num($('#s-aus-half').value), ausDay: num($('#s-aus-day').value), ausOn: PV.ausOn === '1',
+    veh: PV.veh || '', fixed: PV.fixed || 'none', fixedName: $('#p-fixed-name').value.trim(), fixedKm: num($('#p-fixed-km').value),
+    lodgingBy: PV.lodgingBy || 'self', kmOn: PV.kmOn === '1', kmGeld: num($('#p-kmgeld').value), travelPaid: PV.travelPaid !== '0', profSeen: true});
+  Object.keys(HOL).forEach(key => delete HOL[key]);
+  persist(); syncProf();
+  $('#s-status').textContent = 'Gespeichert';
+  if (!quiet) toast('Einstellungen gespeichert');
+}
+$('#settings').addEventListener('submit', ev => { ev.preventDefault(); saveSettings(false); fillSettings(); });
+// Eingaben sofort speichern, sobald ein Feld verlassen wird
+$('#settings').addEventListener('change', ev => { if (ev.target.matches('input, select')) saveSettings(true); });
 $('#install-btn2').addEventListener('click', doInstall);
 
 /* ---------- Navigation ---------- */
 function show(v) {
   view = v;
-  ['list','stats','more','form','exp'].forEach(k => $('#v-' + k).hidden = k !== v);
+  ['list','stats','more','settings','form','exp'].forEach(k => $('#v-' + k).hidden = k !== v);
   const form = v === 'form' || v === 'exp';
   $('#top').hidden = form; $('#tabs').hidden = form; $('#formfoot').hidden = !form;
   document.querySelectorAll('#tabs [data-view]').forEach(b => b.dataset.view === v ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
   if (v === 'stats') renderStats();
-  if (v === 'more') { renderMore(); fillSettings(); }
+  if (v === 'more') renderMore();
+  if (v === 'settings') {
+    fillSettings();
+    if (!S.settings.profSeen) { S.settings.profSeen = true; persist(); }
+  }
+  v === 'settings' ? $('#nav-settings').setAttribute('aria-current', 'page') : $('#nav-settings').removeAttribute('aria-current');
   window.scrollTo(0, 0);
 }
 function renderAll() {
@@ -1114,13 +1414,23 @@ $('#tabs').addEventListener('click', ev => {
   show(b.dataset.view); if (b.dataset.view === 'list') renderList();
 });
 $('#year').addEventListener('change', ev => { year = +ev.target.value; renderAll(); });
+$('#nav-settings').addEventListener('click', () => show('settings'));
+// Knöpfe „Einstellungen öffnen“ in Liste, Auswertung und Export
+document.addEventListener('click', ev => { const g = ev.target.closest('[data-go]'); if (g) { ev.preventDefault(); show(g.dataset.go); } });
 $('#v-list').addEventListener('click', ev => {
   const t = ev.target;
   const md = t.closest('[data-mode]'); if (md) { listMode = md.dataset.mode; renderList(); return; }
   const dr = t.closest('[data-draft]'); if (dr) { if (dr.dataset.draft === 'resume') resumeDraft(); else { dropDraft(); renderList(); } return; }
   if (t.closest('[data-install]')) { doInstall(); return; }
   if (t.closest('[data-hint-close]')) { S.installHintClosed = true; persist(); renderList(); return; }
-  if (t.closest('[data-backup]')) { backup(false); return; }
+  const bk = t.closest('[data-backup]'); if (bk) { backup(bk.dataset.backup === 'share'); return; }
+  if (t.closest('[data-setup]')) { S.settings.profSeen = true; persist(); renderList(); return; }
+  const br = t.closest('[data-broken]');
+  if (br) {
+    if (br.dataset.broken === 'dl') downloadBlob('Schichtbuch_defekte_Daten.txt', new Blob([brokenRaw], {type: 'text/plain'}));
+    else { storeBlocked = false; loadError = false; persist(); renderList(); }
+    return;
+  }
   const n = t.closest('[data-new]'); if (n) { openForm(null, n.dataset.new); return; }
   if (t.closest('[data-newexp]')) { openExp(null); return; }
   const x = t.closest('[data-exp]'); if (x) { openExp(x.dataset.exp); return; }
@@ -1195,7 +1505,7 @@ function prefill(e) {
     // noch kein Arbeitstag als Vorlage, aber gestern Anreise: heute ganzer Tag auf Montage
     const pv = prevDay.find(x => x.away === 'an' || x.away === 'voll');
     if (pv) Object.assign(e, {away: 'voll', place: pv.place, line: pv.line, project: pv.project, lodging: pv.lodging, lodgingName: pv.lodgingName,
-      vehicle: pv.vehicle, trip: pv.trip, meals: Object.assign({}, pv.meals), allowance: allowTaken(e.date, null) ? 0 : autoAllow('voll', e.type)});
+      vehicle: pv.vehicle || e.vehicle, trip: pv.vehicle ? 'dienst' : e.trip, km: pv.vehicle ? 0 : e.km, meals: Object.assign({}, pv.meals), allowance: allowTaken(e.date, null) ? 0 : autoAllow('voll', e.type)});
     return null;
   }
   let away = 'none';
@@ -1203,11 +1513,13 @@ function prefill(e) {
   else if (lw.away === 'ab') away = 'an';
   else if (lw.away === 'tag') away = 'tag';
   Object.assign(e, {type: 'arbeit', shift: lw.shift, start: lw.start, end: lw.end, pause: lw.pause, place: lw.place, line: lw.line,
-    project: lw.project, vehicle: lw.vehicle, trip: lw.trip, meet: lw.meet, km: lw.km, allowance: lw.allowance, away});
+    project: lw.project, allowance: lw.allowance, away});
+  // Fahrt wie am letzten Arbeitstag; war dort nichts eingetragen, gelten die Vorgaben aus „Deine Arbeit“
+  if (lw.vehicle) Object.assign(e, {vehicle: lw.vehicle, trip: lw.trip, meet: lw.meet, km: lw.km});
   if (away === 'tag') { e.depart = lw.depart; e.ret = lw.ret; }
   if (away === 'an' || away === 'voll') { e.lodging = lw.lodging; e.lodgingName = lw.lodgingName; e.meals = Object.assign({}, lw.meals); }
   if (away === 'an') e.depart = lw.depart;
-  if (away === 'voll' && lw.trip !== 'sammel') e.km = 0;
+  if (away === 'voll' && e.trip !== 'sammel') e.km = 0;
   // Auslöse: war sie am letzten Tag leer oder automatisch, passt sie sich an den neuen Tag an; selbst eingetragene Beträge bleiben
   if (!lw.allowance || sameMoney(lw.allowance, autoAllow(lw.away, lw.type))) e.allowance = allowTaken(e.date, null) ? 0 : autoAllow(away, e.type);
   return lw.date;
@@ -1219,9 +1531,19 @@ function syncAllowance(prevAway, prevType) {
   const v = allowTaken(e.date, F.id) ? 0 : autoAllow(e.away, e.type);
   e.allowance = v; $('#f-allowance').value = inMoney(v);
 }
+// neuer Eintrag mit den Vorgaben aus „Deine Arbeit“
+function newEntry(date) {
+  const e = blankEntry(date), p = S.settings;
+  if (p.veh) e.vehicle = p.veh;
+  if (p.fixed !== 'none') {
+    e.meet = p.fixedName;
+    if (SAMMEL_VEH.has(e.vehicle)) { e.trip = 'sammel'; e.km = p.fixedKm; }
+  }
+  return e;
+}
 function openForm(id, date) {
   const isNew = !id || !S.entries[id];
-  const e = isNew ? blankEntry(validDate(date) ? date : today()) : clone(S.entries[id]);
+  const e = isNew ? newEntry(validDate(date) ? date : today()) : clone(S.entries[id]);
   F = {kind: 'day', id: isNew ? null : id, isNew, e, armed: false, prefilled: null, dirty: false, we: 'skip'};
   if (isNew) F.prefilled = prefill(e);
   show('form');
@@ -1245,7 +1567,15 @@ const SEGS = {
   'g-pause': {items: PAUSES.map(p => [String(p), p + ' min']), get: () => String(F.e.pause), set: v => { F.e.pause = +v; $('#f-pause').value = v; }},
   'g-away': {items: AWAY, get: () => F.e.away, set: v => { const pa = F.e.away; F.e.away = v; syncAllowance(pa, F.e.type); }},
   'g-meals': {items: MEALS, multi: true, get: v => F.e.meals && F.e.meals[v], set: v => { F.e.meals[v] = !F.e.meals[v]; }},
-  'g-vehicle': {items: VEH, get: () => F.e.vehicle, set: v => { F.e.vehicle = v; }},
+  'g-vehicle': {items: VEH, get: () => F.e.vehicle, set: v => {
+    F.e.vehicle = v;
+    // fester Sammelpunkt/Betrieb laut „Deine Arbeit“ gleich mit eintragen
+    const p = S.settings;
+    if (p.fixed !== 'none' && SAMMEL_VEH.has(v) && F.e.trip !== 'sammel' && !F.e.km) {
+      F.e.trip = 'sammel'; F.e.meet = F.e.meet || p.fixedName; F.e.km = p.fixedKm;
+      $('#f-meet').value = F.e.meet; $('#f-km').value = F.e.km ? nf(F.e.km, 1).replace(/\./g, '') : '';
+    }
+  }},
   'g-trip': {items: TRIPS, get: () => F.e.trip, set: v => { F.e.trip = v; }},
   'g-we': {items: WEOPT, get: () => F.we, set: v => { F.we = v; }},
   'g-cat': {items: CATS, get: () => F.e.cat, set: v => { F.e.cat = v; }}
@@ -1306,7 +1636,8 @@ function updateForm() {
   const e = F.e, st = S.settings, t = e.type, work = WORK.has(t), off = OFF.has(t), a = e.away;
   $('#b-time').hidden = !work;
   ['#b-place','#b-away','#b-drive','#b-money'].forEach(s => $(s).hidden = off);
-  $('#b-travel').hidden = off || !hasTravel(e);
+  // Fahrzeit nur zeigen, wenn sie laut „Deine Arbeit“ angerechnet wird (oder schon etwas eingetragen ist)
+  $('#b-travel').hidden = off || !hasTravel(e) || (!st.travelPaid && !e.travelMin);
   $('#l-travel').textContent = a === 'ab' || t === 'abreise' ? 'Stunden für die Heimfahrt' : a === 'an' || t === 'anreise' ? 'Stunden für die Anfahrt' : 'Stunden für die Fahrt';
   // Mehrere Tage auf einmal passt nicht zu einem einzelnen An- oder Abreisetag
   const multiOk = F.isNew && !TRAVEL.has(t);
@@ -1314,23 +1645,29 @@ function updateForm() {
   $('#w-depart').hidden = !(a === 'tag' || a === 'an');
   $('#w-ret').hidden = !(a === 'tag' || a === 'ab');
   $('#w-lodging').hidden = !(a === 'an' || a === 'voll');
+  $('#w-lodging-cost').hidden = st.lodgingBy === 'firma' && !e.lodging;
   $('#w-meals').hidden = a === 'none';
-  $('#w-trip').hidden = e.vehicle !== 'pkw';
+  const sv = SAMMEL_VEH.has(e.vehicle);
+  $('#w-trip').hidden = !sv;
+  $('#w-km').hidden = !sv || (e.vehicle !== 'pkw' && e.trip !== 'sammel');
   const hol = holiday(e.date); $('#f-hol').hidden = !hol; $('#f-hol').textContent = hol ? 'Feiertag: ' + hol : '';
   $('#h-shift').hidden = e.shift !== 'ausfall';
-  const ausTxt = v => v ? ` Auslöse der Firma: ${eurS(v)}.` : '';
+  const ausTxt = v => st.ausOn && v ? ` Auslöse der Firma: ${eurS(v)}.` : '';
   $('#h-away').textContent = {none: 'Kein Auswärtseinsatz an diesem Tag.',
-    tag: `Morgens los, abends wieder zu Hause. Mehr als 8 Std. weg: ${eurS(st.rateSmall)}.`,
+    tag: `Morgens los, abends wieder zu Hause. Mehr als 8 Std. weg: ${eurS(st.rateSmall)}.${ausTxt(st.ausDay)}` +
+      (st.fixed === 'betrieb' ? ' Fährst du vom Betrieb aus weiter, zählt die Zeit ab Abfahrt am Betrieb bis zur Rückkehr.' : ''),
     an: `Erster Tag der Montage, Übernachtung auswärts. Pauschale fürs Finanzamt: ${eurS(st.rateSmall)}.${ausTxt(st.ausHalf)}`,
     voll: `Ganzer Tag (24 Std.) auswärts, auch Wochenende auf Montage. Pauschale fürs Finanzamt: ${eurS(st.rateFull)}.${ausTxt(st.ausFull)}`,
     ab: `Letzter Tag der Montage, heute zurück nach Hause. Pauschale fürs Finanzamt: ${eurS(st.rateSmall)}.${ausTxt(st.ausHalf)}`}[a];
-  const hA = $('#h-allow'), showA = !!(st.ausFull || st.ausHalf);
+  const hA = $('#h-allow'), showA = st.ausOn && !!(st.ausFull || st.ausHalf || st.ausDay);
   hA.hidden = !showA;
-  if (showA) hA.textContent = `An Montagetagen trägt die App die Auslöse von selbst ein (ganzer Tag ${eurS(st.ausFull)}, An- und Abreisetag ${eurS(st.ausHalf)}). Du kannst den Betrag hier ändern.`;
+  if (showA) hA.textContent = `Die App trägt die Auslöse aus „Deine Arbeit“ von selbst ein (ganzer Tag ${eurS(st.ausFull)}, An- und Abreisetag ${eurS(st.ausHalf)}${st.ausDay ? `, Tagestour ${eurS(st.ausDay)}` : ''}). Du kannst den Betrag hier ändern.`;
+  const place = st.fixed === 'betrieb' ? 'Betrieb' : 'Sammelpunkt';
   $('#h-trip').textContent = e.trip === 'sammel'
-    ? 'Nur wählen, wenn dich der Arbeitgeber dauerhaft zum selben Treffpunkt schickt. Dann zählt die einfache Strecke mit der Entfernungspauschale.'
-    : 'Direkt zur Baustelle oder zu wechselnden Treffpunkten ist eine Dienstfahrt. Jeder gefahrene Kilometer zählt, hin und zurück.';
-  $('#l-km').textContent = e.trip === 'sammel' ? 'Entfernung Wohnung bis Sammelpunkt, einfache Strecke (km)' : 'Gefahrene Kilometer an diesem Tag, hin und zurück';
+    ? `Nur wählen, wenn laut Vertrag ein fester ${place} gilt, zu dem du jeden Tag fährst. Dann zählt die einfache Strecke mit der Entfernungspauschale, auch als Mitfahrer oder mit Bahn und Bus.`
+    : e.vehicle === 'pkw' ? 'Direkt zur Baustelle oder zu wechselnden Treffpunkten ist eine Dienstfahrt. Jeder gefahrene Kilometer zählt, hin und zurück.'
+    : 'Zur Baustelle oder zu wechselnden Treffpunkten gibt es als Mitfahrer oder mit Bahn und Bus keine Kilometer.';
+  $('#l-km').textContent = e.trip === 'sammel' ? `Entfernung Wohnung bis ${place}, einfache Strecke (km)` : 'Gefahrene Kilometer an diesem Tag, hin und zurück';
 
   let cw = '';
   if (work) {
@@ -1343,28 +1680,36 @@ function updateForm() {
 
   let ca = '';
   if (!off && a !== 'none') {
-    const others = validDate(e.date) ? Object.values(S.entries).filter(x => x.date === e.date && x.id !== F.id) : [];
     const cur = Object.assign({}, e, {id: '__form'});
-    const dv = dayVma(others.concat([cur]));
+    const vd = validDate(e.date) ? vmaDate(cur) : e.date;
+    const others = validDate(e.date) ? Object.values(S.entries).filter(x => x.id !== F.id && vmaDate(x) === vd) : [];
+    const dv = dayVma(others.concat([cur]), vd);
     const shared = others.some(isAway);
     if (a === 'tag' && !absMin(cur)) ca = '<span class="hint">Abfahrt und Rückkehr eintragen, dann rechnet das Schichtbuch die Pauschale.</span>';
     else {
       if (a === 'tag') ca += `<span>Unterwegs <b>${nf(dv.abs / 60, 2)} h</b></span>`;
       ca += `<span>Verpflegungspauschale ${shared ? 'für den Tag ' : ''}<b>${eur(dv.val)}</b></span>`;
       if (e.allowance) ca += `<span>Auslöse <b>${eur(e.allowance)}</b></span>`;
+      if (vd !== e.date) ca += `<span class="hint">zählt für ${dShort(vd)}, dort warst du länger unterwegs</span>`;
       if (a === 'tag' && !dv.base) ca += '<span class="hint">8 Std. oder weniger: keine Pauschale</span>';
       if (shared) ca += '<span class="hint">mit dem anderen Eintrag an diesem Tag zusammengerechnet</span>';
       if (dv.cut) ca += `<span class="hint">${eur(dv.base)} minus ${eur(dv.cut)} für gestellte Mahlzeiten</span>`;
+      if (dv.allow && dv.val) ca += `<span class="hint">Für die Steuer bleiben von der Pauschale ${eur(dv.val - dv.offV)}, weil die Firma die Verpflegung mit der Auslöse schon steuerfrei zahlt.</span>`;
     }
   }
   $('#c-away').innerHTML = ca;
 
   let cd = '';
-  if (!off && e.vehicle === 'pkw' && e.km) {
-    if (e.trip === 'sammel') cd = `<span>${nf(e.km, 1)} km × ${nf2(st.commuteRate)} € = <b>${eur(commuteCost(e))}</b></span><span class="hint">Entfernungspauschale, einmal pro Tag</span>`;
-    else if (isAway(e)) cd = `<span>${nf(e.km, 1)} km × ${nf2(st.kmRate)} € = <b>${eur(kmCost(e))}</b></span>`;
-    else cd = '<span class="hint">Zählt als Dienstfahrt nur an Tagen mit Auswärts-Angabe. Sonst erscheint die Strecke in der Auswertung separat.</span>';
+  if (!off && sv && e.trip === 'sammel' && e.km) {
+    cd = `<span>${nf(e.km, 1)} km × ${nf2(st.commuteRate)} € = <b>${eur(commuteCost(e))}</b></span><span class="hint">Entfernungspauschale, einmal pro Tag${e.vehicle !== 'pkw' ? `, ohne eigenes Auto höchstens ${eurS(COMMUTE_CAP)} im Jahr` : ''}</span>`;
+    if (e.vehicle === 'oepnv') cd += '<span class="hint">Ist dein Ticket im Jahr teurer als die Pauschale, zählen stattdessen die Ticketkosten.</span>';
+  } else if (!off && e.vehicle === 'pkw' && e.km) {
+    if (isAway(e)) {
+      cd = `<span>${nf(e.km, 1)} km × ${nf2(st.kmRate)} € = <b>${eur(kmCost(e))}</b></span>`;
+      if (kmRefund(e)) cd += `<span class="hint">minus ${eur(kmRefund(e))} Kilometergeld der Firma</span>`;
+    } else cd = '<span class="hint">Zählt als Dienstfahrt nur an Tagen mit Auswärts-Angabe. Sonst erscheint die Strecke in der Auswertung separat.</span>';
   } else if (!off && e.vehicle === 'oepnv') cd = '<span class="hint">Ticketkosten bei „Sonstige Ausgaben“ eintragen.</span>';
+  else if (!off && e.vehicle === 'firma') cd = '<span class="hint">Mit Firmenwagen oder Firmenbus hast du keine Fahrtkosten. Bringt dich die Firma zum Sammelpunkt (Sammelbeförderung), gibt es dafür auch keine Entfernungspauschale.</span>';
   $('#c-drive').innerHTML = cd;
 
   const dup = validDate(e.date) ? Object.values(S.entries).filter(x => x.date === e.date && x.id !== F.id) : [];
@@ -1406,7 +1751,7 @@ $('#f-prev').addEventListener('click', () => shiftDate(-1));
 $('#f-next').addEventListener('click', () => shiftDate(1));
 function shiftDate(n) { const d = $('#f-date').value; if (!validDate(d)) return; $('#f-date').value = addDays(d, n); touch(); updateForm(); }
 $('#f-dup').addEventListener('click', ev => { const b = ev.target.closest('[data-open]'); if (b) { dropDraft(); openForm(b.dataset.open); } });
-$('#f-clear').addEventListener('click', () => { const d = F.e.date; F.e = blankEntry(validDate(d) ? d : today()); F.prefilled = null; fillForm(); touch(); });
+$('#f-clear').addEventListener('click', () => { const d = F.e.date; F.e = newEntry(validDate(d) ? d : today()); F.prefilled = null; fillForm(); touch(); });
 
 const montageGoesOn = d => !!d && Object.values(S.entries).some(x => x.date === addDays(d, -1) && isAway(x) && (x.away === 'an' || x.away === 'voll'));
 function montageAway(dates) {
@@ -1428,7 +1773,9 @@ function tidy(e) {
   if (!(e.away === 'tag' || e.away === 'an')) e.depart = '';
   if (!(e.away === 'tag' || e.away === 'ab')) e.ret = '';
   if (!(e.away === 'an' || e.away === 'voll')) { e.lodging = 0; e.lodgingName = ''; }
-  if (e.vehicle !== 'pkw') { e.km = 0; e.trip = 'dienst'; e.meet = ''; }
+  if (!SAMMEL_VEH.has(e.vehicle)) { e.km = 0; e.trip = 'dienst'; }
+  else if (e.vehicle !== 'pkw' && e.trip !== 'sammel') e.km = 0;
+  if (!e.vehicle) e.meet = '';
   if (OFF.has(e.type) || !hasTravel(e)) e.travelMin = 0;
   return e;
 }
@@ -1526,6 +1873,11 @@ function fillDatalists() {
 /* ---------- Toast ---------- */
 let toastT = null;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+function toastAct(msg, label, fn) {
+  const t = $('#toast'); t.innerHTML = esc(msg) + ` <button type="button">${esc(label)}</button>`; t.hidden = false; clearTimeout(toastT);
+  t.querySelector('button').onclick = () => { t.hidden = true; fn(); };
+  toastT = setTimeout(() => t.hidden = true, 7000);
+}
 
 /* ---------- Excel ---------- */
 let excelP = null;
@@ -1572,9 +1924,9 @@ const ENTRY_COLS = [['Datum',11],['Tag',5],['Tagesart',10],['Schicht',8],['Begin
   ['Einsatzort',22],['Strecke / km',16],['Auftrag / Baustelle',24],['Auswärts',24],['Abfahrt',8],['Rückkehr',9],['Abwesenheit (Std.)',10],
   ['Mahlzeiten gestellt',18],['Verpflegung (€)',12],['Unterkunft',18],['Übernachtung (€)',12],['Fahrzeug',13],['Treffpunkt',18],
   ['km Dienstfahrt',10],['Fahrtkosten (€)',12],['km einfach Sammelpunkt',12],['Entfernungspauschale (€)',13],['Sonstige Ausgaben (€)',12],['Wofür',16],['Auslöse / Spesen vom AG (€)',14],['Notiz',30]];
-function entryRow(e, day) {
-  const work = WORK.has(e.type), aw = isAway(e), dv = day[e.date] || {};
-  const v = dv.carrier === e.id ? dv.val : 0, cc = dv.commuteId === e.id ? commuteCost(e) : 0;
+function entryRow(e, R) {
+  const work = WORK.has(e.type), aw = isAway(e);
+  const v = R.vmaOf[e.id] || 0, cc = R.commuteOf[e.id] || 0;
   const pkw = e.vehicle === 'pkw' && !OFF.has(e.type);
   const tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e);
   return [
@@ -1583,9 +1935,9 @@ function entryRow(e, day) {
     tr ? cN(tr / 60, Z.h) : '', wm + tr ? cN((wm + tr) / 60, Z.h) : '',
     e.place, e.line, e.project, aw ? AWAY_X[e.away] : '', aw ? cT(e.depart) : '', aw ? cT(e.ret) : '', absMin(e) ? cN(absMin(e) / 60, Z.h) : '',
     mealsTxt(e), cE(v), aw && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : '', cE(lodgingOf(e)),
-    e.vehicle ? VEH_L[e.vehicle] : '', pkw ? e.meet : '',
+    e.vehicle ? VEH_L[e.vehicle] : '', OFF.has(e.type) ? '' : e.meet,
     pkw && e.trip !== 'sammel' && e.km ? cN(e.km, Z.km) : '', cE(kmCost(e)),
-    pkw && e.trip === 'sammel' && e.km ? cN(e.km, Z.km) : '', cE(cc),
+    isSammel(e) && e.km ? cN(e.km, Z.km) : '', cE(cc),
     cE(e.otherCost), e.otherNote, cE(e.allowance), e.note
   ];
 }
@@ -1594,6 +1946,7 @@ function overviewRows(T, list, exps) {
   const rows = [
     [B('Schichtbuch ' + year, 16)], ['Name', st.name], ['Arbeitgeber', st.employer], ['Wohnort', st.home], ['Bundesland (Feiertage)', STATE_L[st.state]],
     ['Erstellt am', cD(today())], [],
+    [B('Angaben zur Arbeit')], ...profileLines().map(([l, v]) => [l, v]), [],
     [B('Arbeitszeit')], ['Arbeitstage', n(T.workDays)], ['Schulungstage', n(T.trainDays)], ['An- und Abreisetage ohne Arbeit', n(T.travelDays)], ['Urlaubstage', n(T.vacDays)],
     ['Krankheitstage', n(T.sickDays)], ['Arbeitsstunden', n(T.min / 60, Z.h)], ['Fahrstunden (An- und Abreise)', n(T.travelMin / 60, Z.h)],
     [B('Stunden gesamt'), Object.assign(n(T.tot / 60, Z.h), {b: true})], ['Nachtschichten', n(T.nightShifts)],
@@ -1605,11 +1958,16 @@ function overviewRows(T, list, exps) {
     ['Verpflegungspauschalen', n(T.vmaBase, Z.eur)], ['Kürzung für gestellte Mahlzeiten', n(-T.vmaCut, Z.eur)], ['Verpflegungsmehraufwand', n(T.vma, Z.eur)],
     ['Gefahrene km Dienstfahrten eigenes Auto', n(T.km, Z.km)], ['Fahrtkosten (' + nf2(st.kmRate) + ' € je km)', n(T.kmCost, Z.eur)],
     ['Übernachtungskosten selbst bezahlt', n(T.lodging, Z.eur)], ['Reisenebenkosten (Parken, Tickets)', n(T.other, Z.eur)],
-    ['Summe Reisekosten', n(T.travel, Z.eur)], ['Steuerfrei vom Arbeitgeber erhalten (Auslöse, Spesen)', n(-T.allowance, Z.eur)],
-    [B('Reisekosten nach Abzug der Auslöse'), Object.assign(n(T.travelNet, Z.eur), {b: true})], []
+    ['Summe Reisekosten', n(T.travel, Z.eur)],
+    ['Steuerfrei erstattet: Auslöse für Verpflegung', n(-T.offV, Z.eur)], ['Steuerfrei erstattet: Auslöse für Übernachtung', n(-T.offL, Z.eur)],
+    ['Steuerfrei erstattet: Kilometergeld', n(-T.kmOff, Z.eur)],
+    [B('Reisekosten nach Abzug der Erstattungen'), Object.assign(n(T.travelNet, Z.eur), {b: true})],
+    ['Auslöse / Spesen insgesamt erhalten (zur Information)', n(T.allowance, Z.eur)],
+    ['davon nicht verrechnet (liegt über den Pauschalen)', n(Math.max(0, T.allowance - T.offV - T.offL), Z.eur)], []
   ];
-  if (T.commuteDays) rows.push([B('Fahrten zum festen Sammelpunkt (Entfernungspauschale)')], ['Tage', n(T.commuteDays)],
-    ['km einfache Strecke zusammen', n(T.commuteKm, Z.km)], [B('Entfernungspauschale (' + nf2(st.commuteRate) + ' € je km)'), Object.assign(n(T.commuteCost, Z.eur), {b: true})], []);
+  if (T.commuteDays) rows.push([B('Fahrten zum festen Sammelpunkt oder Betrieb (Entfernungspauschale)')], ['Tage', n(T.commuteDays)],
+    ['km einfache Strecke zusammen', n(T.commuteKm, Z.km)], [B('Entfernungspauschale (' + nf2(st.commuteRate) + ' € je km)'), Object.assign(n(T.commuteCost, Z.eur), {b: true})],
+    ...(T.commuteCapped ? [['Ohne eigenes Auto auf ' + nf(COMMUTE_CAP, 0) + ' € im Jahr begrenzt']] : []), []);
   if (T.exp) {
     rows.push([B('Weitere Werbungskosten')]);
     CATS.forEach(([k, l]) => { if (T.cat[k]) rows.push([l, n(T.cat[k], Z.eur)]); });
@@ -1622,16 +1980,16 @@ function overviewRows(T, list, exps) {
   rows.push([], [B('Hinweise')],
     ['Reisekosten, Entfernungspauschale und weitere Werbungskosten gehören in die Anlage N.'],
     ['Alle Beträge sind Schätzungen nach den eingestellten Pauschalen und ersetzen keine Steuerberatung.']);
-  placeStats(list).filter(p => p.warnFrom).forEach(p => rows.push(['Dreimonatsfrist prüfen: ' + p.name + ' (auswärts seit ' + dDot(p.warnFrom) + ')']));
+  placeStats(list).filter(p => p.warnFrom).forEach(p => rows.push(['Dreimonatsfrist prüfen: ' + p.name + ' (regelmäßig seit ' + dDot(p.warnFrom) + ', Pauschale ab ' + dDot(p.warnAt) + ' meist nicht mehr)']));
   return rows;
 }
 async function buildWorkbook(EX, list, exps) {
-  const {T, M, day} = computeYear(list, exps);
+  const R = computeYear(list, exps), {T, M} = R;
   list = list.slice().sort(sortAsc); exps = exps.slice().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
   const wb = new EX.Workbook();
   wb.creator = S.settings.name || 'Schichtbuch'; wb.created = new Date();
   addSheet(wb, 'Übersicht', overviewRows(T, list, exps), [62, 18]);
-  const er = [head(ENTRY_COLS.map(c => c[0]))].concat(list.map(e => entryRow(e, day)));
+  const er = [head(ENTRY_COLS.map(c => c[0]))].concat(list.map(e => entryRow(e, R)));
   const last = er.length;
   const ci = name => ENTRY_COLS.findIndex(c => c[0] === name);
   const sums = [[ci('Arbeitszeit (Std.)'), Z.h, T.min / 60], [ci('Fahrzeit (Std.)'), Z.h, T.travelMin / 60], [ci('Stunden gesamt'), Z.h, T.tot / 60],
@@ -1657,7 +2015,7 @@ async function buildWorkbook(EX, list, exps) {
   mr.push([B('Summe')].concat(mv(T).map((v, j) => ({v: r2(v), z: mz[j + 1], f: `SUM(${colL(j + 1)}2:${colL(j + 1)}13)`, b: true}))));
   addSheet(wb, 'Monate', mr, [12, 11, 13, 14, 12, 13, 13, 14, 13, 14, 15, 15, 14, 15, 17, 18, 17, 17, 18], {freeze: 1});
   const pr = [head(['Einsatzort', 'Tage', 'Erster Tag', 'Letzter Tag', 'Auch eingetragen als', 'Hinweis'])].concat(placeStats(list).map(p =>
-    [p.name, cN(p.days, Z.i), cD(p.first), cD(p.last), p.alias.join(', '), p.warnFrom ? 'Länger als drei Monate auswärts seit ' + dDot(p.warnFrom) + ', Pauschale prüfen' : '']));
+    [p.name, cN(p.days, Z.i), cD(p.first), cD(p.last), p.alias.join(', '), p.warnFrom ? 'Regelmäßig seit ' + dDot(p.warnFrom) + ', ab ' + dDot(p.warnAt) + ' Pauschale prüfen (Dreimonatsfrist)' : '']));
   addSheet(wb, 'Einsatzorte', pr, [28, 7, 12, 12, 24, 52], {freeze: 1});
   return wb.xlsx.writeBuffer();
 }
@@ -1682,10 +2040,10 @@ async function exportXlsx(share) {
 $('#x-xlsx').addEventListener('click', () => exportXlsx(false));
 $('#x-xlsx-share').addEventListener('click', () => exportXlsx(true));
 $('#x-copy').addEventListener('click', () => {
-  const list = yearList(year).sort(sortAsc), {day} = computeYear(list, []), status = $('#x-status'), ta = $('#x-tsv');
+  const list = yearList(year).sort(sortAsc), R = computeYear(list, []), status = $('#x-status'), ta = $('#x-tsv');
   if (!list.length) { status.textContent = 'Für ' + year + ' gibt es noch keine Arbeitstage.'; return; }
   const cell = c => c === '' || c == null ? '' : typeof c === 'object' ? (c.s != null ? c.s : String(r2(c.v)).replace('.', ',')) : String(c).replace(/[\t\n\r]+/g, ' ');
-  const tsv = [ENTRY_COLS.map(c => c[0]).join('\t')].concat(list.map(e => entryRow(e, day).map(cell).join('\t'))).join('\n');
+  const tsv = [ENTRY_COLS.map(c => c[0]).join('\t')].concat(list.map(e => entryRow(e, R).map(cell).join('\t'))).join('\n');
   const fallback = () => { ta.hidden = false; ta.value = tsv; ta.focus(); ta.select(); status.textContent = 'Text ist markiert. Kopieren und in Excel oder Google Tabellen einfügen.'; };
   try {
     navigator.clipboard.writeText(tsv).then(() => { ta.hidden = true; status.textContent = list.length + ' Zeilen kopiert. In Excel einfach einfügen.'; }, fallback);

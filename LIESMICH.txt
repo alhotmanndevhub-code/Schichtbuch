@@ -1,4 +1,4 @@
-SAKRA Schichtbuch – eigenständige Web-App (Version 1.0.0)
+SAKRA Schichtbuch – eigenständige Web-App (Version 1.3.0)
 =========================================================
 
 Was in diesem Ordner liegt
@@ -55,9 +55,17 @@ Daten aus der Claude-Version übernehmen: dort unter "Export" eine Sicherung
 speichern, hier mit "Sicherung laden" einlesen.
 
 
+Einstellungen
+-------------
+Oben rechts das Zahnrad: Unter "Deine Arbeit" einmal einstellen, wie die
+Firma es regelt (Fahrzeug, fester Sammelpunkt oder Betrieb laut Vertrag,
+Auslöse, Unterkunft, Kilometergeld, Fahrzeit). Die App füllt neue Tage
+damit vor und rechnet danach.
+
+
 Neue Version veröffentlichen
 ----------------------------
-Geänderte Dateien wieder hochladen und in sw.js die Zeile
-const VERSION = '1.0.0';
-hochzählen (z. B. auf '1.0.1'). Beim nächsten Start zeigt die App
+Geänderte Dateien hochladen und in sw.js die Zeile
+const VERSION = '1.3.0';
+hochzählen (z. B. auf '1.3.1'). Beim nächsten Start zeigt die App
 "Neue Version verfügbar" an.
