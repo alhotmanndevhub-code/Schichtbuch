@@ -1,0 +1,12 @@
+{
+  "name": "schichtbuch",
+  "private": true,
+  "description": "SAKRA Schichtbuch – Prüftests",
+  "scripts": {
+    "test": "node tests/run-all.js"
+  },
+  "devDependencies": {
+    "exceljs": "4.4.0",
+    "jsdom": "24.1.3"
+  }
+}

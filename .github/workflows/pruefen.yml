@@ -1,0 +1,67 @@
+# Prüft jede Änderung mit den Tests in tests/.
+# Veröffentlicht die Webseite nur, wenn alle Tests bestehen – vorausgesetzt,
+# unter Settings > Pages > Build and deployment > Source ist "GitHub Actions" gewählt.
+name: Prüfen und veröffentlichen
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pruefen-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Prüftests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  deploy:
+    name: Veröffentlichen
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Prüfen, wie GitHub Pages veröffentlicht
+        id: mode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          t=$(gh api "repos/${{ github.repository }}/pages" --jq .build_type 2>/dev/null || echo unbekannt)
+          echo "build_type=$t" >> "$GITHUB_OUTPUT"
+          if [ "$t" != "workflow" ]; then
+            echo "::notice::GitHub Pages veröffentlicht noch direkt aus dem Branch (build_type=$t). Settings > Pages > Source auf 'GitHub Actions' stellen, damit nur geprüfte Versionen live gehen."
+          fi
+      - uses: actions/checkout@v4
+        if: steps.mode.outputs.build_type == 'workflow'
+      - name: Webseite zusammenstellen (ohne Tests)
+        if: steps.mode.outputs.build_type == 'workflow'
+        run: |
+          mkdir _site
+          cp index.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png LICENSE LICENSE-*.txt LIESMICH.txt _site/
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.mode.outputs.build_type == 'workflow'
+        with:
+          path: _site
+      - id: deployment
+        if: steps.mode.outputs.build_type == 'workflow'
+        uses: actions/deploy-pages@v4

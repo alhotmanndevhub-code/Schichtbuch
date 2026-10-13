@@ -65,7 +65,9 @@ damit vor und rechnet danach.
 
 Neue Version veröffentlichen
 ----------------------------
-Geänderte Dateien hochladen und in sw.js die Zeile
+Vorher die Prüftests laufen lassen: npm install, dann npm test.
+Bei jedem Hochladen prüft GitHub die App automatisch noch einmal
+(Reiter "Actions"). Geänderte Dateien hochladen und in sw.js die Zeile
 const VERSION = '1.3.0';
 hochzählen (z. B. auf '1.3.1'). Beim nächsten Start zeigt die App
 "Neue Version verfügbar" an.
