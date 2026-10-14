@@ -57,7 +57,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   const x = saved.find(s => s.name.endsWith('.xlsx'));
   check('Excel-Datei erzeugt', x && x.name === 'Schichtbuch_2026.xlsx');
   const wb = new ExcelJS.Workbook(); await wb.xlsx.load(await read(w, x.blob));
-  check('Excel-Blätter', wb.worksheets.map(s => s.name).join(',') === 'Übersicht,Einträge,Ausgaben,Monate,Einsatzorte');
+  check('Excel-Blätter', wb.worksheets.map(s => s.name).join(',') === 'Übersicht,Einträge,Ausgaben,Monate,Einsatzorte,Anlage N');
   const ws = wb.getWorksheet('Einträge'), hd = ws.getRow(1).values.slice(1), r = ws.getRow(2), c = n => r.getCell(hd.indexOf(n) + 1).value;
   check('Excel-Zeile', c('Schicht') === 'Nacht' && c('Arbeitszeit (Std.)') === 7.5 && c('Verpflegung (€)') === 14 && c('km Dienstfahrt') === 96 && c('Fahrtkosten (€)') === 28.8,
     JSON.stringify([c('Schicht'), c('Arbeitszeit (Std.)'), c('Verpflegung (€)'), c('km Dienstfahrt'), c('Fahrtkosten (€)')]));

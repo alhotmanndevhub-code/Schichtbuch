@@ -210,8 +210,73 @@ details.multi[open] summary{margin-bottom:6px}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:15px;font-weight:500;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
 .toast button{margin-left:10px;background:none;border:0;color:var(--accent);font-weight:700;text-decoration:underline}
+/* Was ist neu */
+.news{background:var(--surface);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.news b{font-family:var(--f-display);font-size:19px}
+.news ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:15px}
+.news .linkbtn{justify-self:start}
+.newslog{display:grid;gap:10px}
+.newslog h4{margin:0;font-size:15px}
+.newslog ul{margin:4px 0 0;padding-left:20px;font-size:14px;color:var(--muted);display:grid;gap:3px}
+details.more summary{cursor:pointer;font-weight:600;color:var(--accent-ink);list-style-position:inside}
+details.more[open] summary{margin-bottom:10px}
+details.more>div{display:grid;gap:14px}
+details.block>summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:15px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+
+/* Belegfotos */
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.thumbs:empty{display:none}
+.thumb{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:0;overflow:hidden;display:grid;place-items:center;font:600 13px var(--f-body);color:var(--muted)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.clip{font-size:12px;color:var(--muted);white-space:nowrap}
+.viewer{position:fixed;inset:0;z-index:30;background:#000;display:grid;grid-template-rows:auto 1fr;padding-top:env(safe-area-inset-top,0px)}
+.viewer .vbar{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px 12px}
+.viewer .vbar .btn{min-height:44px}
+.viewer .vbody{display:grid;place-items:center;overflow:auto;padding:0 12px calc(16px + env(safe-area-inset-bottom,0px))}
+.viewer img{max-width:100%;max-height:calc(100vh - 100px);object-fit:contain;background:#fff}
+.viewer p{color:#fff;text-align:center}
+
+/* Jahresbericht */
+.rtools{display:grid;gap:10px;margin-top:12px;background:var(--surface);border-radius:14px;padding:16px}
+.paper{background:var(--surface);border-radius:14px;padding:18px 16px;margin-top:12px;font-size:14px;line-height:1.4;overflow-wrap:break-word;hyphens:auto}
+.paper h1{font-family:var(--f-display);font-size:28px;margin:0 0 4px}
+.paper h2{font-family:var(--f-display);font-size:21px;margin:22px 0 6px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.paper h3{font-size:15px;margin:14px 0 4px}
+.paper p{margin:4px 0}
+.paper .hint{font-size:13px}
+.rt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px}
+.rt th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--ink);padding:4px 6px 4px 0;font-size:12px}
+.rt td{border-bottom:1px solid var(--line);padding:5px 6px 5px 0;vertical-align:top}
+.rt td:last-child,.rt th:last-child{padding-right:0}
+.rt .n{text-align:right;white-space:nowrap}
+.rt tr.sec td{font-weight:700;padding-top:12px;border-bottom:1px solid var(--ink)}
+.rt tr.sum td{font-weight:700}
+.rt td.z{font-weight:700;white-space:nowrap}
+.rt td.d{white-space:nowrap}
+.rt td.t{text-align:right}
+.rt.anl{table-layout:fixed}
+.rt.anl col.c1{width:42px} .rt.anl col.c3{width:38%}
+.rt small{display:block;color:var(--muted);font-size:12px}
+.rt.days td{font-size:12px}
+.beleg{margin:14px 0;break-inside:avoid}
+.beleg img{max-width:100%;max-height:70vh;display:block;border:1px solid var(--line)}
+.beleg p{font-size:12px;color:var(--muted)}
+
 @media (max-width:370px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.mini{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s ease}}
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  :root{--bg:#fff;--surface:#fff;--surface-2:#f2f2f2;--ink:#000;--muted:#444;--line:#bbb;color-scheme:light;padding-top:0}
+  body{background:#fff;color:#000;font-size:10pt}
+  .app{max-width:none;padding:0}
+  .top,.tabs,.formfoot,.toast,.viewer,.noprint,.view:not(#v-report){display:none!important}
+  .paper{padding:0;margin:0;border-radius:0;font-size:10pt}
+  .paper h2{break-after:avoid}
+  .rt tr{break-inside:avoid}
+  .rt tr.sec{break-after:avoid}
+  .beleg img{max-height:220mm}
+  .pb{break-before:page}
+}
 </style>
 </head>
 <body>
@@ -244,6 +309,12 @@ details.multi[open] summary{margin-bottom:6px}
         </div>
 
         <div class="card">
+          <h3>Jahresbericht (PDF)</h3>
+          <p class="hint" id="r-info">Alles für die Steuererklärung auf ein paar Seiten: Ausfüllhilfe für die Anlage N mit Zeilennummern, Monate, Einsatzorte, Ausgaben und auf Wunsch alle Tage und Belegfotos.</p>
+          <button class="btn primary block" id="x-report" type="button">Jahresbericht ansehen</button>
+        </div>
+
+        <div class="card">
           <h3>Datensicherung</h3>
           <p class="hint">Speichert alle Jahre mit Tagen und Ausgaben als Datei. Leg sie zum Beispiel in deine Cloud oder schick sie dir per Mail. Auf einem neuen Handy lädst du sie einfach wieder.</p>
           <p class="hint" id="b-last"></p>
@@ -251,6 +322,7 @@ details.multi[open] summary{margin-bottom:6px}
             <button class="btn" id="x-backup" type="button">Sicherung speichern</button>
             <label class="btn" for="x-restore">Sicherung laden</label>
           </div>
+          <label class="check" id="x-photos-w" hidden><input type="checkbox" id="x-photos" checked> <span id="x-photos-l">Belegfotos mitsichern</span></label>
           <button class="btn block" id="x-backup-share" type="button" hidden>Sicherung teilen</button>
           <input type="file" id="x-restore" class="sr" accept=".json,application/json">
           <p class="hint" id="b-status" role="status"></p>
@@ -267,6 +339,7 @@ details.multi[open] summary{margin-bottom:6px}
           <p class="hint">Alle Einträge liegen nur auf diesem Gerät. Die App schickt nichts an einen Server, es gibt keine Werbung und kein Tracking. Sie funktioniert auch ohne Netz.</p>
           <p class="hint">Alle Beträge sind Schätzungen nach den gesetzlichen Pauschalen und ersetzen keine Steuerberatung.</p>
           <p class="hint" id="about-ver"></p>
+          <details class="more" id="about-news"><summary>Was ist neu</summary><div class="newslog" id="about-log"></div></details>
           <p class="hint">© 2026 alhotmanndevhub-code. Alle Rechte vorbehalten. Kopieren, Weitergeben oder Veröffentlichen der App nur mit Erlaubnis.</p>
           <button class="btn block" id="install-btn2" type="button" hidden>App auf dem Startbildschirm installieren</button>
         </div>
@@ -301,7 +374,7 @@ details.multi[open] summary{margin-bottom:6px}
             <div class="seg" data-pset="ausOn"></div>
             <div id="p-aus-w" class="q">
               <div class="grid2">
-                <label>Ganzer Tag auf Montage (€)<input id="s-aus-full" inputmode="decimal" placeholder="0,00"></label>
+                <label>Voller Tag auf Montage, 24 Std. (€)<input id="s-aus-full" inputmode="decimal" placeholder="0,00"></label>
                 <label>An- und Abreisetag (€)<input id="s-aus-half" inputmode="decimal" placeholder="0,00"></label>
                 <label>Tagestour ohne Übernachtung (€)<input id="s-aus-day" inputmode="decimal" placeholder="0,00"></label>
               </div>
@@ -404,14 +477,20 @@ details.multi[open] summary{margin-bottom:6px}
         <div class="block" id="b-place">
           <span class="blk-h">Einsatz</span>
           <label>Einsatzort / Bahnhof<input id="f-place" list="dl-place" placeholder="z. B. Hamm (Westf)" autocomplete="off"></label>
-          <label>Strecke / km<input id="f-line" placeholder="z. B. 2650, km 112,4" autocomplete="off"></label>
-          <label>Auftrag / Baustelle<input id="f-project" list="dl-project" placeholder="z. B. Gleiserneuerung, Sperrpause" autocomplete="off"></label>
+          <details class="more" id="d-place">
+            <summary>Strecke und Auftrag</summary>
+            <div>
+              <label>Strecke / km<input id="f-line" placeholder="z. B. 2650, km 112,4" autocomplete="off"></label>
+              <label>Auftrag / Baustelle<input id="f-project" list="dl-project" placeholder="z. B. Gleiserneuerung, Sperrpause" autocomplete="off"></label>
+            </div>
+          </details>
         </div>
 
         <div class="block" id="b-away">
           <span class="blk-h">Auswärts / Montage</span>
           <div class="seg" id="g-away"></div>
           <p class="hint" id="h-away"></p>
+          <p class="warn" id="h-prev" hidden></p>
           <div class="grid2">
             <label id="w-depart">Abfahrt von zu Hause<input type="time" id="f-depart"></label>
             <label id="w-ret">Zurück zu Hause<input type="time" id="f-ret"></label>
@@ -452,9 +531,18 @@ details.multi[open] summary{margin-bottom:6px}
           </div>
         </div>
 
-        <div class="block">
-          <label>Notiz<textarea id="f-note" rows="2" placeholder="z. B. Sperrpause verlängert, Bauzug verspätet"></textarea></label>
+        <div class="block" id="b-beleg" hidden>
+          <span class="blk-h">Belege</span>
+          <div class="thumbs" id="f-thumbs"></div>
+          <label class="btn" for="f-photo-in">Foto oder PDF hinzufügen</label>
+          <input type="file" id="f-photo-in" class="sr" accept="image/*,application/pdf" multiple>
+          <p class="hint">Hotelrechnung, Parkschein, Tankquittung. Die Fotos bleiben auf diesem Handy und kommen mit in die Datensicherung.</p>
         </div>
+
+        <details class="block" id="d-note">
+          <summary>Notiz</summary>
+          <textarea id="f-note" rows="2" aria-label="Notiz" placeholder="z. B. Sperrpause verlängert, Bauzug verspätet"></textarea>
+        </details>
 
         <details class="block multi" id="b-multi">
           <summary>Für mehrere Tage auf einmal speichern</summary>
@@ -463,7 +551,7 @@ details.multi[open] summary{margin-bottom:6px}
             <span class="blk-h">Samstag und Sonntag</span>
             <div class="seg" id="g-we"></div>
           </div>
-          <label class="check"><input type="checkbox" id="m-montage"> Montage: erster Tag Anreise, letzter Tag Abreise, dazwischen ganzer Tag auswärts</label>
+          <label class="check"><input type="checkbox" id="m-montage"> Montage: erster Tag Anreise, letzter Tag Abreise, dazwischen 24 Std. auswärts</label>
           <p class="hint" id="m-info"></p>
         </details>
       </div>
@@ -488,7 +576,29 @@ details.multi[open] summary{margin-bottom:6px}
           <label>Was genau?<input id="p-text" list="dl-exptext" placeholder="z. B. Sicherheitsschuhe S3" autocomplete="off"></label>
           <label>Notiz<textarea id="p-note" rows="2" placeholder="z. B. Beleg im Ordner Steuer 2026"></textarea></label>
         </div>
+        <div class="block" id="p-beleg" hidden>
+          <span class="blk-h">Belege</span>
+          <div class="thumbs" id="p-thumbs"></div>
+          <label class="btn" for="p-photo-in">Foto oder PDF hinzufügen</label>
+          <input type="file" id="p-photo-in" class="sr" accept="image/*,application/pdf" multiple>
+          <p class="hint">Rechnung oder Quittung abfotografieren. Das Finanzamt kann Belege nachfordern.</p>
+        </div>
       </div>
+    </section>
+
+    <section id="v-report" class="view" aria-label="Jahresbericht" hidden>
+      <div class="formbar noprint">
+        <button class="iconbtn" id="r-back" type="button">‹ Zurück</button>
+        <h2>Jahresbericht</h2>
+        <span style="width:44px"></span>
+      </div>
+      <div class="rtools noprint">
+        <label class="check"><input type="checkbox" id="r-days" checked> Alle Tage einzeln auflisten</label>
+        <label class="check" id="r-photos-w"><input type="checkbox" id="r-photos"> <span id="r-photos-l">Belegfotos anhängen</span></label>
+        <button class="btn primary block" id="r-print" type="button">Als PDF speichern oder drucken</button>
+        <p class="hint"><span id="r-hint"></span> Den Bericht kannst du ausdrucken, dem Steuerberater geben oder beim Ausfüllen von ELSTER danebenlegen.</p>
+      </div>
+      <article class="paper" id="r-paper"></article>
     </section>
   </main>
 </div>
@@ -510,6 +620,10 @@ details.multi[open] summary{margin-bottom:6px}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Beleg" hidden>
+  <div class="vbar"><button class="btn" id="v-close" type="button">‹ Zurück</button><button class="btn danger" id="v-del" type="button">Beleg entfernen</button></div>
+  <div class="vbody" id="v-body"></div>
+</div>
 <datalist id="dl-place"></datalist><datalist id="dl-project"></datalist><datalist id="dl-lodging"></datalist><datalist id="dl-meet"></datalist><datalist id="dl-exptext"></datalist>
 
 <script>
@@ -517,7 +631,20 @@ details.multi[open] summary{margin-bottom:6px}
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '1.3.1';
+const APP_VERSION = '1.4.0';
+// „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
+const CHANGELOG = [
+  ['1.4.0', ['Jahresbericht als PDF mit Ausfüllhilfe für die Anlage N, Zeile für Zeile (Export).',
+    'Belegfotos: Quittungen und Rechnungen direkt beim Tag oder bei der Ausgabe speichern.',
+    'Zuschlagsstunden für Nacht, Sonntag und Feiertag in der Auswertung und in Excel.',
+    'Feld für Nr. 20 deiner Lohnsteuerbescheinigung in der Auswertung.',
+    '„Ganzer Tag“ heißt jetzt „24 Std. auswärts“. Strecke, Auftrag und Notiz sind eingeklappt, das Formular ist kürzer.']],
+  ['1.3.1', ['Gesetzliche Werte sind je Steuerjahr fest hinterlegt und kommen mit Updates.']],
+  ['1.3.0', ['„Deine Arbeit“ in den Einstellungen: Sammelpunkt, Auslöse, Unterkunft und Kilometergeld einmal einstellen.',
+    'Auslöse wird mit Verpflegung und Übernachtung verrechnet, nie mit Fahrtkosten.', 'Sichereres Speichern, auch mit zwei offenen Fenstern.']],
+  ['1.2.0', ['Anreise und Abreise mit Fahrzeit, die zu deinen Stunden zählt.', 'Ausfallschicht.', 'Auslöse für volle Tage und für An- und Abreisetage.']]
+];
+const cmpVer = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) - (y[i] || 0); } return 0; };
 const KEY = 'sakra-schichtbuch-v1';
 const EXCEL_URL = 'exceljs.min.js';
 const TYPES = [['arbeit','Arbeit'],['anreise','Anreise'],['abreise','Abreise'],['schulung','Schulung'],['frei','Frei'],['urlaub','Urlaub'],['krank','Krank']];
@@ -528,9 +655,10 @@ const OFF = new Set(['urlaub','krank']);
 const SHIFTS = [['frueh','Früh'],['tag','Tag'],['spaet','Spät'],['nacht','Nacht']];
 const SHIFT_BTNS = SHIFTS.concat([['ausfall','Ausfall']]);
 const SHIFT_L = Object.fromEntries(SHIFT_BTNS);
-const AWAY = [['none','Nein'],['tag','Tagestour'],['an','Anreise'],['voll','Ganzer Tag'],['ab','Abreise']];
+// 'voll' hieß bis 1.3 „Ganzer Tag“; gemeint ist ein Tag zwischen An- und Abreise, 24 Std. von zu Hause weg
+const AWAY = [['none','Nein'],['tag','Tagestour'],['an','Anreise'],['voll','24 Std. auswärts'],['ab','Abreise']];
 const AWAY_CHIP = {tag:'Tagestour', an:'Anreise', voll:'Auswärts', ab:'Abreise'};
-const AWAY_X = {none:'', tag:'Tagestour ohne Übernachtung', an:'Anreisetag', voll:'Ganzer Tag auswärts', ab:'Abreisetag'};
+const AWAY_X = {none:'', tag:'Tagestour ohne Übernachtung', an:'Anreisetag', voll:'24 Std. auswärts (voller Tag)', ab:'Abreisetag'};
 const VEH = [['','Keine'],['pkw','Eigenes Auto'],['firma','Firmenwagen / -bus'],['mit','Mitfahrer'],['oepnv','Bahn / ÖPNV']];
 const VEH_L = Object.fromEntries(VEH);
 // Entfernungspauschale zum festen Sammelpunkt/Betrieb gibt es mit jedem Verkehrsmittel, nur nicht bei Sammelbeförderung durch die Firma
@@ -571,6 +699,8 @@ const DOW = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const DEF = {name:'', employer:'', home:'', state:'', pause:30,
   // „Deine Arbeit“: einmal einstellen, gilt für neue Einträge und die Berechnung
   veh:'', fixed:'none', fixedName:'', fixedKm:0, ausOn:false, ausFull:0, ausHalf:0, ausDay:0, lodgingBy:'self', kmOn:false, kmGeld:0, travelPaid:true, profSeen:false,
+  // Nr. 20 der Lohnsteuerbescheinigung (steuerfreie Verpflegungszuschüsse) je Steuerjahr, z. B. {"2026": 1250}
+  nr20:{},
   shifts:{frueh:['05:00','13:30'], tag:['07:00','15:30'], spaet:['13:30','22:00'], nacht:['22:00','06:00']}};
 
 /* ---------- Hilfen ---------- */
@@ -624,8 +754,8 @@ function holidays(y) {
   const E = easter(y), m = {};
   const add = (d, n, states) => { if (!states || states.includes(st)) m[d] = n; };
   add(y + '-01-01', 'Neujahr'); add(y + '-01-06', 'Heilige Drei Könige', ['BW','BY','ST']); add(y + '-03-08', 'Frauentag', ['BE','MV']);
-  add(addDays(E, -2), 'Karfreitag'); add(addDays(E, 1), 'Ostermontag'); add(y + '-05-01', 'Tag der Arbeit');
-  add(addDays(E, 39), 'Christi Himmelfahrt'); add(addDays(E, 50), 'Pfingstmontag'); add(addDays(E, 60), 'Fronleichnam', ['BW','BY','HE','NW','RP','SL']);
+  add(addDays(E, -2), 'Karfreitag'); add(E, 'Ostersonntag', ['BB']); add(addDays(E, 1), 'Ostermontag'); add(y + '-05-01', 'Tag der Arbeit');
+  add(addDays(E, 39), 'Christi Himmelfahrt'); add(addDays(E, 49), 'Pfingstsonntag', ['BB']); add(addDays(E, 50), 'Pfingstmontag'); add(addDays(E, 60), 'Fronleichnam', ['BW','BY','HE','NW','RP','SL']);
   add(y + '-08-15', 'Mariä Himmelfahrt', ['SL']); add(y + '-08-15', 'Mariä Himmelfahrt (in vielen Gemeinden)', ['BY']); add(y + '-09-20', 'Weltkindertag', ['TH']); add(y + '-10-03', 'Tag der Deutschen Einheit');
   add(y + '-10-31', 'Reformationstag', ['BB','HB','HH','MV','NI','SN','ST','SH','TH']); add(y + '-11-01', 'Allerheiligen', ['BW','BY','NW','RP','SL']);
   if (st === 'SN') { let d = y + '-11-22'; while (dowOf(d) !== 3) d = addDays(d, -1); m[d] = 'Buß- und Bettag'; }
@@ -635,7 +765,7 @@ function holidays(y) {
 const holiday = d => validDate(d) ? holidays(+d.slice(0, 4))[d] || '' : '';
 
 /* ---------- Zustand und Speicher auf dem Gerät ---------- */
-let S = {entries: {}, expenses: {}, settings: clone(DEF), draft: null, lastBackup: '', installHintClosed: false};
+let S = {entries: {}, expenses: {}, settings: clone(DEF), draft: null, lastBackup: '', installHintClosed: false, seenVersion: APP_VERSION};
 const bucket = col => col === 'expenses' ? S.expenses : S.entries;
 let storageOk = true, persistAsked = false;
 let year = new Date().getFullYear();
@@ -656,13 +786,14 @@ function mergeSettings(s) {
   if (s.lodgingBy === 'firma' || s.lodgingBy === 'self') o.lodgingBy = s.lodgingBy;
   if (s.travelPaid != null) o.travelPaid = !!s.travelPaid;
   o.profSeen = !!s.profSeen;
+  if (s.nr20 && typeof s.nr20 === 'object') Object.keys(s.nr20).forEach(y => { const v = s.nr20[y]; if (/^\d{4}$/.test(y) && v !== '' && v != null && num(v) >= 0) o.nr20[y] = r2(num(v)); });
   if (s.shifts) Object.keys(o.shifts).forEach(k => { const v = s.shifts[k]; if (Array.isArray(v) && v.length === 2) o.shifts[k] = [txt(v[0], 5), txt(v[1], 5)]; });
   return o;
 }
 function blankEntry(date) {
   return {id:'', date, year:+date.slice(0, 4), type:'arbeit', shift:'', start:'', end:'', pause:S.settings.pause, travelMin:0,
     place:'', line:'', project:'', away:'none', depart:'', ret:'', meals:{b:false, l:false, d:false},
-    lodging:0, lodgingName:'', vehicle:'', trip:'dienst', meet:'', km:0, allowance:0, otherCost:0, otherNote:'', note:'', updated:''};
+    lodging:0, lodgingName:'', vehicle:'', trip:'dienst', meet:'', km:0, allowance:0, otherCost:0, otherNote:'', note:'', photos:[], updated:''};
 }
 function normEntry(x) {
   const date = validDate(x.date) ? x.date : today();
@@ -681,15 +812,18 @@ function normEntry(x) {
   e.note = txt(x.note, 1000);
   ['pause','lodging','km','allowance','otherCost'].forEach(k => e[k] = Math.max(0, num(x[k])));
   const m = x.meals || {}; e.meals = {b: !!m.b, l: !!m.l, d: !!m.d};
+  e.photos = normPhotos(x.photos);
   e.updated = txt(x.updated, 40);
   return e;
 }
-function blankExp(date) { return {id:'', date, year:+date.slice(0, 4), amount:0, cat:'kleidung', text:'', note:'', updated:''}; }
+// Belegfotos: nur die Kennungen stehen im Eintrag, die Bilder selbst liegen in der Gerätedatenbank (IndexedDB)
+const normPhotos = a => Array.isArray(a) ? [...new Set(a.filter(id => typeof id === 'string' && /^[A-Za-z0-9_-]{1,60}$/.test(id)))].slice(0, 20) : [];
+function blankExp(date) { return {id:'', date, year:+date.slice(0, 4), amount:0, cat:'kleidung', text:'', note:'', photos:[], updated:''}; }
 function normExp(x) {
   const date = validDate(x.date) ? x.date : today();
   const e = blankExp(date);
   e.id = txt(x.id, 100); e.amount = Math.max(0, num(x.amount)); e.cat = CAT_L[x.cat] ? x.cat : 'sonst';
-  e.text = txt(x.text); e.note = txt(x.note, 1000); e.updated = txt(x.updated, 40);
+  e.text = txt(x.text); e.note = txt(x.note, 1000); e.photos = normPhotos(x.photos); e.updated = txt(x.updated, 40);
   return e;
 }
 /* Speichern mit Schutz gegen zwei offene Fenster: Jeder Schreibvorgang bekommt eine Nummer (rev).
@@ -716,6 +850,7 @@ function applyStored(o, keepDraft) {
   if (!keepDraft) S.draft = o.draft && o.draft.e && validDate(o.draft.e.date) ? o.draft : null;
   S.lastBackup = txt(o.lastBackup, 40);
   S.installHintClosed = !!o.installHintClosed;
+  S.seenVersion = txt(o.seenVersion, 20);
 }
 function setBase(rev, maps) { base = Object.assign({rev}, maps || curMaps()); }
 function loadLocal() {
@@ -755,6 +890,7 @@ function mergeFrom(o) {
   if (c.s === base.s) S.settings = mergeSettings(o.settings);
   if ((o.lastBackup || '') > (S.lastBackup || '')) S.lastBackup = txt(o.lastBackup, 40);
   S.installHintClosed = S.installHintClosed || !!o.installHintClosed;
+  if (o.seenVersion && cmpVer(o.seenVersion, S.seenVersion || '0') > 0) S.seenVersion = txt(o.seenVersion, 20);
   return t;
 }
 function persist() {
@@ -769,7 +905,7 @@ function persist() {
     }
     const rev = Math.max(stored, base.rev) + 1;
     localStorage.setItem(KEY, JSON.stringify({version: 4, rev, entries: S.entries, expenses: S.expenses, settings: S.settings, draft: S.draft,
-      lastBackup: S.lastBackup, installHintClosed: S.installHintClosed}));
+      lastBackup: S.lastBackup, installHintClosed: S.installHintClosed, seenVersion: S.seenVersion}));
     localStorage.setItem(REV_KEY, String(rev));
     setBase(rev);
     storageOk = true;
@@ -811,7 +947,7 @@ const parseHours = v => {
 };
 const hoursIn = min => min ? nf(min / 60, 2).replace(/\./g, '') : '';
 const lodgingOf = e => isAway(e) && (e.away === 'an' || e.away === 'voll') ? e.lodging : 0;
-// Auslöse laut „Deine Arbeit“: ganzer Tag, An-/Abreisetag, Tagestour
+// Auslöse laut „Deine Arbeit“: 24 Std. auswärts, An-/Abreisetag, Tagestour
 const autoAllow = (away, type) => {
   const s = S.settings; if (!s.ausOn || OFF.has(type)) return 0;
   return away === 'voll' ? s.ausFull : away === 'an' || away === 'ab' ? s.ausHalf : away === 'tag' ? s.ausDay : 0;
@@ -875,8 +1011,35 @@ function dayVma(arr, d) {
   res.offL = r2(Math.min(allow - res.offV, lodg));
   return res;
 }
+/* Zuschlagsstunden nach § 3b EStG: nur die Stunden, die Beträge rechnet die Firma.
+   Nacht 20–6 Uhr 25 %, 0–4 Uhr 40 % wenn vor 0 Uhr begonnen. Sonntag 50 %, Feiertag und 31.12. ab 14 Uhr 125 %,
+   24.12. ab 14 Uhr, 25./26.12. und 1.5. 150 %. Wer vor 0 Uhr anfängt, bekommt den Sonntags-/Feiertagssatz auch für 0–4 Uhr des Folgetags.
+   Sonntag und Feiertag zählen nicht doppelt (der höhere Satz gilt), Nacht kommt dazu. Pause wird anteilig abgezogen. */
+const ZK = [['z25','Nacht 20 bis 6 Uhr','25 %'],['z40','Nacht 0 bis 4 Uhr, Beginn vor Mitternacht','40 %'],['z50','Sonntag','50 %'],
+  ['z125','Feiertag, Silvester ab 14 Uhr','125 %'],['z150','Heiligabend ab 14 Uhr, Weihnachten, 1. Mai','150 %']];
+function zDay(d) {
+  const md = d.slice(5), sun = dowOf(d) === 0, hol = !!holiday(d);
+  return t => md === '12-25' || md === '12-26' || md === '05-01' || (md === '12-24' && t >= 840) ? 150
+    : hol || (md === '12-31' && t >= 840) ? 125 : sun ? 50 : 0;
+}
+function zMin(e) {
+  const z = {z25:0, z40:0, z50:0, z125:0, z150:0};
+  if (!WORK.has(e.type) || e.shift === 'ausfall' || !validDate(e.date)) return z;
+  const s = tmin(e.start), span = spanF(e.start, e.end), w = workMin(e);
+  if (s == null || !span || !w) return z;
+  const day = [zDay(e.date), zDay(addDays(e.date, 1))];
+  for (let m = s; m < s + span; m++) {
+    const k = m >= 1440 ? 1 : 0, t = m - k * 1440, early = k === 1 && t < 240;
+    if (t >= 1200 || t < 360) z[early ? 'z40' : 'z25']++;
+    let r = day[k](t);
+    if (early) r = Math.max(r, day[0](1439));
+    if (r) z['z' + r]++;
+  }
+  const f = w / span; Object.keys(z).forEach(k => z[k] = Math.round(z[k] * f));
+  return z;
+}
 function agg() { return {workDays:0, trainDays:0, travelDays:0, freeDays:0, vacDays:0, sickDays:0, entries:0, min:0, nightShifts:0, awayDays:0, nights:0,
-  ausfall:0, ausfallMin:0, travelMin:0, tot:0,
+  ausfall:0, ausfallMin:0, travelMin:0, tot:0, z25:0, z40:0, z50:0, z125:0, z150:0,
   n_tag:0, n_an:0, n_ab:0, n_voll:0, vmaBase:0, vmaCut:0, vma:0, km:0, kmCost:0, kmOther:0, kmOff:0, lodging:0, other:0, allowance:0, offV:0, offL:0,
   commuteDays:0, commuteKm:0, commuteCost:0, commuteNoCar:0, commuteCapped:false, exp:0, cat:{}, travel:0, travelNet:0, gross:0, total:0, totalNoGew:0}; }
 const sortAsc = (a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (tmin(a.start) || 0) - (tmin(b.start) || 0);
@@ -896,7 +1059,7 @@ function computeYear(list, exps) {
     arr.forEach(e => { const c = commuteCost(e); if (c > 0 && (!cm || c > cm.c)) cm = {c, id: e.id, km: e.km, car: e.vehicle === 'pkw'}; });
     if (cm) commuteOf[cm.id] = cm.c;
     day[date] = dv;
-    const types = new Set(arr.map(e => e.type));
+    const types = new Set(arr.map(e => e.type)), zs = arr.map(zMin);
     [T, M[m]].forEach(a => {
       if (types.has('arbeit')) a.workDays++;
       if (types.has('schulung')) a.trainDays++;
@@ -910,8 +1073,9 @@ function computeYear(list, exps) {
       a.vmaBase += dv.base; a.vmaCut += dv.cut; a.vma += dv.val;
       a.offV += dv.offV || 0; a.offL += dv.offL || 0;
       if (cm) { a.commuteDays++; a.commuteKm += cm.km; a.commuteCost += cm.c; if (!cm.car) a.commuteNoCar += cm.c; }
-      arr.forEach(e => {
+      arr.forEach((e, i) => {
         a.entries++;
+        ZK.forEach(([k]) => a[k] += zs[i][k]);
         a.min += workMin(e);
         if (!OFF.has(e.type)) a.travelMin += travelOf(e);
         if (WORK.has(e.type) && e.shift === 'nacht' && workMin(e) > 0) a.nightShifts++;
@@ -930,6 +1094,9 @@ function computeYear(list, exps) {
   // Ohne eigenes Auto ist die Entfernungspauschale auf 4.500 € im Jahr begrenzt
   const cap = law(year).cap;
   if (T.commuteNoCar > cap) { T.commuteCost = r2(T.commuteCost - (T.commuteNoCar - cap)); T.commuteCapped = true; }
+  // Steht Nr. 20 der Lohnsteuerbescheinigung fest, gilt dieser Betrag statt der Schätzung aus den Tagen
+  T.offVCalc = T.offV; T.nr20 = nr20Of(year);
+  if (T.nr20 != null) T.offV = r2(Math.min(T.nr20, T.vma));
   [T, ...M].forEach(a => {
     a.tot = a.min + a.travelMin;
     a.travel = r2(a.vma + a.kmCost + a.lodging + a.other);
@@ -981,6 +1148,7 @@ function placeStats(list) {
   }).sort((a, b) => b.days - a.days || a.name.localeCompare(b.name, 'de'));
 }
 const yearList = y => Object.values(S.entries).filter(e => e.year === y);
+const nr20Of = y => S.settings.nr20[String(y)] != null ? S.settings.nr20[String(y)] : null;
 const expList = y => Object.values(S.expenses).filter(x => x.year === y);
 
 /* ---------- Dateien speichern und teilen ---------- */
@@ -998,6 +1166,150 @@ async function shareBlob(name, blob, title) {
   await navigator.share({files: [file], title});
 }
 const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+/* ---------- Belegfotos (Gerätedatenbank IndexedDB, nichts geht ins Netz) ---------- */
+const PDB = KEY + '-belege';
+const photoOk = (() => { try { return typeof indexedDB !== 'undefined' && !!indexedDB; } catch (e) { return false; } })();
+let pdbP = null;
+function pdb() {
+  if (!pdbP) pdbP = new Promise((res, rej) => {
+    const rq = indexedDB.open(PDB, 1);
+    rq.onupgradeneeded = () => { if (!rq.result.objectStoreNames.contains('files')) rq.result.createObjectStore('files', {keyPath: 'id'}); };
+    rq.onsuccess = () => res(rq.result);
+    rq.onerror = () => { pdbP = null; rej(rq.error); };
+  });
+  return pdbP;
+}
+async function pTx(mode, fn) {
+  const db = await pdb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', mode), r = fn(tx.objectStore('files'));
+    tx.oncomplete = () => res(r ? r.result : undefined);
+    tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error);
+  });
+}
+const pGet = id => pTx('readonly', st => st.get(id));
+const pPut = rec => pTx('readwrite', st => st.put(rec));
+const pDel = ids => ids.length ? pTx('readwrite', st => { ids.forEach(id => st.delete(id)); }).catch(() => {}) : Promise.resolve();
+const pKeys = () => pTx('readonly', st => st.getAllKeys());
+const photoId = () => 'b' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+const readBuf = blob => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsArrayBuffer(blob); });
+const recBlob = r => new Blob([r.buf], {type: r.type || 'application/octet-stream'});
+// Kennungen, die gespeicherte Einträge, Ausgaben oder ein Entwurf noch brauchen
+function photoRefs() {
+  const s = new Set();
+  Object.values(S.entries).forEach(e => e.photos.forEach(id => s.add(id)));
+  Object.values(S.expenses).forEach(x => x.photos.forEach(id => s.add(id)));
+  if (S.draft && S.draft.e && Array.isArray(S.draft.e.photos)) S.draft.e.photos.forEach(id => s.add(id));
+  return s;
+}
+// Fotos verkleinern (längste Seite 1600 px, JPEG), damit das Handy nicht voll läuft. Geht das nicht, bleibt das Original.
+async function shrink(file) {
+  if (!/^image\/(jpeg|png|webp|heic|heif)$/i.test(file.type)) return null;
+  const cv = document.createElement('canvas');
+  let cx = null; try { cx = cv.getContext && cv.getContext('2d'); } catch (e) { cx = null; }
+  if (!cx) return null;
+  const load = async () => {
+    if (window.createImageBitmap) { const b = await createImageBitmap(file); return {src: b, w: b.width, h: b.height, done: () => b.close && b.close()}; }
+    const url = URL.createObjectURL(file);
+    const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    return {src: im, w: im.naturalWidth, h: im.naturalHeight, done: () => URL.revokeObjectURL(url)};
+  };
+  try {
+    const img = await Promise.race([load(), new Promise((_, rej) => setTimeout(() => rej(new Error('Zeit')), 8000))]);
+    const k = Math.min(1, 1600 / Math.max(img.w, img.h, 1));
+    cv.width = Math.max(1, Math.round(img.w * k)); cv.height = Math.max(1, Math.round(img.h * k));
+    cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(img.src, 0, 0, cv.width, cv.height); img.done();
+    const out = await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.72));
+    return out && out.size < file.size ? out : null;
+  } catch (e) { return null; }
+}
+async function addPhotos(files) {
+  const form = F; if (!form || !photoOk) return;
+  const list = [...(files || [])];
+  let n = 0, skipped = 0;
+  for (const f of list) {
+    if (F !== form) break;
+    if (form.e.photos.length >= 20) { skipped++; continue; }
+    if (!(/^image\//.test(f.type) || f.type === 'application/pdf')) { skipped++; continue; }
+    const blob = (await shrink(f)) || f;
+    if (blob.size > 15e6) { skipped++; continue; }
+    const rec = {id: photoId(), type: blob.type || f.type, name: txt(f.name, 120), size: blob.size, created: new Date().toISOString(), buf: await readBuf(blob)};
+    try { await pPut(rec); } catch (e) { toast('Beleg ließ sich nicht speichern. Ist der Speicher voll?'); break; }
+    if (F !== form) { pDel([rec.id]); break; } // Formular wurde inzwischen geschlossen
+    form.e.photos.push(rec.id); form.added.push(rec.id); n++;
+  }
+  if (F !== form) return;
+  if (n) { touch(); askPersistent(); }
+  renderThumbs();
+  if (skipped) toast(skipped === 1 ? 'Eine Datei wurde übersprungen (nur Fotos und PDF, höchstens 20 je Tag)' : skipped + ' Dateien wurden übersprungen');
+  else if (n) toast(n === 1 ? 'Beleg hinzugefügt' : n + ' Belege hinzugefügt');
+}
+let thumbUrls = [], thumbTok = 0;
+async function renderThumbs() {
+  if (!F || !photoOk) return;
+  const el = $(F.kind === 'exp' ? '#p-thumbs' : '#f-thumbs'), tok = ++thumbTok, ids = F.e.photos.slice();
+  const recs = await Promise.all(ids.map(id => pGet(id).catch(() => null)));
+  if (tok !== thumbTok || !F) return;
+  thumbUrls.forEach(u => URL.revokeObjectURL(u)); thumbUrls = [];
+  el.innerHTML = ids.map((id, i) => {
+    const r = recs[i];
+    if (!r) return `<button class="thumb" type="button" data-photo="${esc(id)}" aria-label="Beleg fehlt">fehlt</button>`;
+    if (r.type === 'application/pdf') return `<button class="thumb" type="button" data-photo="${esc(id)}" aria-label="PDF-Beleg ${i + 1}">PDF</button>`;
+    const u = URL.createObjectURL(recBlob(r)); thumbUrls.push(u);
+    return `<button class="thumb" type="button" data-photo="${esc(id)}" aria-label="Beleg ${i + 1} ansehen"><img src="${u}" alt=""></button>`;
+  }).join('');
+}
+// Beleg groß ansehen, öffnen oder aus dem Formular entfernen
+let viewUrl = '', viewId = '';
+async function openViewer(id) {
+  viewId = id; const body = $('#v-body');
+  const r = await pGet(id).catch(() => null);
+  if (viewUrl) URL.revokeObjectURL(viewUrl); viewUrl = '';
+  if (!r) body.innerHTML = '<p>Dieses Foto ist auf dem Handy nicht mehr vorhanden.</p>';
+  else {
+    viewUrl = URL.createObjectURL(recBlob(r));
+    body.innerHTML = r.type === 'application/pdf'
+      ? `<p>${esc(r.name || 'PDF-Beleg')}</p><a class="btn primary" href="${viewUrl}" target="_blank" rel="noopener" download="${esc(r.name || 'Beleg.pdf')}">PDF öffnen</a>`
+      : `<img src="${viewUrl}" alt="Beleg">`;
+  }
+  $('#viewer').hidden = false;
+}
+function closeViewer() { $('#viewer').hidden = true; $('#v-body').innerHTML = ''; if (viewUrl) URL.revokeObjectURL(viewUrl); viewUrl = ''; viewId = ''; }
+$('#v-close').addEventListener('click', closeViewer);
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#viewer').hidden) closeViewer(); });
+$('#v-del').addEventListener('click', () => {
+  if (!F || !viewId) { closeViewer(); return; }
+  const id = viewId;
+  F.e.photos = F.e.photos.filter(x => x !== id);
+  // erst beim Speichern endgültig löschen; neu hinzugefügte gleich
+  if (F.added.includes(id)) { F.added = F.added.filter(x => x !== id); pDel([id]); } else F.removed.push(id);
+  closeViewer(); touch(); renderThumbs(); toast('Beleg entfernt');
+});
+['f-thumbs','p-thumbs'].forEach(id => $('#' + id).addEventListener('click', ev => { const b = ev.target.closest('[data-photo]'); if (b) openViewer(b.dataset.photo); }));
+['f-photo-in','p-photo-in'].forEach(id => $('#' + id).addEventListener('change', ev => { const fs = [...(ev.target.files || [])]; ev.target.value = ''; addPhotos(fs); }));
+// Beim Speichern: entfernte Fotos löschen. Beim Verwerfen: neu hinzugefügte Fotos löschen.
+function commitPhotos(form) { const refs = photoRefs(); pDel(form.removed.filter(id => !refs.has(id))); form.added = []; form.removed = []; }
+function discardPhotos(added) { if (!photoOk || !added || !added.length) return; const refs = photoRefs(); pDel(added.filter(id => !refs.has(id))); }
+// Aufräumen beim Start: Fotos, die nichts mehr braucht und die älter als einen Tag sind
+async function photoGC() {
+  if (!photoOk || loadError) return;
+  try {
+    const keys = await pKeys(), refs = photoRefs(), old = Date.now() - 864e5;
+    pDel(keys.filter(id => !refs.has(id) && +String(id).slice(1).split('-')[0] < old));
+  } catch (e) {}
+}
+// Für die Sicherung: Fotos als Text (Base64)
+function b64(buf) { const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+function unb64(s) { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; }
+async function photoDump() {
+  const out = [];
+  for (const id of photoRefs()) {
+    const r = await pGet(id).catch(() => null);
+    if (r) out.push({id: r.id, type: r.type, name: r.name, created: r.created, data: b64(r.buf)});
+  }
+  return out;
+}
 
 /* ---------- Installation und Updates ---------- */
 let installEvt = null;
@@ -1074,6 +1386,7 @@ function rowHTML(e, R) {
   const money = [];
   if (vma) money.push(eurS(vma));
   if (e.vehicle === 'pkw' && e.km && !OFF.has(e.type)) money.push(nf(e.km, 1) + (e.trip === 'sammel' ? ' km einf.' : ' km'));
+  if (e.photos.length) money.push(e.photos.length === 1 ? '1 Beleg' : e.photos.length + ' Belege');
   return `<button class="row" type="button" data-id="${esc(e.id)}">
     ${plateHTML(d)}
     <span class="main"><span class="l1">${l1}</span>${l2 ? `<span class="l2">${esc(l2)}</span>` : ''}</span>
@@ -1085,7 +1398,7 @@ function expRowHTML(x) {
   return `<button class="row" type="button" data-exp="${esc(x.id)}">
     ${plateHTML(x.date)}
     <span class="main"><span class="l1"><span class="chip">${esc(CAT_L[x.cat])}</span></span>${x.text || x.note ? `<span class="l2">${esc(x.text || x.note)}</span>` : ''}</span>
-    <span class="side"><span class="hrs">${eurS(x.amount)}</span></span>
+    <span class="side"><span class="hrs">${eurS(x.amount)}</span>${x.photos.length ? `<span class="money">${x.photos.length === 1 ? '1 Beleg' : x.photos.length + ' Belege'}</span>` : ''}</span>
     <span class="sr">${dShort(x.date)}</span>
   </button>`;
 }
@@ -1107,8 +1420,18 @@ function backupDue() {
   const days = Math.floor((Date.now() - Date.parse(S.lastBackup)) / 864e5);
   return days >= 7 ? `vor ${days} Tagen` : null;
 }
+// Neuigkeiten seit der zuletzt genutzten Version. Daten aus 1.3 und älter kennen das Feld noch nicht: dann nur die aktuelle Version zeigen.
+function newsList() {
+  const seen = S.seenVersion || '1.3.1';
+  return CHANGELOG.filter(([v]) => cmpVer(v, seen) > 0 && cmpVer(v, APP_VERSION) <= 0);
+}
 function topCards() {
   let h = '';
+  const news = loadError ? [] : newsList();
+  if (news.length) {
+    h += `<div class="news" role="status"><b>Neu in Version ${esc(news[0][0])}</b><ul>${news.map(([, l]) => l.map(t => `<li>${esc(t)}</li>`).join('')).join('')}</ul>
+      <button class="linkbtn" type="button" data-news="ok">Verstanden</button></div>`;
+  } else if (S.seenVersion !== APP_VERSION && !loadError) S.seenVersion = APP_VERSION;
   if (loadError) h += `<div class="warn barnote"><span>Die gespeicherten Daten auf diesem Handy ließen sich nicht lesen. ${storeBlocked ? 'Damit nichts verloren geht, speichert die App im Moment nichts.' : 'Eine Kopie davon ist aufgehoben.'} Lade am besten deine letzte Sicherung (Export &gt; Sicherung laden).</span>
     <button class="linkbtn" type="button" data-broken="dl">Defekte Daten herunterladen</button>${storeBlocked ? '<button class="linkbtn" type="button" data-broken="reset">Trotzdem neu beginnen</button>' : ''}</div>`;
   if (!S.settings.profSeen && !loadError) h += `<div class="note"><span>Stell einmal ein, wie deine Firma es regelt: Sammelpunkt, Auslöse, Unterkunft. Dann füllt die App neue Tage passend vor und rechnet genauer.</span><button class="linkbtn" type="button" data-go="settings">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button></div>`;
@@ -1219,10 +1542,10 @@ function renderStats() {
   tax += row('Verpflegungsmehraufwand', eur(T.vma));
   if (T.n_tag) tax += row(`${T.n_tag} × mehr als 8 Std. unterwegs à ${eurS(L.rateSmall)}`, eur(T.n_tag * L.rateSmall), 'sub');
   if (T.n_an) tax += row(`${T.n_an} × Anreisetag à ${eurS(L.rateSmall)}`, eur(T.n_an * L.rateSmall), 'sub');
-  if (T.n_voll) tax += row(`${T.n_voll} × ganzer Tag à ${eurS(L.rateFull)}`, eur(T.n_voll * L.rateFull), 'sub');
+  if (T.n_voll) tax += row(`${T.n_voll} × 24 Std. auswärts à ${eurS(L.rateFull)}`, eur(T.n_voll * L.rateFull), 'sub');
   if (T.n_ab) tax += row(`${T.n_ab} × Abreisetag à ${eurS(L.rateSmall)}`, eur(T.n_ab * L.rateSmall), 'sub');
   if (T.vmaCut) tax += row('abzüglich gestellte Mahlzeiten', '− ' + eur(T.vmaCut), 'sub');
-  if (T.offV) tax += row('abzüglich steuerfreie Auslöse für Verpflegung', '− ' + eur(T.offV), 'sub');
+  if (T.offV) tax += row(T.nr20 != null ? 'abzüglich steuerfreie Verpflegungszuschüsse (Nr. 20)' : 'abzüglich steuerfreie Auslöse für Verpflegung', '− ' + eur(T.offV), 'sub');
   tax += row('Fahrtkosten Dienstfahrten', eur(T.kmCost));
   if (T.km) tax += row(`${nf(T.km, 1)} km × ${nf2(L.kmRate)} €`, '', 'sub');
   if (T.kmOff) tax += row('abzüglich Kilometergeld der Firma', '− ' + eur(T.kmOff), 'sub');
@@ -1248,6 +1571,22 @@ function renderStats() {
   if (gew) pb += ` Gewerkschaftsbeiträge (${eur(gew)}) zählen zusätzlich zum Pauschbetrag.`;
   else if (T.cat.gew) pb += ` Gewerkschaftsbeiträge zählen in ${year} noch zum Pauschbetrag.`;
 
+  // Nr. 20 der Lohnsteuerbescheinigung: kommt Anfang des Folgejahres, ersetzt dann die Schätzung
+  let lstb = '';
+  if (T.vma || T.allowance || T.nr20 != null) {
+    const diff = T.nr20 != null && Math.abs(T.nr20 - T.offVCalc) >= 1;
+    lstb = `<div class="q" id="st-lstb">
+      <label>Nr. 20 deiner Lohnsteuerbescheinigung ${year} (€)<input id="st-nr20" inputmode="decimal" placeholder="noch nicht da" value="${T.nr20 != null ? inMoney(T.nr20) || '0' : ''}"></label>
+      <p class="hint">Dort steht, wie viel Verpflegungsgeld die Firma steuerfrei gezahlt hat. Die Bescheinigung kommt Anfang ${year + 1}. ${T.nr20 != null
+        ? `Gerechnet wird mit diesem Betrag. Aus deinen Einträgen ergäben sich ${eur(T.offVCalc)}.` : `Bis dahin schätzt die App den Betrag aus deinen Einträgen: ${eur(T.offVCalc)}.`}</p>
+      ${diff ? `<p class="warn">Die Lohnsteuerbescheinigung weicht um ${eur(Math.abs(T.nr20 - T.offVCalc))} von deinen Einträgen ab. Prüfe, ob alle Montagetage und die Auslöse stimmen.${T.nr20 > T.vma ? ' Nr. 20 ist sogar höher als deine Verpflegungspauschalen.' : ''}</p>` : ''}
+    </div>`;
+  }
+  const zSum = ZK.reduce((n, [k]) => n + T[k], 0);
+  const zCard = zSum ? `<div class="card"><h3>Zuschlagsstunden</h3>
+      <table class="ttable">${ZK.filter(([k]) => T[k]).map(([k, l, p]) => row(`${l} <span class="hint">bis ${p}</span>`, nf(T[k] / 60, 2) + ' h')).join('')}</table>
+      <p class="hint">So viele Stunden darf die Firma mit diesen Zuschlägen steuerfrei bezahlen (§ 3b EStG, Grundlohn bis 50 € je Stunde). Vergleiche mit deiner Lohnabrechnung. Feiertage nach dem Bundesland in den Einstellungen, Pause anteilig abgezogen, Ausfallschichten zählen nicht.</p>
+    </div>` : '';
   const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
   const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
     <span class="d">${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}${p.alias.length ? ' · auch als ' + esc(p.alias.join(', ')) : ''}</span>
@@ -1269,6 +1608,7 @@ function renderStats() {
       ${lawKnown(year) ? '' : `<p class="warn">Für ${year} sind noch keine gesetzlichen Werte hinterlegt. Gerechnet wird mit den Werten von ${lawYear(year)}, bis ein Update kommt.</p>`}
       <table class="ttable">${tax}</table>
       <p class="hint">${pb}</p>
+      ${lstb}
       ${T.allowance ? `<p class="hint">Auslöse und Spesen erhalten: ${eur(T.allowance)}. Davon mit Kosten verrechnet: ${eur(T.offV + T.offL)}. ${T.allowance - T.offV - T.offL > 0.004 ? `Der Rest (${eur(T.allowance - T.offV - T.offL)}) liegt über den steuerlichen Pauschalen und mindert hier nichts.` : ''}</p>` : ''}
       <p class="hint">Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
       ${T.kmOther ? `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>` : ''}
@@ -1277,14 +1617,16 @@ function renderStats() {
       <div class="mtab"><div class="mrow h"><span></span><span>Stunden mit Fahrzeit</span><span class="n">Std.</span><span class="n">Verpfl.</span></div>${months}</div>
       <p class="hint">Urlaub ${T.vacDays} · krank ${T.sickDays} · Schulung ${T.trainDays} · An-/Abreisetage ${T.travelDays} · Ausfallschichten ${T.ausfall} · Arbeitszeit ${nf(T.min / 60, 1)} h · Fahrzeit ${nf(T.travelMin / 60, 1)} h</p>
     </div>
+    ${zCard}
     ${places ? `<div class="card"><h3>Einsatzorte</h3><div class="places">${places}</div></div>` : ''}
+    <div class="card"><h3>Jahresbericht</h3><p class="hint">Alle Zahlen mit Ausfüllhilfe für die Anlage N als PDF.</p><button class="btn block" type="button" data-report="1">Jahresbericht ansehen</button></div>
     <details class="card"><summary>So rechnet das Schichtbuch</summary>
-      <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(L.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(L.rateSmall)} und für jeden vollen Tag dazwischen ${eurS(L.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(L.rateFull * 0.2)} (Frühstück) bzw. ${eur(L.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
+      <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(L.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(L.rateSmall)} und für jeden Tag dazwischen, an dem du 24 Stunden weg bist, ${eurS(L.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(L.rateFull * 0.2)} (Frühstück) bzw. ${eur(L.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
       <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie sind für deine eigene Übersicht und zum Vergleich mit der Lohnabrechnung.</p>
       <p><b>Nachtschicht.</b> Eine Nachtschicht ohne Übernachtung trägst du an dem Tag ein, an dem du losfährst. Die Zeit über Mitternacht wird zusammengerechnet und gibt einmal die Pauschale. Sie zählt für den Kalendertag, an dem du länger unterwegs warst (Mitternachtsregel). Gleicher Beginn und gleiches Ende gilt als 24-Stunden-Schicht.</p>
       <p><b>Fahrten.</b> Fährst du mit dem eigenen Auto direkt zur Baustelle oder zu wechselnden Treffpunkten, ist das eine Dienstfahrt: Jeder gefahrene Kilometer zählt mit ${nf2(L.kmRate)} €, auch Heimfahrten am Wochenende. Als Mitfahrer oder mit Bahn und Bus gibt es dafür keine Kilometer, Tickets trägst du als Ausgabe ein. Steht im Vertrag ein fester Sammelpunkt oder ein fester Betrieb, zu dem du jeden Tag fährst, zählt dafür nur die einfache Entfernung mit ${commuteDesc(year)} (Entfernungspauschale). Die gibt es auch als Mitfahrer und mit Bahn oder Bus, dann höchstens ${eurS(L.cap)} im Jahr. Bringt dich die Firma mit ihrem Bus hin (Sammelbeförderung), gibt es dafür nichts. Ab dem Sammelpunkt bist du trotzdem auswärts tätig.</p>
       <p><b>Übernachtung.</b> Nur selbst bezahlte Kosten eintragen. Ist das Frühstück im Zimmerpreis enthalten und nicht extra ausgewiesen, zieh ${eur(L.rateFull * 0.2)} pro Nacht ab.</p>
-      <p><b>Auslöse und Spesen.</b> Was die Firma steuerfrei zahlt, hast du schon ohne Steuer bekommen. Deshalb wird die Auslöse jeden Tag zuerst mit der Verpflegungspauschale verrechnet, höchstens bis auf 0. Was darüber liegt, wird nur noch mit einer selbst bezahlten Übernachtung verrechnet, nie mit deinen Fahrtkosten. Kilometergeld der Firma wird mit den Fahrtkosten verrechnet. ${st.ausOn && (st.ausFull || st.ausHalf || st.ausDay) ? `An Montagetagen trägt die App die Auslöse aus „Deine Arbeit“ ein: ${eurS(st.ausFull)} für einen ganzen Tag, ${eurS(st.ausHalf)} für An- und Abreisetage${st.ausDay ? `, ${eurS(st.ausDay)} für Tagestouren` : ''}. ` : ''}Den steuerfreien Verpflegungsteil findest du auch auf der Lohnsteuerbescheinigung unter Nummer 20, vergleiche die Summe.</p>
+      <p><b>Auslöse und Spesen.</b> Was die Firma steuerfrei zahlt, hast du schon ohne Steuer bekommen. Deshalb wird die Auslöse jeden Tag zuerst mit der Verpflegungspauschale verrechnet, höchstens bis auf 0. Was darüber liegt, wird nur noch mit einer selbst bezahlten Übernachtung verrechnet, nie mit deinen Fahrtkosten. Kilometergeld der Firma wird mit den Fahrtkosten verrechnet. ${st.ausOn && (st.ausFull || st.ausHalf || st.ausDay) ? `An Montagetagen trägt die App die Auslöse aus „Deine Arbeit“ ein: ${eurS(st.ausFull)} für 24 Std. auswärts, ${eurS(st.ausHalf)} für An- und Abreisetage${st.ausDay ? `, ${eurS(st.ausDay)} für Tagestouren` : ''}. ` : ''}Den steuerfreien Verpflegungsteil findest du auf der Lohnsteuerbescheinigung unter Nummer 20. Trag ihn oben ein, sobald du sie hast.</p>
       <p><b>Drei Monate.</b> Wer länger als drei Monate regelmäßig, also an mindestens drei Tagen pro Woche, an derselben Stelle arbeitet, bekommt dort danach keine Verpflegungspauschale mehr. Eine Unterbrechung von mindestens vier Wochen startet die Frist neu. Orte wie „Hamm“ und „Hamm (Westf)“ werden dabei zusammengefasst. Die App rechnet die Pauschale trotzdem weiter und zeigt nur einen Hinweis, prüfe den Fall selbst.</p>
       <p><b>Pauschbetrag.</b> Das Finanzamt zieht ohnehin ${eurS(L.wkp)} Werbungskosten ab. Erst was darüber liegt, senkt deine Steuer zusätzlich. Gewerkschaftsbeiträge zählen ${L.gewExtra ? 'zusätzlich' : 'erst ab dem Steuerjahr 2026 zusätzlich'}.</p>
       <p><b>Gesetzliche Werte.</b> Alle Pauschalen sind die gesetzlichen Werte für ${year} und in der App nicht änderbar. Neue Werte kommen mit Updates.</p>
@@ -1293,6 +1635,14 @@ function renderStats() {
   </div>`;
   if (wasOpen) el.querySelector('details').open = true;
 }
+
+$('#v-stats').addEventListener('change', ev => {
+  if (ev.target.id !== 'st-nr20') return;
+  const v = ev.target.value.trim(), m = Object.assign({}, S.settings.nr20);
+  if (v === '') delete m[String(year)]; else m[String(year)] = Math.max(0, num(v));
+  S.settings = mergeSettings(Object.assign({}, S.settings, {nr20: m}));
+  persist(); renderStats(); toast(v === '' ? 'Nr. 20 entfernt' : 'Nr. 20 gespeichert');
+});
 
 /* ---------- Anzeige: Export & Einstellungen ---------- */
 function renderMore() {
@@ -1303,6 +1653,9 @@ function renderMore() {
   $('#x-backup-share').hidden = !canShareFiles;
   $('#b-last').textContent = S.lastBackup ? 'Letzte Sicherung: ' + dDot(S.lastBackup.slice(0, 10)) : 'Noch keine Sicherung gespeichert.';
   $('#about-ver').textContent = 'Version ' + APP_VERSION + (isStandalone() ? ' · installiert' : '');
+  $('#about-log').innerHTML = CHANGELOG.map(([v, l]) => `<div><h4>Version ${esc(v)}</h4><ul>${l.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>`).join('');
+  const nP = photoOk ? photoRefs().size : 0;
+  $('#x-photos-w').hidden = !nP; $('#x-photos-l').textContent = `Belegfotos mitsichern (${nP})`;
   $('#install-btn2').hidden = !installEvt || isStandalone();
 }
 $('#s-state').innerHTML = STATES.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
@@ -1333,7 +1686,7 @@ function profileLines() {
   out.push(['Fester Ort laut Vertrag', s.fixed === 'none' ? 'keiner, wechselnde Baustellen'
     : (s.fixed === 'sammel' ? 'Sammelpunkt' : 'Betrieb') + (s.fixedName ? ' ' + s.fixedName : '') + (s.fixedKm ? ', ' + nf(s.fixedKm, 1) + ' km einfach' : '')]);
   out.push(['Auslöse', s.ausOn && (s.ausFull || s.ausHalf || s.ausDay)
-    ? `ganzer Tag ${eurS(s.ausFull)}, An-/Abreise ${eurS(s.ausHalf)}${s.ausDay ? ', Tagestour ' + eurS(s.ausDay) : ''}` : 'keine']);
+    ? `24 Std. auswärts ${eurS(s.ausFull)}, An-/Abreise ${eurS(s.ausHalf)}${s.ausDay ? ', Tagestour ' + eurS(s.ausDay) : ''}` : 'keine']);
   out.push(['Unterkunft zahlt', s.lodgingBy === 'firma' ? 'die Firma' : 'du selbst']);
   out.push(['Kilometergeld', s.kmOn && s.kmGeld ? nf2(s.kmGeld) + ' € je km' : 'keins']);
   return out;
@@ -1374,7 +1727,7 @@ function renderLaw() {
   const y = year, L = law(y), row = (l, v) => `<tr><td>${l}</td><td class="n">${v}</td></tr>`;
   $('#law-card summary').textContent = 'Gesetzliche Werte ' + y;
   $('#law-table').innerHTML = (lawKnown(y) ? '' : `<tr><td colspan="2" class="warn">Für ${y} sind noch keine Werte hinterlegt. Gerechnet wird mit ${lawYear(y)}.</td></tr>`) +
-    row('Verpflegung über 8 Std., An- und Abreisetag', eurS(L.rateSmall)) + row('Verpflegung ganzer Tag (24 Std.)', eurS(L.rateFull)) +
+    row('Verpflegung über 8 Std., An- und Abreisetag', eurS(L.rateSmall)) + row('Verpflegung 24 Std. auswärts', eurS(L.rateFull)) +
     row('Kürzung Frühstück / Mittag- oder Abendessen', eur(L.rateFull * 0.2) + ' / ' + eur(L.rateFull * 0.4)) +
     row('Dienstfahrt eigenes Auto je gefahrenem km', nf2(L.kmRate) + ' €') + row('Entfernungspauschale je km einfach', commuteDesc(y)) +
     row('Höchstbetrag ohne eigenes Auto', eurS(L.cap) + ' im Jahr') + row('Arbeitnehmer-Pauschbetrag', eurS(L.wkp)) +
@@ -1412,9 +1765,10 @@ $('#install-btn2').addEventListener('click', doInstall);
 /* ---------- Navigation ---------- */
 function show(v) {
   view = v;
-  ['list','stats','more','settings','form','exp'].forEach(k => $('#v-' + k).hidden = k !== v);
-  const form = v === 'form' || v === 'exp';
-  $('#top').hidden = form; $('#tabs').hidden = form; $('#formfoot').hidden = !form;
+  ['list','stats','more','settings','form','exp','report'].forEach(k => $('#v-' + k).hidden = k !== v);
+  const form = v === 'form' || v === 'exp', full = form || v === 'report';
+  $('#top').hidden = full; $('#tabs').hidden = full; $('#formfoot').hidden = !form;
+  $('#b-beleg').hidden = !photoOk; $('#p-beleg').hidden = !photoOk;
   document.querySelectorAll('#tabs [data-view]').forEach(b => b.dataset.view === v ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
   if (v === 'stats') renderStats();
   if (v === 'more') renderMore();
@@ -1443,11 +1797,12 @@ document.addEventListener('click', ev => { const g = ev.target.closest('[data-go
 $('#v-list').addEventListener('click', ev => {
   const t = ev.target;
   const md = t.closest('[data-mode]'); if (md) { listMode = md.dataset.mode; renderList(); return; }
-  const dr = t.closest('[data-draft]'); if (dr) { if (dr.dataset.draft === 'resume') resumeDraft(); else { dropDraft(); renderList(); } return; }
+  const dr = t.closest('[data-draft]'); if (dr) { if (dr.dataset.draft === 'resume') resumeDraft(); else { const ad = S.draft && S.draft.added; dropDraft(); discardPhotos(ad); renderList(); } return; }
   if (t.closest('[data-install]')) { doInstall(); return; }
   if (t.closest('[data-hint-close]')) { S.installHintClosed = true; persist(); renderList(); return; }
   const bk = t.closest('[data-backup]'); if (bk) { backup(bk.dataset.backup === 'share'); return; }
   if (t.closest('[data-setup]')) { S.settings.profSeen = true; persist(); renderList(); return; }
+  if (t.closest('[data-news]')) { S.seenVersion = APP_VERSION; persist(); renderList(); return; }
   const br = t.closest('[data-broken]');
   if (br) {
     if (br.dataset.broken === 'dl') downloadBlob('Schichtbuch_defekte_Daten.txt', new Blob([brokenRaw], {type: 'text/plain'}));
@@ -1475,7 +1830,7 @@ function touch() {
 function saveDraft() {
   if (!F || !F.dirty) return;
   if (F.kind === 'exp') readExp(); else readInputs();
-  S.draft = {kind: F.kind, id: F.id, isNew: F.isNew, e: clone(F.e), prefilled: F.prefilled || null, we: F.we || 'skip',
+  S.draft = {kind: F.kind, id: F.id, isNew: F.isNew, e: clone(F.e), prefilled: F.prefilled || null, we: F.we || 'skip', added: F.added.slice(), removed: F.removed.slice(),
     until: F.kind === 'day' ? $('#m-until').value : '', montage: F.kind === 'day' && $('#m-montage').checked, multiOpen: F.kind === 'day' && $('#b-multi').open};
   persist();
 }
@@ -1483,7 +1838,8 @@ function dropDraft() { clearTimeout(draftT); S.draft = null; persist(); }
 function resumeDraft() {
   const d = S.draft; if (!d) return;
   const exp = d.kind === 'exp';
-  F = {kind: exp ? 'exp' : 'day', id: d.id, isNew: d.isNew, e: exp ? normExp(d.e) : normEntry(d.e), prefilled: d.prefilled, we: d.we || 'skip', armed: false, dirty: true};
+  F = {kind: exp ? 'exp' : 'day', id: d.id, isNew: d.isNew, e: exp ? normExp(d.e) : normEntry(d.e), prefilled: d.prefilled, we: d.we || 'skip', armed: false, dirty: true,
+    added: normPhotos(d.added), removed: normPhotos(d.removed)};
   if (!F.isNew && !bucket(exp ? 'expenses' : 'entries')[F.id]) { F.isNew = true; F.id = null; }
   if (exp) { show('exp'); fillExp(); }
   else {
@@ -1499,7 +1855,8 @@ function tryLeave() {
   closeForm();
 }
 function closeForm() {
-  dropDraft(); F = null; show('list'); renderList();
+  const added = F ? F.added : null;
+  dropDraft(); F = null; discardPhotos(added); closeViewer(); show('list'); renderList();
   if (history.state && history.state.f) history.back();
 }
 const markFormHistory = () => { if (!(history.state && history.state.f)) history.pushState({f: 1}, ''); };
@@ -1511,7 +1868,10 @@ document.querySelectorAll('[data-leave]').forEach(b => b.addEventListener('click
   else if (F.kind === 'exp') saveExp(); else saveDay();
 }));
 // Zurück-Taste des Handys: Formular sauber schließen statt die App zu verlassen
-window.addEventListener('popstate', () => { if (F) { history.pushState({f: 1}, ''); tryLeave(); } else if (view !== 'list') { show('list'); renderList(); } });
+window.addEventListener('popstate', () => {
+  if (!$('#viewer').hidden) { closeViewer(); if (F) history.pushState({f: 1}, ''); return; }
+  if (view === 'report') { show('more'); return; }
+  if (F) { history.pushState({f: 1}, ''); tryLeave(); } else if (view !== 'list') { show('list'); renderList(); } });
 
 /* ---------- Formular: Arbeitstag ---------- */
 function lastWorkBefore(date) {
@@ -1567,7 +1927,7 @@ function newEntry(date) {
 function openForm(id, date) {
   const isNew = !id || !S.entries[id];
   const e = isNew ? newEntry(validDate(date) ? date : today()) : clone(S.entries[id]);
-  F = {kind: 'day', id: isNew ? null : id, isNew, e, armed: false, prefilled: null, dirty: false, we: 'skip'};
+  F = {kind: 'day', id: isNew ? null : id, isNew, e, armed: false, prefilled: null, dirty: false, we: 'skip', added: [], removed: []};
   if (isNew) F.prefilled = prefill(e);
   show('form');
   fillForm();
@@ -1640,7 +2000,9 @@ function fillForm() {
   $('#b-multi').hidden = !F.isNew; $('#b-multi').open = false;
   $('#m-until').value = ''; $('#m-montage').checked = false;
   $('#f-delete').hidden = F.isNew; disarm();
-  syncSegs(); updateForm();
+  // Eingeklappte Felder öffnen, wenn schon etwas drinsteht
+  $('#d-place').open = !!(e.line || e.project); $('#d-note').open = !!e.note;
+  syncSegs(); updateForm(); renderThumbs();
 }
 function readInputs() {
   const e = F.e;
@@ -1680,11 +2042,20 @@ function updateForm() {
     tag: `Morgens los, abends wieder zu Hause. Mehr als 8 Std. weg: ${eurS(L.rateSmall)}.${ausTxt(st.ausDay)}` +
       (st.fixed === 'betrieb' ? ' Fährst du vom Betrieb aus weiter, zählt die Zeit ab Abfahrt am Betrieb bis zur Rückkehr.' : ''),
     an: `Erster Tag der Montage, Übernachtung auswärts. Pauschale fürs Finanzamt: ${eurS(L.rateSmall)}.${ausTxt(st.ausHalf)}`,
-    voll: `Ganzer Tag (24 Std.) auswärts, auch Wochenende auf Montage. Pauschale fürs Finanzamt: ${eurS(L.rateFull)}.${ausTxt(st.ausFull)}`,
+    voll: `Tag zwischen Anreise und Abreise: von 0 bis 24 Uhr weg von zu Hause, auch am Wochenende auf Montage. Pauschale fürs Finanzamt: ${eurS(L.rateFull)}.${ausTxt(st.ausFull)}`,
     ab: `Letzter Tag der Montage, heute zurück nach Hause. Pauschale fürs Finanzamt: ${eurS(L.rateSmall)}.${ausTxt(st.ausHalf)}`}[a];
+  // 24 Std. auswärts und Abreise setzen voraus, dass man die Nacht davor schon auswärts war
+  const prevD = validDate(e.date) ? addDays(e.date, -1) : '';
+  const prevAway = !!prevD && Object.values(S.entries).some(x => x.id !== F.id && x.date === prevD && isAway(x) && (x.away === 'an' || x.away === 'voll'));
+  const montageMulti = F.isNew && $('#b-multi').open && $('#m-montage').checked;
+  const hp = $('#h-prev'), needPrev = !off && !!prevD && (a === 'voll' || a === 'ab') && !prevAway && !montageMulti;
+  hp.hidden = !needPrev;
+  if (needPrev) hp.textContent = a === 'voll'
+    ? `Am ${dShort(prevD)} ist keine Anreise eingetragen. „24 Std. auswärts“ gilt nur, wenn du schon die Nacht davor auswärts warst. Sonst wähle Anreise oder Tagestour, oder trag den Vortag noch ein.`
+    : `Am ${dShort(prevD)} ist keine Anreise und kein Tag mit 24 Std. auswärts eingetragen. Abreise heißt: Du hast auswärts übernachtet und fährst heute heim. Sonst wähle Tagestour, oder trag den Vortag noch ein.`;
   const hA = $('#h-allow'), showA = st.ausOn && !!(st.ausFull || st.ausHalf || st.ausDay);
   hA.hidden = !showA;
-  if (showA) hA.textContent = `Die App trägt die Auslöse aus „Deine Arbeit“ von selbst ein (ganzer Tag ${eurS(st.ausFull)}, An- und Abreisetag ${eurS(st.ausHalf)}${st.ausDay ? `, Tagestour ${eurS(st.ausDay)}` : ''}). Du kannst den Betrag hier ändern.`;
+  if (showA) hA.textContent = `Die App trägt die Auslöse aus „Deine Arbeit“ von selbst ein (24 Std. auswärts ${eurS(st.ausFull)}, An- und Abreisetag ${eurS(st.ausHalf)}${st.ausDay ? `, Tagestour ${eurS(st.ausDay)}` : ''}). Du kannst den Betrag hier ändern.`;
   const place = st.fixed === 'betrieb' ? 'Betrieb' : 'Sammelpunkt';
   $('#h-trip').textContent = e.trip === 'sammel'
     ? `Nur wählen, wenn laut Vertrag ein fester ${place} gilt, zu dem du jeden Tag fährst. Dann zählt die einfache Strecke mit der Entfernungspauschale, auch als Mitfahrer oder mit Bahn und Bus.`
@@ -1757,10 +2128,11 @@ function updateMultiInfo() {
   const n = ds.filter(d => !taken.has(d)).length;
   let s = `Legt ${n} ${n === 1 ? 'Eintrag' : 'Einträge'} an (${dShort(ds[0])} bis ${dShort(ds[ds.length - 1])}).`;
   if (n < ds.length) s += ` ${ds.length - n} ${ds.length - n === 1 ? 'Tag hat' : 'Tage haben'} schon einen Eintrag und ${ds.length - n === 1 ? 'bleibt' : 'bleiben'}, wie ${ds.length - n === 1 ? 'er ist' : 'sie sind'}.`;
-  if (F.we === 'away') s += ' Samstag und Sonntag werden als frei mit ganzem Tag auswärts gespeichert, ohne Arbeitszeit.';
-  if ($('#m-montage').checked && montageGoesOn(ds[0])) s += ` Am ${dShort(addDays(ds[0], -1))} bist du schon auf Montage eingetragen, deshalb zählt ${dShort(ds[0])} als ganzer Tag auswärts.`;
+  if (F.we === 'away') s += ' Samstag und Sonntag werden als frei mit 24 Std. auswärts gespeichert, ohne Arbeitszeit.';
+  if ($('#m-montage').checked && montageGoesOn(ds[0])) s += ` Am ${dShort(addDays(ds[0], -1))} bist du schon auf Montage eingetragen, deshalb zählt ${dShort(ds[0])} als 24 Std. auswärts.`;
   if ($('#m-montage').checked && F.e.km && F.e.trip !== 'sammel') s += ' Kilometer werden nur am An- und Abreisetag übernommen.';
   if (F.e.otherCost) s += ' Sonstige Ausgaben nur am ersten Tag.';
+  if (F.e.photos.length) s += ' Belege nur am ersten Tag.';
   el.textContent = s;
 }
 ['f-date','f-start','f-end','f-pause','f-travel','f-place','f-line','f-project','f-depart','f-ret','f-lodging','f-lodgingName','f-km','f-allowance','f-other','f-otherNote','f-note','f-meet','m-until','m-montage']
@@ -1774,7 +2146,8 @@ $('#f-prev').addEventListener('click', () => shiftDate(-1));
 $('#f-next').addEventListener('click', () => shiftDate(1));
 function shiftDate(n) { const d = $('#f-date').value; if (!validDate(d)) return; $('#f-date').value = addDays(d, n); touch(); updateForm(); }
 $('#f-dup').addEventListener('click', ev => { const b = ev.target.closest('[data-open]'); if (b) { dropDraft(); openForm(b.dataset.open); } });
-$('#f-clear').addEventListener('click', () => { const d = F.e.date; F.e = newEntry(validDate(d) ? d : today()); F.prefilled = null; fillForm(); touch(); });
+// Felder leeren, Belegfotos bleiben dabei erhalten
+$('#f-clear').addEventListener('click', () => { const d = F.e.date, ph = F.e.photos; F.e = newEntry(validDate(d) ? d : today()); F.e.photos = ph; F.prefilled = null; fillForm(); touch(); });
 
 const montageGoesOn = d => !!d && Object.values(S.entries).some(x => x.date === addDays(d, -1) && isAway(x) && (x.away === 'an' || x.away === 'voll'));
 function montageAway(dates) {
@@ -1824,7 +2197,7 @@ function saveDay() {
       if (weAway) e.type = e.away === 'an' ? 'anreise' : e.away === 'ab' ? 'abreise' : 'frei';
       if (e.trip !== 'sammel' && ((pattern && e.away === 'voll') || (weAway && e.away === 'voll'))) e.km = 0;
       if (weAway && e.trip === 'sammel') e.km = 0;
-      if (i > 0) { e.otherCost = 0; e.otherNote = ''; }
+      if (i > 0) { e.otherCost = 0; e.otherNote = ''; e.photos = []; }
       if (e.away === 'an' && !e.depart) e.depart = base.depart;
       if (e.away === 'ab' && !e.ret) e.ret = base.ret;
       if (autoA) e.allowance = autoAllow(e.away, e.type);
@@ -1837,7 +2210,7 @@ function saveDay() {
     S.entries[e.id] = e; savedYear = e.year;
   }
   listMode = 'days';
-  persist();
+  persist(); commitPhotos(F);
   toast(storageOk ? (msg || 'Gespeichert') : saveMsg());
   if (savedYear && savedYear !== year) year = savedYear;
   renderYears(); fillDatalists(); closeForm(); afterSave();
@@ -1847,7 +2220,7 @@ function saveDay() {
 function openExp(id, date) {
   const isNew = !id || !S.expenses[id];
   const d = validDate(date) ? date : (String(year) === today().slice(0, 4) ? today() : year + '-01-01');
-  F = {kind: 'exp', id: isNew ? null : id, isNew, e: isNew ? blankExp(d) : clone(S.expenses[id]), armed: false, dirty: false};
+  F = {kind: 'exp', id: isNew ? null : id, isNew, e: isNew ? blankExp(d) : clone(S.expenses[id]), armed: false, dirty: false, added: [], removed: []};
   show('exp'); fillExp();
   markFormHistory();
 }
@@ -1855,7 +2228,7 @@ function fillExp() {
   $('#p-date').value = F.e.date; $('#p-amount').value = inMoney(F.e.amount); $('#p-text').value = F.e.text; $('#p-note').value = F.e.note;
   $('#p-title').textContent = F.isNew ? 'Neue Ausgabe' : 'Ausgabe';
   $('#p-leave').hidden = true; $('#f-delete').hidden = F.isNew; disarm();
-  syncSegs(); updateExp();
+  syncSegs(); updateExp(); renderThumbs();
 }
 function readExp() { F.e.date = $('#p-date').value; F.e.amount = Math.max(0, num($('#p-amount').value)); F.e.text = $('#p-text').value.trim(); F.e.note = $('#p-note').value.trim(); }
 function updateExp() { readExp(); $('#h-cat').textContent = CAT_HINT[F.e.cat] || ''; }
@@ -1867,7 +2240,7 @@ function saveExp() {
   if (!F.e.amount) { toast('Bitte einen Betrag eintragen'); $('#p-amount').focus(); return; }
   const x = normExp(Object.assign(clone(F.e), {id: F.id || newId(), updated: new Date().toISOString()}));
   S.expenses[x.id] = x;
-  listMode = 'exp'; persist();
+  listMode = 'exp'; persist(); commitPhotos(F);
   if (x.year !== year) year = x.year;
   renderYears(); fillDatalists(); closeForm(); toast(saveMsg()); afterSave();
 }
@@ -1880,7 +2253,9 @@ $('#f-delete').addEventListener('click', () => {
   const b = $('#f-delete');
   if (!F.armed) { F.armed = true; b.classList.add('armed'); b.textContent = 'Wirklich löschen?'; setTimeout(() => F && F.armed && disarm(), 4000); return; }
   const col = F.kind === 'exp' ? 'expenses' : 'entries', msg = F.kind === 'exp' ? 'Ausgabe gelöscht' : 'Eintrag gelöscht';
+  const gone = ((bucket(col)[F.id] || {}).photos || []).concat(F.e.photos);
   delete bucket(col)[F.id]; persist();
+  F.added = []; const refs = photoRefs(); pDel([...new Set(gone)].filter(id => !refs.has(id)));
   closeForm(); toast(msg); afterSave();
 });
 function fillDatalists() {
@@ -1944,24 +2319,26 @@ function addSheet(wb, name, rows, widths, opt = {}) {
 const mealsTxt = e => isAway(e) ? MEALS.filter(([k]) => e.meals[k]).map(([, l]) => l).join(', ') : '';
 const ENTRY_COLS = [['Datum',11],['Tag',5],['Tagesart',10],['Schicht',8],['Beginn',7],['Ende',7],['Pause (Min.)',8],['Arbeitszeit (Std.)',10],
   ['Fahrzeit (Std.)',9],['Stunden gesamt',9],
+  ['Nacht 25 % (Std.)',9],['Nacht 40 % (Std.)',9],['Sonntag 50 % (Std.)',9],['Feiertag 125 % (Std.)',9],['Feiertag 150 % (Std.)',9],
   ['Einsatzort',22],['Strecke / km',16],['Auftrag / Baustelle',24],['Auswärts',24],['Abfahrt',8],['Rückkehr',9],['Abwesenheit (Std.)',10],
   ['Mahlzeiten gestellt',18],['Verpflegung (€)',12],['Unterkunft',18],['Übernachtung (€)',12],['Fahrzeug',13],['Treffpunkt',18],
-  ['km Dienstfahrt',10],['Fahrtkosten (€)',12],['km einfach Sammelpunkt',12],['Entfernungspauschale (€)',13],['Sonstige Ausgaben (€)',12],['Wofür',16],['Auslöse / Spesen vom AG (€)',14],['Notiz',30]];
+  ['km Dienstfahrt',10],['Fahrtkosten (€)',12],['km einfach Sammelpunkt',12],['Entfernungspauschale (€)',13],['Sonstige Ausgaben (€)',12],['Wofür',16],['Auslöse / Spesen vom AG (€)',14],['Notiz',30],['Belegfotos',8]];
 function entryRow(e, R) {
   const work = WORK.has(e.type), aw = isAway(e);
   const v = R.vmaOf[e.id] || 0, cc = R.commuteOf[e.id] || 0;
   const pkw = e.vehicle === 'pkw' && !OFF.has(e.type);
-  const tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e);
+  const tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e), z = zMin(e);
   return [
     cD(e.date), DOW[dowOf(e.date)] + (holiday(e.date) ? ' (Feiertag)' : ''), TYPE_L[e.type], work ? (SHIFT_L[e.shift] || '') : '',
     work ? cT(e.start) : '', work ? cT(e.end) : '', work && e.start ? cN(e.pause, Z.i) : '', work && wm ? cN(wm / 60, Z.h) : '',
     tr ? cN(tr / 60, Z.h) : '', wm + tr ? cN((wm + tr) / 60, Z.h) : '',
+    ...ZK.map(([k]) => z[k] ? cN(z[k] / 60, Z.h) : ''),
     e.place, e.line, e.project, aw ? AWAY_X[e.away] : '', aw ? cT(e.depart) : '', aw ? cT(e.ret) : '', absMin(e) ? cN(absMin(e) / 60, Z.h) : '',
     mealsTxt(e), cE(v), aw && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : '', cE(lodgingOf(e)),
     e.vehicle ? VEH_L[e.vehicle] : '', OFF.has(e.type) ? '' : e.meet,
     pkw && e.trip !== 'sammel' && e.km ? cN(e.km, Z.km) : '', cE(kmCost(e)),
     isSammel(e) && e.km ? cN(e.km, Z.km) : '', cE(cc),
-    cE(e.otherCost), e.otherNote, cE(e.allowance), e.note
+    cE(e.otherCost), e.otherNote, cE(e.allowance), e.note, e.photos.length ? cN(e.photos.length, Z.i) : ''
   ];
 }
 function overviewRows(T, list, exps) {
@@ -1982,12 +2359,14 @@ function overviewRows(T, list, exps) {
     ['Gefahrene km Dienstfahrten eigenes Auto', n(T.km, Z.km)], ['Fahrtkosten (' + nf2(L.kmRate) + ' € je km)', n(T.kmCost, Z.eur)],
     ['Übernachtungskosten selbst bezahlt', n(T.lodging, Z.eur)], ['Reisenebenkosten (Parken, Tickets)', n(T.other, Z.eur)],
     ['Summe Reisekosten', n(T.travel, Z.eur)],
-    ['Steuerfrei erstattet: Auslöse für Verpflegung', n(-T.offV, Z.eur)], ['Steuerfrei erstattet: Auslöse für Übernachtung', n(-T.offL, Z.eur)],
+    [T.nr20 != null ? 'Steuerfrei erstattet: Verpflegung laut Lohnsteuerbescheinigung Nr. 20' : 'Steuerfrei erstattet: Auslöse für Verpflegung', n(-T.offV, Z.eur)], ['Steuerfrei erstattet: Auslöse für Übernachtung', n(-T.offL, Z.eur)],
     ['Steuerfrei erstattet: Kilometergeld', n(-T.kmOff, Z.eur)],
     [B('Reisekosten nach Abzug der Erstattungen'), Object.assign(n(T.travelNet, Z.eur), {b: true})],
     ['Auslöse / Spesen insgesamt erhalten (zur Information)', n(T.allowance, Z.eur)],
     ['davon nicht verrechnet (liegt über den Pauschalen)', n(Math.max(0, T.allowance - T.offV - T.offL), Z.eur)], []
   ];
+  if (T.nr20 != null) rows.splice(rows.length - 1, 0, ['Nr. 20 Lohnsteuerbescheinigung (zur Information)', n(T.nr20, Z.eur)], ['Schätzung aus den Einträgen (zur Information)', n(T.offVCalc, Z.eur)]);
+  if (ZK.some(([k]) => T[k])) rows.push([B('Zuschlagsstunden (§ 3b EStG, nur Stunden)')], ...ZK.map(([k, l, p]) => [l + ' (bis ' + p + ')', n(T[k] / 60, Z.h)]), []);
   if (T.commuteDays) rows.push([B('Fahrten zum festen Sammelpunkt oder Betrieb (Entfernungspauschale)')], ['Tage', n(T.commuteDays)],
     ['km einfache Strecke zusammen', n(T.commuteKm, Z.km)], [B('Entfernungspauschale (' + commuteDesc(year) + ')'), Object.assign(n(T.commuteCost, Z.eur), {b: true})],
     ...(T.commuteCapped ? [['Ohne eigenes Auto auf ' + nf(L.cap, 0) + ' € im Jahr begrenzt']] : []), []);
@@ -2018,28 +2397,37 @@ async function buildWorkbook(EX, list, exps) {
   const sums = [[ci('Arbeitszeit (Std.)'), Z.h, T.min / 60], [ci('Fahrzeit (Std.)'), Z.h, T.travelMin / 60], [ci('Stunden gesamt'), Z.h, T.tot / 60],
     [ci('Verpflegung (€)'), Z.eur, T.vma], [ci('Übernachtung (€)'), Z.eur, T.lodging], [ci('km Dienstfahrt'), Z.km, T.km + T.kmOther], [ci('Fahrtkosten (€)'), Z.eur, T.kmCost],
     [ci('km einfach Sammelpunkt'), Z.km, list.filter(isSammel).reduce((s, e) => s + e.km, 0)], [ci('Entfernungspauschale (€)'), Z.eur, T.commuteCost],
-    [ci('Sonstige Ausgaben (€)'), Z.eur, T.other], [ci('Auslöse / Spesen vom AG (€)'), Z.eur, T.allowance]];
+    [ci('Sonstige Ausgaben (€)'), Z.eur, T.other], [ci('Auslöse / Spesen vom AG (€)'), Z.eur, T.allowance],
+    [ci('Nacht 25 % (Std.)'), Z.h, T.z25 / 60], [ci('Nacht 40 % (Std.)'), Z.h, T.z40 / 60], [ci('Sonntag 50 % (Std.)'), Z.h, T.z50 / 60],
+    [ci('Feiertag 125 % (Std.)'), Z.h, T.z125 / 60], [ci('Feiertag 150 % (Std.)'), Z.h, T.z150 / 60]];
   if (sums.some(s => s[0] < 0)) throw new Error('Spalte fehlt');
   const sumRow = ENTRY_COLS.map(() => ''); sumRow[0] = B('Summe');
   if (list.length) sums.forEach(([ci, z, v]) => sumRow[ci] = {v: r2(v), z, f: `SUM(${colL(ci)}2:${colL(ci)}${last})`, b: true});
   er.push([], sumRow);
   const wsE = addSheet(wb, 'Einträge', er, ENTRY_COLS.map(c => c[1]), {freeze: 1});
   if (list.length) wsE.autoFilter = {from: {row: 1, column: 1}, to: {row: last, column: ENTRY_COLS.length}};
-  const xr = [head(['Datum', 'Art', 'Was', 'Betrag (€)', 'Notiz'])].concat(exps.map(x => [cD(x.date), CAT_L[x.cat], x.text, cN(x.amount, Z.eur), x.note]));
+  const xr = [head(['Datum', 'Art', 'Was', 'Betrag (€)', 'Notiz', 'Belegfotos'])].concat(exps.map(x => [cD(x.date), CAT_L[x.cat], x.text, cN(x.amount, Z.eur), x.note, x.photos.length ? cN(x.photos.length, Z.i) : '']));
   const xl = xr.length;
   xr.push([], [B('Summe'), '', '', exps.length ? {v: T.exp, z: Z.eur, f: `SUM(D2:D${xl})`, b: true} : cN(0, Z.eur)]);
   CATS.forEach(([k, l]) => { if (T.cat[k]) xr.push(['', l, '', cN(T.cat[k], Z.eur)]); });
-  addSheet(wb, 'Ausgaben', xr, [11, 16, 30, 12, 30], {freeze: 1});
+  addSheet(wb, 'Ausgaben', xr, [11, 16, 30, 12, 30, 10], {freeze: 1});
   const mh = ['Monat','Arbeitstage','Schulungstage','Arbeitsstunden','Fahrstunden','Stunden gesamt','Nachtschichten','Ausfallschichten','Tage auswärts','Übernachtungen','Verpflegung (€)','km Dienstfahrten',
-    'Fahrtkosten (€)','Übernachtung (€)','Reisenebenkosten (€)','Entfernungspauschale (€)','Weitere Ausgaben (€)','Summe vor Auslöse (€)','Auslöse / Spesen vom AG (€)'];
-  const mz = [null, Z.i, Z.i, Z.h, Z.h, Z.h, Z.i, Z.i, Z.i, Z.i, Z.eur, Z.km, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur];
-  const mv = a => [a.workDays, a.trainDays, a.min / 60, a.travelMin / 60, a.tot / 60, a.nightShifts, a.ausfall, a.awayDays, a.nights, a.vma, a.km, a.kmCost, a.lodging, a.other, a.commuteCost, a.exp, a.gross, a.allowance];
+    'Fahrtkosten (€)','Übernachtung (€)','Reisenebenkosten (€)','Entfernungspauschale (€)','Weitere Ausgaben (€)','Summe vor Auslöse (€)','Auslöse / Spesen vom AG (€)',
+    'Nacht 25 % (Std.)','Nacht 40 % (Std.)','Sonntag 50 % (Std.)','Feiertag 125 % (Std.)','Feiertag 150 % (Std.)'];
+  const mz = [null, Z.i, Z.i, Z.h, Z.h, Z.h, Z.i, Z.i, Z.i, Z.i, Z.eur, Z.km, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.eur, Z.h, Z.h, Z.h, Z.h, Z.h];
+  const mv = a => [a.workDays, a.trainDays, a.min / 60, a.travelMin / 60, a.tot / 60, a.nightShifts, a.ausfall, a.awayDays, a.nights, a.vma, a.km, a.kmCost, a.lodging, a.other, a.commuteCost, a.exp, a.gross, a.allowance,
+    a.z25 / 60, a.z40 / 60, a.z50 / 60, a.z125 / 60, a.z150 / 60];
   const mr = [head(mh)].concat(M.map((a, i) => [MONTHS[i]].concat(mv(a).map((v, j) => cN(v, mz[j + 1])))));
   mr.push([B('Summe')].concat(mv(T).map((v, j) => ({v: r2(v), z: mz[j + 1], f: `SUM(${colL(j + 1)}2:${colL(j + 1)}13)`, b: true}))));
-  addSheet(wb, 'Monate', mr, [12, 11, 13, 14, 12, 13, 13, 14, 13, 14, 15, 15, 14, 15, 17, 18, 17, 17, 18], {freeze: 1});
+  addSheet(wb, 'Monate', mr, [12, 11, 13, 14, 12, 13, 13, 14, 13, 14, 15, 15, 14, 15, 17, 18, 17, 17, 18, 11, 11, 12, 13, 13], {freeze: 1});
   const pr = [head(['Einsatzort', 'Tage', 'Erster Tag', 'Letzter Tag', 'Auch eingetragen als', 'Hinweis'])].concat(placeStats(list).map(p =>
     [p.name, cN(p.days, Z.i), cD(p.first), cD(p.last), p.alias.join(', '), p.warnFrom ? 'Regelmäßig seit ' + dDot(p.warnFrom) + ', ab ' + dDot(p.warnAt) + ' Pauschale prüfen (Dreimonatsfrist)' : '']));
   addSheet(wb, 'Einsatzorte', pr, [28, 7, 12, 12, 24, 52], {freeze: 1});
+  // Ausfüllhilfe Anlage N als eigenes Blatt
+  const an = [[B('Ausfüllhilfe Anlage N ' + year, 14)], ['Zeilennummern nach dem Formular Anlage N 2025. In neueren Formularen können sie sich verschieben, die Bezeichnungen helfen beim Finden.'], [],
+    head(['Zeile', 'Angabe', 'Wert', 'Hinweis'])];
+  anlageN(R, list, exps).forEach(r => an.push(r.sec ? [B(r.sec)] : [r.z, r.l, r.x != null ? cN(r.x, r.xz || Z.eur) : r.v, r.note || '']));
+  addSheet(wb, 'Anlage N', an, [9, 52, 22, 60]);
   return wb.xlsx.writeBuffer();
 }
 async function exportXlsx(share) {
@@ -2073,18 +2461,190 @@ $('#x-copy').addEventListener('click', () => {
   } catch (e) { fallback(); }
 });
 
+/* ---------- Ausfüllhilfe Anlage N ----------
+   Zeilen nach dem Formular Anlage N 2025. Jede Zeile: z = Zeile, l = Angabe, x = Zahl (xz = Format) oder v = Text, note = Hinweis. */
+function anlageN(R, list, exps) {
+  const {T} = R, st = S.settings, out = [];
+  const sec = l => out.push({sec: l});
+  const add = (z, l, x, note, xz) => out.push(typeof x === 'number' ? {z: String(z), l, x: r2(x), xz: xz || Z.eur, note} : {z: String(z), l, v: x, note});
+  // Wege zum festen Sammelpunkt oder Betrieb: je Entfernung und Verkehrsmittel eine Angabe (höchstens drei im Formular)
+  const monday = d => addDays(d, -((dowOf(d) + 6) % 7));
+  const groups = {};
+  list.filter(e => R.commuteOf[e.id]).forEach(e => {
+    const km = Math.floor(e.km), how = e.vehicle === 'pkw' ? 'pkw' : e.vehicle === 'oepnv' ? 'oepnv' : 'mit', k = km + '|' + how;
+    const g = groups[k] || (groups[k] = {km, how, days: 0, first: e.date, last: e.date, weeks: new Set(), meet: ''});
+    g.days++; g.weeks.add(monday(e.date)); if (e.date < g.first) g.first = e.date; if (e.date > g.last) g.last = e.date; if (e.meet) g.meet = e.meet;
+  });
+  const gl = Object.values(groups).sort((a, b) => b.days - a.days);
+  if (gl.length) {
+    sec('Wege zum festen Sammelpunkt oder Betrieb (Entfernungspauschale)');
+    gl.slice(0, 3).forEach((g, i) => {
+      const o = i * 8, perWeek = Math.min(7, Math.max(1, Math.round(g.days / g.weeks.size)));
+      add(27 + o, `${i + 1}. Angabe: Art`, st.fixed === 'betrieb' ? '1 = erste Tätigkeitsstätte' : '2 = Sammelpunkt', st.fixed === 'betrieb' ? 'Fester Betrieb laut Vertrag' : 'Fester Sammelpunkt laut Vertrag');
+      add(28 + o, 'Ort, Zeitraum, Arbeitstage je Woche', `${g.meet || st.fixedName || 'Ort'} · ${dDot(g.first)} bis ${dDot(g.last)} · ${perWeek}`, 'Postleitzahl und Straße selbst ergänzen');
+      add(29 + o, 'Aufgesucht an Tagen', g.days, '', Z.i);
+      add(30 + o, 'Einfache Entfernung (volle km)', g.km, '', Z.i);
+      if (g.how === 'pkw') add(31 + o, 'davon mit eigenem Auto', g.km, '', Z.i);
+      else add(33 + o, 'davon als Mitfahrer, mit Bahn oder Bus', g.km, g.how === 'mit' ? 'Mitfahrer in einer Fahrgemeinschaft' : 'Bahn, Bus oder Fahrrad', Z.i);
+      if (g.how === 'oepnv') add(34 + o, 'Kosten für Bahn und Bus', 'nur wenn höher', 'Sind deine Tickets im Jahr teurer als die Pauschale, trag die Ticketkosten ein');
+    });
+    if (gl.length > 3) add('', 'Weitere Angaben', `${gl.length - 3} weitere`, 'Im Formular ist Platz für drei Angaben. Fass ähnliche zusammen oder frag deinen Steuerberater.');
+    add(51, 'Arbeitgeberleistungen für diese Fahrten', 'siehe Nr. 17 und 18', 'Steht auf deiner Lohnsteuerbescheinigung, falls die Firma etwas dazugezahlt hat');
+  }
+  // Weitere Werbungskosten aus den Ausgaben
+  const items = cat => [...new Set(exps.filter(x => x.cat === cat).map(x => (x.text || '').trim()).filter(Boolean))].slice(0, 4).join(', ');
+  const c = T.cat;
+  if (c.gew || c.kleidung || c.mittel || c.bildung || c.sonst) {
+    sec('Weitere Werbungskosten');
+    if (c.gew) add(53, 'Beiträge zu Berufsverbänden (Gewerkschaft)', c.gew, 'Name der Gewerkschaft dazuschreiben');
+    let z = 54;
+    if (c.kleidung) add(z++, 'Arbeitsmittel: Arbeitskleidung', c.kleidung, items('kleidung'));
+    if (c.mittel) add(z++, 'Arbeitsmittel: Werkzeug und Ausrüstung', c.mittel, items('mittel'));
+    if (c.kleidung || c.mittel) add(56, 'Summe Arbeitsmittel', (c.kleidung || 0) + (c.mittel || 0));
+    if (c.bildung) add(60, 'Fortbildungskosten', c.bildung, items('bildung'));
+    if (c.sonst) { add(62, 'Sonstiges', c.sonst, items('sonst') || 'z. B. Bewerbung, Kontoführung'); add(64, 'Summe der weiteren Werbungskosten', c.sonst); }
+  }
+  // Reisekosten bei Auswärtstätigkeit
+  const fahrt = r2(T.kmCost + (c.fahrt || 0)), reise = r2(fahrt + T.lodging + T.other), firma = list.some(e => isAway(e) && e.vehicle === 'firma');
+  if (reise || firma || T.awayDays) {
+    sec('Reisekosten bei Auswärtstätigkeit');
+    add(65, 'Firmenwagen oder Sammelbeförderung der Firma genutzt', firma ? '1 = Ja' : '2 = Nein', firma ? 'Für diese Fahrten gibt es keine Fahrtkosten' : '');
+    add(66, 'Fahrtkosten', fahrt, (T.km ? `${nf(T.km, 1)} km × ${nf2(law(year).kmRate)} €` : '') + (c.fahrt ? (T.km ? ' plus ' : '') + 'Fahrten aus den Ausgaben' : ''));
+    add(67, 'Übernachtungskosten', T.lodging, 'Nur selbst bezahlt');
+    add(68, 'Reisenebenkosten', T.other, 'Parken, Tickets, Gepäck');
+    add(69, 'Gesamtsumme Reisekosten', reise);
+    add(71, 'Vom Arbeitgeber steuerfrei ersetzt', r2(T.offL + T.kmOff), T.offL || T.kmOff ? 'Auslöse für die Übernachtung und Kilometergeld, aus deinen Einträgen' : 'Nichts eingetragen');
+  }
+  if (T.vmaBase) {
+    sec('Verpflegungsmehraufwand im Inland');
+    add(72, 'Tage mit mehr als 8 Std. weg (ohne Übernachtung)', T.n_tag, '', Z.i);
+    add(73, 'An- und Abreisetage', T.n_an + T.n_ab, '', Z.i);
+    add(74, 'Tage mit 24 Std. weg', T.n_voll, '', Z.i);
+    if (T.vmaCut) add(75, 'Kürzung wegen gestellter Mahlzeiten', T.vmaCut);
+    add(77, 'Vom Arbeitgeber steuerfrei ersetzt', T.nr20 != null ? T.nr20 : T.offVCalc,
+      T.nr20 != null ? 'Laut Lohnsteuerbescheinigung Nr. 20' : 'Geschätzt aus deinen Einträgen. Nimm den Betrag aus Nr. 20 deiner Lohnsteuerbescheinigung.');
+  }
+  return out;
+}
+
+/* ---------- Jahresbericht (drucken oder als PDF speichern) ---------- */
+let reportUrls = [], reportTok = 0, reportReady = Promise.resolve();
+function openReport() {
+  show('report');
+  $('#r-hint').textContent = isIOS() ? 'Auf dem iPhone im Druckmenü oben auf das Teilen-Symbol tippen und „In Dateien sichern“ wählen.' : 'Im Druckmenü als Drucker „Als PDF speichern“ wählen.';
+  if (!(history.state && history.state.r)) history.pushState({r: 1}, '');
+  renderReport();
+}
+function reportHTML(R, list, exps, withDays) {
+  const {T, M} = R, st = S.settings, L = law(year);
+  const money = (x, z) => z === Z.i ? nf(x, 0) : eur(x);
+  const tbl = (head, rows, cls = '', cols = '') => `<table class="rt ${cls}">${cols}<thead><tr>${head.map(([h, n]) => `<th${n ? ' class="n"' : ''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+  const kv = (l, v, cls = '') => `<tr class="${cls}"><td>${l}</td><td class="n">${v}</td></tr>`;
+  const over = r2(T.totalNoGew - L.wkp);
+  let h = `<h1>Schichtbuch ${year}</h1>
+    <p><b>Jahresbericht für die Steuererklärung</b>${st.name ? ' · ' + esc(st.name) : ''}${st.employer ? ' · ' + esc(st.employer) : ''}${st.home ? ' · Wohnort ' + esc(st.home) : ''}</p>
+    <p class="hint">Erstellt am ${dDot(today())} mit dem Schichtbuch, Version ${APP_VERSION}. Alle Beträge sind Schätzungen nach den gesetzlichen Pauschalen ${lawYear(year)} und ersetzen keine Steuerberatung.</p>`;
+  if (!lawKnown(year)) h += `<p class="warn">Für ${year} sind noch keine gesetzlichen Werte hinterlegt. Gerechnet wird mit ${lawYear(year)}.</p>`;
+  h += `<h2>Auf einen Blick</h2><table class="rt"><tbody>
+    ${kv('Arbeitstage (mit Schulung)', T.workDays + T.trainDays)}${kv('Stunden mit Fahrzeit', nf(T.tot / 60, 1) + ' h')}
+    ${T.travelMin ? kv('davon Fahrzeit bei An- und Abreise', nf(T.travelMin / 60, 1) + ' h') : ''}${kv('Nachtschichten', T.nightShifts)}
+    ${kv('Tage auswärts', T.awayDays)}${kv('Übernachtungen auswärts', T.nights)}${kv('km Dienstfahrten mit eigenem Auto', nf(T.km, 0))}
+    ${T.commuteDays ? kv('Tage zum festen Sammelpunkt oder Betrieb', T.commuteDays) : ''}
+    ${kv('Werbungskosten laut Schichtbuch', eur(T.total), 'sum')}${kv('Arbeitnehmer-Pauschbetrag', eur(L.wkp))}
+    ${kv((over > 0 ? 'Mehr als der Pauschbetrag' : 'Bis zum Pauschbetrag fehlen noch') + (L.gewExtra && T.cat.gew ? ' (ohne Gewerkschaft)' : ''), eur(Math.abs(over)))}
+    </tbody></table>
+    <p class="hint">Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}.</p>`;
+  const an = anlageN(R, list, exps);
+  h += `<h2>Ausfüllhilfe Anlage N ${year}</h2>
+    <p class="hint">Die Zeilen gelten für das Formular Anlage N 2025. In neueren Formularen können sich die Nummern verschieben, die Bezeichnungen helfen beim Finden. In ELSTER heißen die Felder genauso. Rechne nichts selbst zusammen: Das Finanzamt zieht die Erstattungen der Firma selbst ab.</p>`;
+  h += an.length ? tbl([['Zeile'], ['Angabe'], ['Wert', 1]], an.map(r => r.sec ? `<tr class="sec"><td colspan="3">${esc(r.sec)}</td></tr>`
+    : `<tr><td class="z">${esc(r.z)}</td><td>${esc(r.l)}${r.note ? `<small>${esc(r.note)}</small>` : ''}</td>${r.x != null ? `<td class="n">${money(r.x, r.xz)}</td>` : `<td class="t">${esc(r.v)}</td>`}</tr>`), 'anl',
+    '<colgroup><col class="c1"><col><col class="c3"></colgroup>')
+    : '<p>Für dieses Jahr gibt es noch nichts einzutragen.</p>';
+  if (T.vma || T.nr20 != null) h += `<p class="hint">${T.nr20 != null ? `Nr. 20 deiner Lohnsteuerbescheinigung: ${eur(T.nr20)}. Aus deinen Einträgen ergäben sich ${eur(T.offVCalc)}.` : `Nr. 20 deiner Lohnsteuerbescheinigung ist noch nicht eingetragen (Auswertung). Bis dahin ist Zeile 77 geschätzt.`}</p>`;
+  // Monate
+  h += `<h2>Monate</h2>` + tbl([['Monat'], ['Tage', 1], ['Std.', 1], ['ausw.', 1], ['Verpfl.', 1], ['km', 1]],
+    M.map((m, i) => `<tr><td>${MONTHS[i]}</td><td class="n">${m.workDays + m.trainDays || '–'}</td><td class="n">${m.tot ? nf(m.tot / 60, 1) : '–'}</td><td class="n">${m.awayDays || '–'}</td><td class="n">${m.vma ? eur(m.vma) : '–'}</td><td class="n">${m.km ? nf(m.km, 0) : '–'}</td></tr>`)
+    .concat(`<tr class="sum"><td>Summe</td><td class="n">${T.workDays + T.trainDays}</td><td class="n">${nf(T.tot / 60, 1)}</td><td class="n">${T.awayDays}</td><td class="n">${eur(T.vma)}</td><td class="n">${nf(T.km, 0)}</td></tr>`));
+  if (ZK.some(([k]) => T[k])) h += `<h2>Zuschlagsstunden</h2>` + tbl([['Art'], ['steuerfrei bis', 1], ['Stunden', 1]], ZK.filter(([k]) => T[k]).map(([k, l, p]) => `<tr><td>${l}</td><td class="n">${p}</td><td class="n">${nf(T[k] / 60, 2)}</td></tr>`))
+    + `<p class="hint">Nur zum Vergleich mit der Lohnabrechnung. Steuerfrei sind die Zuschläge auf einen Grundlohn bis 50 € je Stunde (§ 3b EStG). Pause anteilig abgezogen.</p>`;
+  const pl = placeStats(list);
+  if (pl.length) h += `<h2>Einsatzorte</h2>` + tbl([['Ort'], ['Zeitraum'], ['Tage', 1]], pl.map(p => `<tr><td>${esc(p.name)}${p.alias.length ? `<small>auch als ${esc(p.alias.join(', '))}</small>` : ''}${p.warnFrom ? `<small>Dreimonatsfrist prüfen: regelmäßig seit ${dDot(p.warnFrom)}, ab ${dDot(p.warnAt)} meist keine Pauschale mehr</small>` : ''}</td><td>${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}</td><td class="n">${p.days}</td></tr>`));
+  if (exps.length) h += `<h2>Ausgaben</h2>` + tbl([['Datum'], ['Art und Zweck'], ['Betrag', 1]], exps.map(x => `<tr><td class="d">${dDot(x.date)}</td><td>${esc(CAT_L[x.cat])}${x.text ? ': ' + esc(x.text) : ''}${x.photos.length ? '<small>mit Beleg</small>' : ''}</td><td class="n">${eur(x.amount)}</td></tr>`)
+    .concat(`<tr class="sum"><td colspan="2">Summe</td><td class="n">${eur(T.exp)}</td></tr>`));
+  if (withDays && list.length) {
+    h += `<h2 class="pb">Alle Tage</h2>` + tbl([['Datum'], ['Was'], ['Ort'], ['Std.', 1], ['Verpfl.', 1], ['km', 1]], list.map(e => {
+      const work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, v = R.vmaOf[e.id];
+      const dup = (e.type === 'anreise' && e.away === 'an') || (e.type === 'abreise' && e.away === 'ab');
+      const what = [work ? (e.shift === 'ausfall' ? 'Ausfallschicht' : e.type === 'schulung' ? 'Schulung' : SHIFT_L[e.shift] || 'Arbeit') : TYPE_L[e.type],
+        work && e.start && e.end ? e.start + '–' + e.end : '', isAway(e) && !dup ? AWAY_CHIP[e.away] : '', tr ? 'Fahrt ' + nf(tr / 60, 2) + ' h' : ''].filter(Boolean).join(' · ');
+      const km = e.vehicle === 'pkw' && e.km && !OFF.has(e.type) ? nf(e.km, 0) + (e.trip === 'sammel' ? ' einf.' : '') : '';
+      return `<tr><td class="d">${dShort(e.date)}</td><td>${esc(what)}</td><td>${esc(e.place)}</td><td class="n">${wm ? nf(wm / 60, 2) : ''}</td><td class="n">${v ? eurS(v) : ''}</td><td class="n">${km}</td></tr>`;
+    }), 'days');
+  }
+  return h;
+}
+async function renderReport() {
+  const el = $('#r-paper'), tok = ++reportTok;
+  const list = yearList(year).sort(sortAsc), exps = expList(year).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+  const R = computeYear(list, exps);
+  const withPhotos = list.concat(exps).filter(x => x.photos.length);
+  const nP = withPhotos.reduce((n, x) => n + x.photos.length, 0);
+  $('#r-photos-w').hidden = !photoOk || !nP;
+  $('#r-photos-l').textContent = `Belegfotos anhängen (${nP} ${nP === 1 ? 'Beleg' : 'Belege'})`;
+  reportUrls.forEach(u => URL.revokeObjectURL(u)); reportUrls = [];
+  let h = list.length || exps.length ? reportHTML(R, list, exps, $('#r-days').checked) : `<h1>Schichtbuch ${year}</h1><p>Für ${year} gibt es noch keine Einträge.</p>`;
+  const photos = photoOk && nP && $('#r-photos').checked;
+  h += `<p class="hint" style="margin-top:18px">Erstellt mit dem Schichtbuch. Alle Angaben ohne Gewähr, keine Steuerberatung.</p>`;
+  if (photos) h += `<h2 class="pb">Belege</h2><div id="r-belege"></div>`;
+  el.innerHTML = h;
+  if (!photos) { reportReady = Promise.resolve(); return; }
+  reportReady = (async () => {
+    let out = '';
+    for (const x of withPhotos) {
+      const what = x.amount != null ? CAT_L[x.cat] + (x.text ? ': ' + x.text : '') + ' · ' + eur(x.amount) : TYPE_L[x.type] + (x.place ? ' · ' + x.place : '');
+      for (let i = 0; i < x.photos.length; i++) {
+        const r = await pGet(x.photos[i]).catch(() => null);
+        if (tok !== reportTok) return;
+        const cap = `${dDot(x.date)} · ${esc(what)}${x.photos.length > 1 ? ` · Beleg ${i + 1} von ${x.photos.length}` : ''}`;
+        if (!r) out += `<div class="beleg"><p>${cap}: Foto fehlt auf diesem Handy.</p></div>`;
+        else if (r.type === 'application/pdf') out += `<div class="beleg"><p>${cap}: PDF-Beleg „${esc(r.name || 'Beleg')}“, liegt in der App.</p></div>`;
+        else { const u = URL.createObjectURL(recBlob(r)); reportUrls.push(u); out += `<div class="beleg"><img src="${u}" alt="Beleg"><p>${cap}</p></div>`; }
+      }
+    }
+    const box = $('#r-belege'); if (box && tok === reportTok) box.innerHTML = out;
+  })();
+  await reportReady;
+}
+$('#r-back').addEventListener('click', () => { if (history.state && history.state.r) history.back(); else show('more'); });
+$('#r-days').addEventListener('change', renderReport);
+$('#r-photos').addEventListener('change', renderReport);
+$('#r-print').addEventListener('click', async () => {
+  await reportReady;
+  // Bilder fertig laden, sonst fehlen sie im PDF
+  await Promise.all([...document.querySelectorAll('#r-paper img')].map(i => i.complete ? null : new Promise(r => { i.onload = i.onerror = r; })));
+  try { window.print(); } catch (e) { toast('Drucken ist hier nicht möglich. Öffne die App im Browser.'); }
+});
+$('#x-report').addEventListener('click', openReport);
+document.addEventListener('click', ev => { if (ev.target.closest('[data-report]')) openReport(); });
+
 /* ---------- Sicherung ---------- */
 async function backup(share) {
   const status = $('#b-status');
-  const data = JSON.stringify({app: 'sakra-schichtbuch', version: 3, exported: new Date().toISOString(), settings: S.settings,
-    entries: Object.values(S.entries).sort(sortAsc), expenses: Object.values(S.expenses).sort((a, b) => a.date < b.date ? -1 : 1)}, null, 1);
+  // Belegfotos kommen mit in die Datei, wenn das Häkchen gesetzt ist (in der Erinnerung oben immer)
+  const files = photoOk && (view !== 'more' || $('#x-photos').checked) ? await photoDump().catch(() => []) : [];
+  const data = JSON.stringify({app: 'sakra-schichtbuch', version: 4, exported: new Date().toISOString(), settings: S.settings,
+    entries: Object.values(S.entries).sort(sortAsc), expenses: Object.values(S.expenses).sort((a, b) => a.date < b.date ? -1 : 1), files}, null, 1);
   const blob = new Blob([data], {type: 'application/json'});
   const fname = 'Schichtbuch_Sicherung_' + today() + '.json';
   try {
-    if (share) await shareBlob(fname, blob, 'Schichtbuch-Sicherung');
-    else downloadBlob(fname, blob);
+    if (share) {
+      try { await shareBlob(fname, blob, 'Schichtbuch-Sicherung'); }
+      catch (err) { if (err && err.name === 'NotAllowedError') { downloadBlob(fname, blob); share = false; } else throw err; }
+    } else downloadBlob(fname, blob);
     S.lastBackup = new Date().toISOString(); persist();
-    const msg = 'Sicherung mit ' + Object.keys(S.entries).length + ' Arbeitstagen und ' + Object.keys(S.expenses).length + ' Ausgaben ' + (share ? 'geteilt.' : 'gespeichert.');
+    const nE = Object.keys(S.entries).length, nX = Object.keys(S.expenses).length;
+    const msg = `Sicherung mit ${nE} ${nE === 1 ? 'Arbeitstag' : 'Arbeitstagen'}, ${nX} ${nX === 1 ? 'Ausgabe' : 'Ausgaben'}` + (files.length ? ` und ${files.length} ${files.length === 1 ? 'Belegfoto' : 'Belegfotos'}` : '') + (share ? ' geteilt.' : ' gespeichert.');
     if (status) status.textContent = msg;
     toast(share ? 'Sicherung geteilt' : 'Sicherung gespeichert');
   } catch (err) {
@@ -2106,13 +2666,24 @@ $('#x-restore').addEventListener('change', async ev => {
   xs.forEach(x => { if (!x || !validDate(x.date)) return; const e = normExp(x); e.id = okId(e.id); S.expenses[e.id] = e; k++; });
   if (o && o.settings) { S.settings = mergeSettings(o.settings); Object.keys(HOL).forEach(key => delete HOL[key]); fillSettings(); }
   persist(); askPersistent(); renderYears(); fillDatalists(); renderAll();
-  status.textContent = `${n} ${n === 1 ? 'Arbeitstag' : 'Arbeitstage'} und ${k} ${k === 1 ? 'Ausgabe' : 'Ausgaben'} aus der Sicherung übernommen.`;
+  // Belegfotos zurückholen (vorhandene bleiben, wie sie sind)
+  let p = 0;
+  if (photoOk && o && Array.isArray(o.files) && o.files.length) {
+    const have = new Set(await pKeys().catch(() => []));
+    for (const f of o.files) {
+      if (!f || typeof f.id !== 'string' || !/^[A-Za-z0-9_-]{1,60}$/.test(f.id) || typeof f.data !== 'string') continue;
+      if (have.has(f.id)) { p++; continue; }
+      try { await pPut({id: f.id, type: txt(f.type, 60) || 'image/jpeg', name: txt(f.name, 120), created: txt(f.created, 40), size: 0, buf: unb64(f.data)}); p++; } catch (e) {}
+    }
+  }
+  status.textContent = `${n} ${n === 1 ? 'Arbeitstag' : 'Arbeitstage'} und ${k} ${k === 1 ? 'Ausgabe' : 'Ausgaben'}${p ? ` mit ${p} ${p === 1 ? 'Belegfoto' : 'Belegfotos'}` : ''} aus der Sicherung übernommen.`;
 });
 
 /* ---------- Start ---------- */
 loadLocal();
 renderYears(); fillDatalists(); renderList(); renderSync();
 registerSW();
+photoGC();
 })();
 </script>
 </body>

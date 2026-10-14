@@ -105,7 +105,7 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   let wb = new ExcelJS.Workbook(); await wb.xlsx.load(await read(w, x.blob));
   const o = {}; wb.getWorksheet('Übersicht').eachRow(r => { const k = r.getCell(1).value; if (k) o[typeof k === 'object' ? k.richText ? k.richText.map(t => t.text).join('') : String(k) : String(k)] = r.getCell(2).value; });
   check('Excel: Erstattungen', o['Steuerfrei erstattet: Auslöse für Verpflegung'] === -50.4 && o['Steuerfrei erstattet: Auslöse für Übernachtung'] === -14 && o['Steuerfrei erstattet: Kilometergeld'] === -120, JSON.stringify([o['Steuerfrei erstattet: Auslöse für Verpflegung'], o['Steuerfrei erstattet: Auslöse für Übernachtung'], o['Steuerfrei erstattet: Kilometergeld']]));
-  check('Excel: Angaben zur Arbeit', o['Auslöse'] === 'ganzer Tag 42 €, An-/Abreise 21 €' && o['Kilometergeld'] === '0,20 € je km', JSON.stringify([o['Auslöse'], o['Kilometergeld']]));
+  check('Excel: Angaben zur Arbeit', o['Auslöse'] === '24 Std. auswärts 42 €, An-/Abreise 21 €' && o['Kilometergeld'] === '0,20 € je km', JSON.stringify([o['Auslöse'], o['Kilometergeld']]));
 
   // ---------- C: Mitternachtsregel ----------
   seed([

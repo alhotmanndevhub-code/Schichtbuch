@@ -37,7 +37,9 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   $('#nav-settings').click();
   check('Einstellungen Auslöse vorbelegt', $('#s-aus-full').value === '42,00' && $('#s-aus-half').value === '21,00', $('#s-aus-full').value + ' / ' + $('#s-aus-half').value);
   $('[data-view="more"]').click();
-  check('Version', $('#about-ver').textContent.includes('1.3.1'), $('#about-ver').textContent);
+  // App und Service Worker müssen dieselbe Version haben, sonst kommt das Update nicht an
+  const swv = (fs.readFileSync(H.ROOT + '/sw.js', 'utf8').match(/VERSION = '([^']+)'/) || [])[1];
+  check('Version gleich wie im Service Worker', !!swv && $('#about-ver').textContent.includes('Version ' + swv), $('#about-ver').textContent + ' / sw.js ' + swv);
 
   // 2 Neuer Tag ohne Vorlage: Anreise antippen -> 21
   openNew('2026-10-11');

@@ -1,4 +1,4 @@
-SAKRA Schichtbuch – eigenständige Web-App (Version 1.3.0)
+SAKRA Schichtbuch – eigenständige Web-App (Version 1.4.0)
 =========================================================
 
 Was in diesem Ordner liegt
@@ -48,7 +48,8 @@ Wichtig zu den Daten
 --------------------
 Alle Einträge liegen nur auf dem jeweiligen Handy. Deshalb regelmäßig unter
 "Export" > "Sicherung speichern" eine Sicherung anlegen und in die Cloud
-legen oder per Mail verschicken. Die App erinnert daran nach 30 Tagen.
+legen oder per Mail verschicken. Die App erinnert jede Woche daran.
+Belegfotos kommen mit in die Sicherung (Häkchen "Belegfotos mitsichern").
 Auf einem neuen Handy: App öffnen, "Sicherung laden".
 
 Daten aus der Claude-Version übernehmen: dort unter "Export" eine Sicherung
@@ -63,11 +64,18 @@ Auslöse, Unterkunft, Kilometergeld, Fahrzeit). Die App füllt neue Tage
 damit vor und rechnet danach.
 
 
+Jahresbericht
+-------------
+Unter "Export" > "Jahresbericht ansehen": alle Zahlen des Jahres mit
+Ausfüllhilfe für die Anlage N (Zeile für Zeile). "Als PDF speichern oder
+drucken" öffnet das Druckmenü, dort "Als PDF speichern" wählen.
+
+
 Neue Version veröffentlichen
 ----------------------------
 Vorher die Prüftests laufen lassen: npm install, dann npm test.
 Bei jedem Hochladen prüft GitHub die App automatisch noch einmal
 (Reiter "Actions"). Geänderte Dateien hochladen und in sw.js die Zeile
-const VERSION = '1.3.0';
-hochzählen (z. B. auf '1.3.1'). Beim nächsten Start zeigt die App
+const VERSION = '1.4.0';
+hochzählen (z. B. auf '1.4.1'), in index.html APP_VERSION genauso. Beim nächsten Start zeigt die App
 "Neue Version verfügbar" an.

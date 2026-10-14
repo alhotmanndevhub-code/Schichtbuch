@@ -70,7 +70,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   check('Ganzer Tag: kein Fahrzeit-Feld', $('#b-travel').hidden);
   $('#b-multi').open = true; $('#b-multi').dispatchEvent(new w.Event('toggle'));
   inp(w, $('#m-until'), '2026-10-23'); $('#m-montage').checked = true; $('#m-montage').dispatchEvent(new w.Event('input'));
-  check('Hinweis: Montag zählt als ganzer Tag', T($('#m-info').textContent).includes('Am So 18.10. bist du schon auf Montage eingetragen, deshalb zählt Mo 19.10. als ganzer Tag auswärts.'), T($('#m-info').textContent));
+  check('Hinweis: Montag zählt als ganzer Tag', T($('#m-info').textContent).includes('Am So 18.10. bist du schon auf Montage eingetragen, deshalb zählt Mo 19.10. als 24 Std. auswärts.'), T($('#m-info').textContent));
   await save();
   const wk = ['19', '20', '21', '22', '23'].map(x => byDate('2026-10-' + x)[0]);
   check('Montagewoche: voll×4, ab', wk.map(e => e.away).join(',') === 'voll,voll,voll,voll,ab', wk.map(e => e.away).join(','));
