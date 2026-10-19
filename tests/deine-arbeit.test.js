@@ -39,8 +39,8 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   const save = async () => { $('#f-save').click(); await wait(20); };
   const pressed = g => [...d.querySelectorAll(g + ' [aria-pressed="true"]')].map(b => b.dataset.v).join(',');
   check('Neuer Nutzer: Willkommen und Hinweis zum Einrichten unter der Glocke', !$('#v-welcome').hidden && T($('#bell-list').textContent).includes('Stell einmal ein, wie deine Firma es regelt') && $('[data-bell] .badge').textContent === '1');
-  $('#bell-list [data-go="settings"]').click(); await wait(10);
-  check('Einrichten öffnet Einstellungen', !$('#v-settings').hidden && $('#nav-settings').getAttribute('aria-current') === 'page');
+  $('#nav-settings').click(); await wait(10);
+  check('Einstellungen öffnen', !$('#v-settings').hidden && $('#nav-settings').getAttribute('aria-current') === 'page');
   check('Neuer Nutzer: Auslöse aus, Beträge leer', pressed('[data-pset="ausOn"]') === '0' && $('#p-aus-w').hidden && $('#s-aus-full').value === '', pressed('[data-pset="ausOn"]'));
   $('[data-pset="veh"] [data-v="mit"]').click();
   $('[data-pset="fixed"] [data-v="sammel"]').click();

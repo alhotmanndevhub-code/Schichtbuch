@@ -499,6 +499,33 @@ details.fblock>summary{cursor:pointer;font:700 17px/1.25 var(--f-body);color:var
 .wl-act .linkbtn{color:#fff;min-height:44px}
 .wl-foot{margin:4px 0 0;font-size:13px;color:#C9CED2;text-align:center}
 
+/* Einrichten beim ersten Start: drei Fragen, große Antworten zum Antippen, unten Zurück und Weiter */
+body[data-screen="setup"] .app{padding-bottom:0}
+.su{display:flex;flex-direction:column;min-height:calc(100vh - env(safe-area-inset-top,0px))}
+.su-head{display:flex;align-items:center;gap:12px;padding:12px 0 4px}
+.su-head svg{width:40px;height:24px;flex:none}
+.su-head b{font:700 17px var(--f-body)}
+.su-head .textbtn{margin-left:auto;margin-right:-10px;color:var(--muted)}
+.su-prog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 0}
+.su-prog i{height:4px;border-radius:2px;background:var(--surface-3);transition:background-color .3s}
+.su-prog i.on{background:var(--ink)}
+.su-step{display:grid;gap:0;align-content:start}
+.su-n{margin:22px 0 0;color:var(--muted);font-size:14px}
+.su h2{margin:6px 0 6px;font:700 25px/1.2 var(--f-body)}
+.su-lead{margin:0 0 18px;color:var(--muted);font-size:15px}
+.su-opts{display:grid;gap:10px}
+.su-opt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 14px;align-items:center;width:100%;min-height:62px;padding:12px 16px;border:1.5px solid var(--line-2);border-radius:var(--r-m);background:var(--surface);color:var(--ink);text-align:left;font:600 17px/1.25 var(--f-body)}
+.su-opt .rd{grid-row:1/span 2;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--line-2);transition:box-shadow .2s var(--ease-out)}
+.su-opt small{grid-column:2;color:var(--muted);font:400 14px/1.3 var(--f-body)}
+.su-opt[aria-pressed="true"]{border-color:var(--ink);background:var(--surface-2)}
+.su-opt[aria-pressed="true"] .rd{box-shadow:inset 0 0 0 7px var(--ink)}
+.su-more{display:grid;gap:12px;margin-top:14px;padding:16px;border-radius:var(--r-m);background:var(--surface)}
+.su-state{margin-top:18px}
+.su-rest{margin:18px 0 0;color:var(--muted);font-size:14px}
+.su-foot{position:sticky;bottom:0;z-index:2;display:flex;gap:10px;margin-top:auto;padding:16px 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+.su-foot .btn{flex:1}
+.su-foot .btn.gray{flex:0 0 auto;min-width:104px}
+
 /* Meldung unten */
 .toast{position:fixed;left:16px;right:16px;margin:0 auto;width:fit-content;max-width:560px;bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:18px;font-size:15px;font-weight:600;text-align:center;box-shadow:var(--shadow)}
 .toast button{margin-left:10px;background:none;border:0;color:var(--toast-act);font-weight:700;text-decoration:underline}
@@ -615,7 +642,7 @@ details.fblock>summary{cursor:pointer;font:700 17px/1.25 var(--f-body);color:var
 }
 /* Bewegung und Rückmeldung: Knöpfe geben beim Drücken nach, Ansichten gleiten herein, Meldungen und Blätter kommen von unten.
    Alles kurz (0,15 bis 0,35 s). Bei „Bewegung reduzieren“ am Handy bleibt es bei Farbwechseln ohne Bewegung. */
-.btn,.iconbtn,.ib,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
+.btn,.iconbtn,.ib,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan,.su-opt{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
 button.row:active,button.item:active,button.td-plan:active,.job-main:active{background:var(--surface-2)}
 .toast.out{opacity:0;transform:translateY(10px);transition:opacity .16s,transform .16s}
 @media (prefers-reduced-motion:no-preference){
@@ -623,7 +650,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
   .iconbtn:active,.cday:active,.ib:active{transform:scale(.9)}
   .tabs button .ic,.sidebar button .ic{transition:transform .14s var(--ease-out)}
   .tabs button:active .ic,.sidebar button:active .ic{transform:scale(.84)}
-  button.row:active,button.item:active,button.subc:active,.job-main:active,.yr:active,button.td-plan:active{transform:scale(.98)}
+  button.row:active,button.item:active,button.subc:active,.job-main:active,.yr:active,button.td-plan:active,.su-opt:active{transform:scale(.98)}
   .wd:active .lamp{transform:scale(1.35)}
   .v-in{animation:v-in .26s var(--ease-out) both}
   .v-in.fwd{animation-name:v-fwd}
@@ -924,6 +951,8 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
       </form>
     </section>
 
+    <section id="v-setup" class="view" aria-label="Einrichten" hidden></section>
+
     <section id="v-form" class="view" aria-label="Arbeitstag" hidden>
       <div class="formbar">
         <button class="iconbtn" id="f-back" type="button" aria-label="Zurück"><svg class="ic" aria-hidden="true"><use href="#i-arrow-back"/></svg></button>
@@ -1148,9 +1177,11 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.3.0';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.3.0', ['Neu anfangen geht schneller: drei kurze Fragen zum Weg zur Arbeit, zum festen Sammelpunkt und zur Auslöse. Alles andere stellst du wie bisher unter Mehr > Einstellungen ein.',
+    'Solange noch nichts eingetragen ist, führt die Startseite direkt zum ersten Arbeitstag.']],
   ['2.2.0', ['Aufgeräumt: Erklärungen stehen jetzt hinter dem kleinen i neben der Überschrift. Tipp darauf, wenn du sie lesen willst. Warnungen siehst du weiter sofort.',
     'Beim Erfassen siehst du zuerst die üblichen Möglichkeiten. Seltenes wie Urlaub, Krank oder eine ausgefallene Schicht steht unter „Mehr“. Bei „Auswärts“ richtet sich das nach dem Vortag.',
     'Die Farben bedeuten überall dasselbe: Grün ist erfasst oder in Ordnung, Gelb heißt bitte prüfen, Rot fehlt. Sonst ist nur der wichtigste Knopf rot.',
@@ -2084,7 +2115,7 @@ function bellItems() {
       <span class="nb"><button class="linkbtn" type="button" data-news="ok">Verstanden</button></span></div>`);
   } else if (S.seenVersion !== APP_VERSION && !loadError) S.seenVersion = APP_VERSION;
   if (!S.settings.profSeen && !loadError) out.push(snote('open', 'Stell einmal ein, wie deine Firma es regelt: Sammelpunkt, Auslöse, Unterkunft. Dann füllt die App neue Tage passend vor und rechnet genauer.',
-    '<button class="linkbtn" type="button" data-go="settings">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button>'));
+    '<button class="linkbtn" type="button" data-setup="start">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button>'));
   if (!isStandalone() && !S.installHintClosed) {
     if (installEvt) out.push(snote('empty', 'Als App installieren, dann startet MontageBuch vom Startbildschirm und läuft auch ohne Netz.',
       '<button class="linkbtn" type="button" data-install="1">Installieren</button><button class="linkbtn" type="button" data-hint-close="1">Später</button>'));
@@ -2206,7 +2237,7 @@ function todayHTML(t) {
   const free = isWeekend(t) || !!holiday(t), p = quickPlan(t);
   const head = `<div class="td-head"><i class="lamp ${free ? 'idle' : 'open pulse'}" aria-hidden="true"></i><h2 id="td-h">${free ? 'Heute nichts erfasst' : 'Heute noch offen'}</h2></div>`;
   if (!p) return `<section class="today" aria-labelledby="td-h">${head}<p class="td-hint">Trag ein, wann und wo du heute gearbeitet hast.</p>
-    <button class="btn primary block td-go" type="button" data-new="${t}">${ic('add')}Arbeitstag erfassen</button>${more}</section>`;
+    <button class="btn primary block td-go" type="button" data-new="${t}">${ic('add')}${Object.keys(S.entries).length ? 'Arbeitstag erfassen' : 'Ersten Arbeitstag erfassen'}</button>${more}</section>`;
   const w = sinceWord(p.from, t);
   return `<section class="today" aria-labelledby="td-h">${head}
     <button class="td-plan" type="button" data-new="${t}"><small><span>Vorschlag wie ${w === 'gestern' || w.startsWith('am ') ? w : 'am ' + w + ', ' + dDM(p.from)}</span>${edit}</small>${planHTML(p.e)}</button>
@@ -2273,13 +2304,11 @@ function renderHome() {
   h += importantCards();
   const ents = Object.values(S.entries), exps = Object.values(S.expenses);
   if (!ents.length && !exps.length) {
-    h += `<div class="empty"><h2>Noch keine Einträge</h2>
-      <p>Trag jeden Arbeitstag mit Schicht, Zeiten, Einsatzort und Montage ein. Ab dem zweiten Eintrag füllt MontageBuch die Felder wie am letzten Arbeitstag vor.</p>
-      <span class="eyebrow">Beispiel</span>
+    h += todayHTML(t) + `<div class="empty"><h2>Noch keine Einträge</h2>
+      <p>So sieht ein Tag später in der Liste aus. Ab dem zweiten Eintrag füllt MontageBuch die Felder wie am letzten Arbeitstag vor.</p>
       <div class="row example" aria-hidden="true"><span class="dt"><span class="dw">Di</span><span class="dd">13.10.</span></span>
         <span class="main"><span class="l1"><span class="chip nacht">Nacht</span><span>22:00–06:00</span><span class="chip away">Auswärts</span></span><span class="l2">Hamm (Westf) · Gleiserneuerung</span></span>
-        <span class="side"><span class="hrs">7,5 h</span><span class="money">28 €</span></span></div>
-      <button class="btn primary block" type="button" data-new="${t}">Ersten Eintrag anlegen</button></div></div>`;
+        <span class="side"><span class="hrs">7,5 h</span><span class="money">28 €</span></span></div></div></div>`;
     el.innerHTML = h; return;
   }
   // Kennzahlen des gewählten Jahres (am PC oben wie im Leitstand)
@@ -2716,6 +2745,74 @@ $('#settings').addEventListener('submit', ev => { ev.preventDefault(); saveSetti
 $('#settings').addEventListener('change', ev => { if (ev.target.matches('input, select')) saveSettings(true); });
 $('#install-btn2').addEventListener('click', doInstall);
 
+/* ---------- Erster Start: Einrichten in drei Fragen ---------- */
+// Statt der langen Einstellungsseite nur das, was neue Tage richtig vorbelegt: Fahrzeug (dazu das Bundesland für die Feiertage),
+// fester Ort laut Vertrag und Auslöse. Jede Antwort wird sofort gespeichert. Den Rest gibt es weiter unter Mehr > Einstellungen.
+let suStep = 1;
+const SU_Q = [
+  {k: 'veh', h: 'Wie kommst du meistens zur Arbeit?', lead: 'Damit füllt MontageBuch neue Tage passend vor.',
+    opts: [['pkw', 'Eigenes Auto', 'Du fährst selbst.'], ['mit', 'Mitfahrer', 'Im Privatauto eines Kollegen.'],
+      ['firma', 'Firmenwagen oder Firmenbus', 'Das Fahrzeug stellt die Firma.'], ['oepnv', 'Bahn oder Bus', 'Mit Ticket.']]},
+  {k: 'fixed', h: 'Steht im Arbeitsvertrag ein fester Ort, zu dem du jeden Tag fährst?', lead: 'Davon hängt ab, wie deine Fahrten für die Steuer zählen.',
+    opts: [['none', 'Nein, wechselnde Baustellen', 'Fahrten mit dem eigenen Auto zur Baustelle sind dann Dienstfahrten.'],
+      ['sammel', 'Ja, ein fester Sammelpunkt', 'Zum Beispiel ein Bahnhof oder ein Lager. Dafür gibt es die Entfernungspauschale.'],
+      ['betrieb', 'Ja, der Betrieb', 'Du fährst jeden Tag zuerst zum Betrieb. Dafür gibt es die Entfernungspauschale.']]},
+  {k: 'ausOn', h: 'Zahlt deine Firma Auslöse oder Spesen?', lead: 'Die App trägt die Beträge an Montagetagen von selbst ein und verrechnet sie für die Steuer.',
+    opts: [['0', 'Nein', ''], ['1', 'Ja', '']]}
+];
+function openSetup() { suStep = 1; go('setup'); }
+function suSet(patch) {
+  S.settings = mergeSettings(Object.assign({}, S.settings, patch));
+  if ('state' in patch) Object.keys(HOL).forEach(key => delete HOL[key]);
+  persist();
+}
+function renderSetup(dir) {
+  const st = S.settings, q = SU_Q[suStep - 1], cur = q.k === 'ausOn' ? (st.ausOn ? '1' : '0') : st[q.k], last = suStep === SU_Q.length;
+  const opt = ([v, l, sub]) => `<button class="su-opt" type="button" data-su="${v}" aria-pressed="${cur === v}"><i class="rd" aria-hidden="true"></i><span>${esc(l)}</span>${sub ? `<small>${esc(sub)}</small>` : ''}</button>`;
+  let more = '';
+  if (q.k === 'veh') more = `<label class="su-state">Bundesland, für die Feiertage<select id="su-state">${STATES.map(([v, l]) => `<option value="${v}"${v === st.state ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select></label>`;
+  if (q.k === 'fixed' && cur !== 'none') more = `<div class="su-more"><label>Name des Orts<input id="su-fname" value="${esc(st.fixedName)}" placeholder="z. B. Bf Soest, Lager Hamm" autocomplete="off"></label>
+    <label>Entfernung von zu Hause, einfache Strecke (km)<input id="su-fkm" inputmode="decimal" value="${st.fixedKm ? nf(st.fixedKm, 1).replace(/\./g, '') : ''}" placeholder="z. B. 24"></label></div>`;
+  if (q.k === 'ausOn' && cur === '1') more = `<div class="su-more"><label>Voller Tag auf Montage, 24 Std. (€)<input id="su-afull" inputmode="decimal" value="${inMoney(st.ausFull)}" placeholder="0,00"></label>
+    <label>An- und Abreisetag (€)<input id="su-ahalf" inputmode="decimal" value="${inMoney(st.ausHalf)}" placeholder="0,00"></label>
+    <label>Tagestour ohne Übernachtung (€)<input id="su-aday" inputmode="decimal" value="${inMoney(st.ausDay)}" placeholder="0,00"></label></div>`;
+  $('#v-setup').innerHTML = `<div class="su">
+    <div class="su-head"><svg viewBox="0 0 144 86" aria-hidden="true"><use href="#logo-d" class="t-d"/><use href="#logo-l" class="t-l"/></svg><b>Einrichten</b><button class="textbtn" type="button" data-su-go="skip">Überspringen</button></div>
+    <div class="su-prog" aria-hidden="true">${SU_Q.map((x, i) => `<i${i < suStep ? ' class="on"' : ''}></i>`).join('')}</div>
+    <div class="su-step"><p class="su-n">Frage ${suStep} von ${SU_Q.length}</p><h2 id="su-h">${esc(q.h)}</h2><p class="su-lead">${esc(q.lead)}</p>
+      <div class="su-opts" role="group" aria-labelledby="su-h">${q.opts.map(opt).join('')}</div>${more}
+      ${last ? '<p class="su-rest">Unterkunft, Kilometergeld, Name und Schichtzeiten stellst du später unter Mehr &gt; Einstellungen ein.</p>' : ''}</div>
+    <div class="su-foot"><button class="btn gray" type="button" data-su-go="back">Zurück</button><button class="btn primary" type="button" data-su-go="${last ? 'done' : 'next'}">${last ? 'Fertig' : 'Weiter'}</button></div>
+  </div>`;
+  if (dir) enter($('#v-setup .su-step'), dir);
+}
+// Eingaben in den Feldern sofort übernehmen
+const SU_IN = {'su-fname': v => ({fixedName: v.trim()}), 'su-fkm': v => ({fixedKm: num(v)}), 'su-afull': v => ({ausFull: num(v)}), 'su-ahalf': v => ({ausHalf: num(v)}), 'su-aday': v => ({ausDay: num(v)})};
+$('#v-setup').addEventListener('input', ev => { const fn = SU_IN[ev.target.id]; if (fn) suSet(fn(ev.target.value)); });
+$('#v-setup').addEventListener('change', ev => { if (ev.target.id === 'su-state') suSet({state: ev.target.value}); });
+$('#v-setup').addEventListener('click', ev => {
+  const o = ev.target.closest('[data-su]'), g = ev.target.closest('[data-su-go]');
+  if (o) {
+    const k = SU_Q[suStep - 1].k, v = o.dataset.su;
+    suSet(k === 'veh' ? {veh: S.settings.veh === v ? '' : v} : k === 'fixed' ? {fixed: v} : {ausOn: v === '1'});
+    renderSetup(); return;
+  }
+  if (!g) return;
+  const a = g.dataset.suGo;
+  if (a === 'next') { suStep++; renderSetup('fwd'); window.scrollTo(0, 0); }
+  else if (a === 'back') { if (suStep > 1) { suStep--; renderSetup('back'); window.scrollTo(0, 0); } else goBack(); }
+  else finishSetup(a === 'done');
+});
+// Fertig oder Überspringen: gilt als eingerichtet, weiter zur Startseite mit dem ersten Arbeitstag
+function finishSetup(done) {
+  S.settings.profSeen = true; persist();
+  navStack = [];
+  show('list');
+  if (history.state && history.state.s) { ignorePop++; history.back(); }
+  renderBell();
+  if (done) { buzz(12); toast('Fertig eingerichtet'); }
+}
+
 /* ---------- Hell und Dunkel (Einstellung nur auf diesem Gerät) ---------- */
 const THEME_KEY = KEY + '-theme';
 function themePref() { try { const p = localStorage.getItem(THEME_KEY); return p === 'light' || p === 'auto' ? p : 'dark'; } catch (e) { return 'dark'; } }
@@ -2733,9 +2830,9 @@ function setTheme(p) {
 try { if (window.matchMedia) window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (themePref() === 'auto') applyTheme(); }); } catch (e) {}
 
 /* ---------- Navigation ---------- */
-const VIEWS = ['list', 'cal', 'day', 'all', 'stats', 'more', 'settings', 'form', 'exp', 'report', 'welcome'];
+const VIEWS = ['list', 'cal', 'day', 'all', 'stats', 'more', 'settings', 'form', 'exp', 'report', 'welcome', 'setup'];
 // Unterseiten mit Zurück-Knopf; die Zurück-Taste des Handys führt dorthin, woher man kam
-const SUB = new Set(['day', 'all', 'settings']);
+const SUB = new Set(['day', 'all', 'settings', 'setup']);
 const TITLE = {cal: 'Kalender', day: 'Tagesdetail', all: 'Alle Einträge', stats: 'Auswertung', more: 'Mehr', settings: 'Einstellungen'};
 let ignorePop = 0, afterPop = null;
 const setCur = (b, on) => on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
@@ -2748,7 +2845,7 @@ function show(v) {
   const prev = view, dir = navDir; navDir = '';
   view = v;
   VIEWS.forEach(k => $('#v-' + k).hidden = k !== v);
-  const form = v === 'form' || v === 'exp', full = form || v === 'report' || v === 'welcome';
+  const form = v === 'form' || v === 'exp', full = form || v === 'report' || v === 'welcome' || v === 'setup';
   document.body.classList.toggle('full', full);
   document.body.dataset.screen = v;
   $('#top').hidden = full || v === 'list'; $('#tabs').hidden = full; $('#formfoot').hidden = !form;
@@ -2766,6 +2863,7 @@ function show(v) {
   if (v === 'day') renderDay();
   if (v === 'stats') renderStats();
   if (v === 'more') renderMore();
+  if (v === 'setup') renderSetup();
   if (v === 'settings') {
     fillSettings();
     if (!S.settings.profSeen) { S.settings.profSeen = true; persist(); renderBell(); }
@@ -2819,12 +2917,13 @@ document.addEventListener('click', ev => {
   if (d.bell) { openBell(); return; }
   if (d.themeSet) { setTheme(d.themeSet); return; }
   if (d.welcome) {
-    if (d.welcome === 'start') go('settings');
+    if (d.welcome === 'start') openSetup();
     else if (d.welcome === 'restore') $('#x-restore').click();
     else { welcomeSkip = true; show('list'); }
     return;
   }
   if (d.news) { S.seenVersion = APP_VERSION; persist(); renderBell(); if (!$('#bell-list .snote')) closeBell(); return; }
+  if (d.setup === 'start') { leave(openSetup); return; }
   if (d.setup) { S.settings.profSeen = true; persist(); renderBell(); return; }
   if (d.hintClose) { S.installHintClosed = true; persist(); renderBell(); return; }
   if (d.install) { leave(doInstall); return; }

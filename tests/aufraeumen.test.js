@@ -139,7 +139,7 @@ const rule = start => { const i = css.indexOf(start); return i < 0 ? '' : css.sl
   store[KEY] = JSON.stringify(Object.assign(data(), {seenVersion: '2.1.0'}));
   await start();
   $('[data-bell]').click();
-  check('Glocke: Neuigkeiten mit grüner Lampe', !!$('#bell-list .news .lamp.ok') && T($('#bell-list .news b').textContent) === 'Neu in Version 2.2.0' && T($('#bell-list .news').textContent).includes('kleinen i'));
+  check('Glocke: Neuigkeiten mit grüner Lampe', !!$('#bell-list .news .lamp.ok') && T($('#bell-list .news b').textContent) === 'Neu in Version 2.3.0' && T($('#bell-list .news').textContent).includes('kleinen i'));
   check('Glocke: Einrichten mit gelber Lampe', !!$('#bell-list .snote:not(.news) .lamp.open') && T($('#bell-list').textContent).includes('Jetzt einrichten'));
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Glocke bleibt für den Rest offen', !$('#bell').hidden && !$('#bell-list .news') && !!$('#bell-list .snote'));
