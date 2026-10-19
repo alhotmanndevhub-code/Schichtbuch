@@ -54,7 +54,10 @@
   --input:#20292D; --input-line:#3E4C54; --btn-gray:#3A464C; --toast-act:#C62828;
   --c-trip:#3987E5; --c-lodge:#D94848; --c-other:#9085E9; --c-meal:#C98500;
   --d-work:#F59E0B; --d-trip:#64B5F6; --d-lodge:#F48FB1; --d-exp:#EF5350; --d-off:#8D979E;
+  /* Signale und Gleis auf der Startseite: Grün erfasst, Gelb heute offen, Rot fehlt */
+  --good-soft:rgba(76,195,138,.2); --lamp-off:#3A464C; --track:#6E7D85; --sleeper:#34434A; --sleeper-ok:#226B4C; --nav-pill:rgba(255,90,79,.16);
   --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 30px rgba(0,0,0,.28);
+  --ease-out:cubic-bezier(.16,1,.3,1);
   color-scheme:dark;
 }
 :root[data-theme="light"]{
@@ -69,16 +72,19 @@
   --input:#FFFFFF; --input-line:#C5CBCF; --btn-gray:#E3E6E8; --toast-act:#FF8A80;
   --c-trip:#2A78D6; --c-lodge:#D32F2F; --c-other:#6250D6; --c-meal:#F59E0B;
   --d-work:#E39200; --d-trip:#2A78D6; --d-lodge:#D6457C; --d-exp:#D32F2F; --d-off:#80868B;
+  --good-soft:#DCF1E5; --lamp-off:#C3C9CC; --track:#9EA8AE; --sleeper:#E3E6E4; --sleeper-ok:#A8DBBF;
   --shadow:0 1px 2px rgba(23,28,31,.06),0 8px 24px rgba(23,28,31,.08);
   color-scheme:light;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{-webkit-text-size-adjust:100%;background:var(--bg)}
+html{-webkit-text-size-adjust:100%;background:var(--bg);overscroll-behavior-y:contain}
 body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f-body);-webkit-tap-highlight-color:transparent;padding-top:env(safe-area-inset-top,0px)}
 img{max-width:100%}
 button,input,select,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
+button{cursor:pointer;touch-action:manipulation}
+/* Bedienelemente wie in einer App: langes Drücken markiert keinen Text */
+button,.tabs,.sidebar,.formfoot,.stepper,.chip,.badge,.wk-days{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 h1,h2,h3{text-wrap:balance}
 :focus-visible{outline:3px solid var(--amber);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -179,42 +185,99 @@ button.row:hover{background:var(--surface-2)}
 /* Untere Leiste und Seitenleiste */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--nav);border-top:1px solid var(--nav-line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
 .tabs .in{max-width:var(--app-w);margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
-.tabs button{display:grid;justify-items:center;align-content:center;gap:3px;min-height:54px;padding:4px 2px;border:0;border-radius:10px;background:none;color:var(--nav-muted);font:600 12px/1.1 var(--f-body)}
-.tabs button .ic{width:26px;height:26px}
+.tabs button{position:relative;display:grid;justify-items:center;align-content:center;gap:3px;min-height:54px;padding:4px 2px;border:0;border-radius:10px;background:none;color:var(--nav-muted);font:600 12px/1.1 var(--f-body)}
+.tabs button .ic{position:relative;width:26px;height:26px}
+/* aktiver Bereich: Pille hinter dem Symbol wie bei Android */
+.tabs button::before{content:"";position:absolute;top:4px;left:50%;width:58px;height:30px;margin-left:-29px;border-radius:15px;background:var(--nav-pill);opacity:0;transform:scaleX(.45);transition:opacity .2s,transform .3s var(--ease-out)}
 .tabs button[aria-current="page"]{color:var(--nav-active)}
+.tabs button[aria-current="page"]::before{opacity:1;transform:none}
 .sidebar{display:none}
 
-/* Start */
-.hello{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:8px;padding:18px 0 6px}
-.hello h1{margin:0;font:600 24px/1.2 var(--f-body)}
-.hello h1 b{display:block;font-weight:700;font-size:30px}
-.hello p{margin:6px 0 0;color:var(--muted);font-size:15px}
-.sync{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:4px}
-.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+/* Start: Gruß, dann „Heute“ als Hauptsache, die Woche als Gleis mit Signalen, der Jahresbetrag, Einsatz und letzte Einträge */
+.hello{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px 0 2px}
+.hl-logo{width:46px;height:28px}
+.hello h1{margin:0;font:700 19px/1.2 var(--f-body)}
+.hello p{margin:3px 0 0;color:var(--muted);font-size:14px;line-height:1.3;display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.sync::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
 .sync.ok::before{background:var(--good)} .sync.local::before{background:var(--amber)}
-.notes{display:grid;gap:8px;margin-top:10px}
-.week{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 16px;margin-top:14px}
-.week .eyebrow{text-transform:none;letter-spacing:0;font-size:16px;color:var(--ink)}
-.week .big{font:600 30px/1.1 var(--f-body);font-variant-numeric:tabular-nums}
-.week .warn{grid-column:1/-1}
-.ring{width:72px;height:72px}
-.ring circle{fill:none;stroke-width:7}
-.ring .tr{stroke:var(--surface-3)} .ring .val{stroke:var(--amber);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%}
-.quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
-.qt{display:grid;justify-items:center;align-content:center;gap:8px;min-height:112px;padding:14px 6px;border:0;border-radius:var(--r-m);background:var(--surface);color:var(--ink);font:600 14px/1.2 var(--f-body);text-align:center}
-.qt:hover{background:var(--surface-2)}
-.qi{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:var(--surface-3)}
-.qi .ic{width:28px;height:28px}
-.qi.red{background:var(--accent);color:#fff}
 .hello-act{display:flex;align-items:center;gap:8px}
-.job{background:var(--hl);color:var(--hl-ink);border-radius:var(--r-m);overflow:hidden}
-.job-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;width:100%;text-align:left;border:0;background:none;color:inherit;padding:16px;font-size:15px}
-.job .mast{width:44px;height:44px}
+.notes{display:grid;gap:8px;margin-top:12px}
+.snote{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:start;background:var(--surface);border-radius:var(--r-m);padding:13px 14px;font-size:14px;line-height:1.4}
+.snote .lamp{margin-top:4px}
+.snote .nb{grid-column:2;display:flex;flex-wrap:wrap;gap:6px 18px}
+/* Signallampe: grün erfasst, gelb heute offen, rot fehlt, grau frei oder noch nicht dran */
+.lamp{display:block;flex:none;width:12px;height:12px;border-radius:50%;background:var(--lamp-off);transition:background-color .3s,box-shadow .3s,transform .15s var(--ease-out)}
+.lamp.ok{background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
+.lamp.open{background:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.lamp.miss{background:var(--danger);box-shadow:0 0 0 3px var(--accent-soft)}
+.lamp.empty{background:transparent;box-shadow:inset 0 0 0 2px var(--lamp-off)}
+.lamp.idle{width:8px;height:8px;margin:2px}
+/* Heute */
+.today{display:grid;gap:14px;margin-top:14px;padding:18px 16px 16px;border-radius:var(--r-l);background:var(--surface)}
+.td-head{display:flex;align-items:center;gap:12px;min-width:0}
+.td-head h2{margin:0;font:700 23px/1.15 var(--f-body)}
+.td-head .lamp{width:14px;height:14px}
+.td-head .lamp.idle{width:10px;height:10px;margin:2px}
+.td-hint{margin:-4px 0 0;color:var(--muted);font-size:15px}
+.td-plan{display:grid;gap:3px;width:100%;padding:12px 14px 14px;border:0;border-radius:var(--r-m);background:var(--surface-2);color:var(--ink);text-align:left;font-size:15px;line-height:1.35}
+.td-plan small{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;color:var(--muted);font-size:13px}
+.td-edit{display:inline-flex;align-items:center;gap:4px;color:var(--accent-ink);font-weight:600;white-space:nowrap}
+.td-edit .ic{width:16px;height:16px}
+.td-time{font:700 32px/1 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.td-what{font-weight:600}
+.td-where{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+.td-go{min-height:56px;font-size:17px}
+.td-more{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.td-more .btn{min-height:44px;padding:0 10px;font-size:15px;border-width:1px}
+.td-more .btn .ic{width:19px;height:19px;color:var(--muted)}
+/* Diese Woche als Gleis: Tage oben, Schwellen darunter in leichter Perspektive */
+.wk{position:relative;margin-top:12px;padding:16px 16px 12px;border-radius:var(--r-l);background:var(--surface);overflow:hidden}
+.wk-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.wk-h h2{margin:0;font:700 17px/1.2 var(--f-body)}
+.wk-h span{color:var(--muted);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+.wk-h .all{color:var(--good);font-weight:600}
+.wk-days{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));margin-top:8px}
+.wd{position:relative;z-index:1;display:grid;justify-items:center;align-content:start;gap:5px;min-width:0;padding:8px 0 42px;border:0;background:none;color:var(--muted);font:500 12px/1 var(--f-body)}
+.wd::before{content:"";position:absolute;inset:0 3px 34px;border-radius:10px;background:transparent;z-index:-1;transition:background-color .15s}
+.wd b{font:600 17px/1 var(--f-body);color:var(--ink);font-variant-numeric:tabular-nums}
+.wd.we b,.wd.fut b{color:var(--muted);font-weight:500}
+.wd.today{color:var(--ink);font-weight:700}
+.wd.today::before{background:var(--surface-2)}
+.wd:active::before{background:var(--surface-3)}
+.wd .lamp{margin-top:4px}
+.wk-track{position:absolute;left:-16px;right:-16px;bottom:0;height:46px;padding:0 16px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));transform:perspective(420px) rotateX(56deg);transform-origin:50% 100%;pointer-events:none}
+.wk-track::before,.wk-track::after{content:"";position:absolute;left:0;right:0;height:4px;border-radius:2px;background:var(--track)}
+.wk-track::before{top:11px} .wk-track::after{bottom:11px}
+.wk-track i{margin:0 18%;border-radius:3px;background:var(--sleeper);transition:background-color .35s}
+.wk-track i.ok{background:var(--sleeper-ok)}
+.wk-miss{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:8px 0 2px;font-size:14px}
+.wk-miss .lamp{width:10px;height:10px}
+/* Jahresbetrag: grau bis zum Pauschbetrag, grün, was darüber hinaus zählt */
+.yr{display:grid;gap:4px;width:100%;margin-top:12px;padding:16px;border:0;border-radius:var(--r-l);background:var(--surface);color:var(--ink);text-align:left;font-size:15px}
+.yr-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.yr-h>span{font:700 17px/1.2 var(--f-body)}
+.yr-h small{display:inline-flex;align-items:center;color:var(--accent-ink);font:600 14px var(--f-body)}
+.yr-h small .ic{width:20px;height:20px}
+.yr-n{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;font:700 44px/1.05 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:.005em}
+.yr-d{font:600 16px var(--f-body);color:var(--good);opacity:0;transition:opacity .3s}
+.yr-d.on{opacity:1}
+.yr-d.neg{color:var(--muted)}
+.yr-bar{position:relative;height:10px;margin:10px 0 6px;border-radius:5px;background:var(--surface-3)}
+.yr-bar i{position:absolute;top:0;bottom:0;left:0;width:100%;border-radius:5px;transform-origin:0 50%}
+.yr-bar .a{background:var(--line-2)}
+.yr-bar .b{background:var(--good)}
+.yr-bar b{position:absolute;top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink)}
+.yr-t{color:var(--muted);font-size:14px}
+/* Aktueller Einsatz als ruhige Zeile (am PC als Karte mit Foto, siehe unten) */
+.job{background:var(--surface);color:var(--ink);border-radius:var(--r-l);overflow:hidden}
+.job-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;width:100%;text-align:left;border:0;background:none;color:inherit;padding:14px 16px;font-size:15px}
+.job .mast{width:40px;height:40px;color:var(--muted)}
 .job .jt{display:grid;gap:2px;min-width:0}
 .job .jt b{font-size:17px}
-.job .jl{color:var(--hl-muted);font-size:14px;display:grid;gap:1px}
-.job .chev{color:var(--hl-muted)}
-.job .jd{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-size:14px;font-variant-numeric:tabular-nums;border-top:1px solid var(--hl-line);padding-top:10px;margin-top:8px}
+.job .jl{color:var(--muted);font-size:14px;display:grid;gap:1px}
+.job .chev{color:var(--muted)}
+.job .jd{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
 .job .jd .ic{width:18px;height:18px}
 .recent .rows{margin-top:0}
 .recent .sect .linkbtn{color:var(--ink);font-weight:500;font-size:14px}
@@ -420,7 +483,7 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
 .wl-foot{margin:4px 0 0;font-size:13px;color:#C9CED2;text-align:center}
 
 /* Meldung unten */
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:15px;font-weight:600;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+.toast{position:fixed;left:16px;right:16px;margin:0 auto;width:fit-content;max-width:560px;bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:18px;font-size:15px;font-weight:600;text-align:center;box-shadow:var(--shadow)}
 .toast button{margin-left:10px;background:none;border:0;color:var(--toast-act);font-weight:700;text-decoration:underline}
 
 /* Jahresbericht: immer wie Papier */
@@ -452,7 +515,7 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
 .beleg img{max-width:100%;max-height:70vh;display:block;border:1px solid var(--line)}
 .beleg p{font-size:12px;color:var(--muted)}
 
-@media (max-width:370px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.qt{min-height:100px;font-size:13px}.hello h1 b{font-size:26px}}
+@media (max-width:370px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.td-time{font-size:29px}.yr-n{font-size:40px}.td-head h2{font-size:21px}}
 @media (min-width:600px){
   :root{--app-w:720px}
   .app{padding-inline:24px}
@@ -482,17 +545,18 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
   .top h1{grid-column:2;text-align:left;font-size:28px}
   .top .back{grid-column:1}
   .toast{bottom:28px}
-  body:not(.full) .toast{margin-left:calc(var(--side-w) / 2)}
+  body:not(.full) .toast{left:calc(var(--side-w) + 16px)}
   .formfoot .in{max-width:760px}
   .m-only{display:none!important}
   .home{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
   .home>*{grid-column:1/-1;margin:0}
   .home>.hello{padding-top:22px}
   .home>.kc{grid-column:span 1}
-  .home>.week,.home>.quick{grid-column:span 2}
-  .home>.job,.home>.wkc{grid-column:span 2}
-  .home>.quick{align-self:stretch}
-  .home .qt{min-height:0;height:100%}
+  .home>.today,.home>.wk,.home>.job,.home>.wkc{grid-column:span 2}
+  .home>.wk{display:flex;flex-direction:column}
+  .home>.wk .wk-days{margin-top:auto}
+  .hello{grid-template-columns:minmax(0,1fr) auto}
+  .hello h1{font-size:26px}
   .kc{background:var(--surface);border-radius:var(--r-m);padding:16px 18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 14px;align-items:center}
   .kc .ic{width:30px;height:30px;grid-row:1/4;color:var(--muted)}
   .kc span{font-size:14px;color:var(--muted)}
@@ -531,7 +595,48 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
   .welcome .wl-bg{background-image:linear-gradient(90deg,rgba(16,24,28,.92) 0%,rgba(16,24,28,.55) 45%,rgba(16,24,28,.2) 100%),url(bg-start-gross.webp)}
   .welcome .wl-in{margin:0 0 0 8vw}
 }
-@media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s ease}.ring .val{transition:stroke-dasharray .4s ease}}
+/* Bewegung und Rückmeldung: Knöpfe geben beim Drücken nach, Ansichten gleiten herein, Meldungen und Blätter kommen von unten.
+   Alles kurz (0,15 bis 0,35 s). Bei „Bewegung reduzieren“ am Handy bleibt es bei Farbwechseln ohne Bewegung. */
+.btn,.iconbtn,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
+button.row:active,button.item:active,button.td-plan:active,.job-main:active{background:var(--surface-2)}
+.toast.out{opacity:0;transform:translateY(10px);transition:opacity .16s,transform .16s}
+@media (prefers-reduced-motion:no-preference){
+  .btn:not(:disabled):active,.seg button:active,.textbtn:active,.daterow button:active,.stepper button:not(:disabled):active{transform:scale(.96)}
+  .iconbtn:active,.cday:active{transform:scale(.9)}
+  .tabs button .ic,.sidebar button .ic{transition:transform .14s var(--ease-out)}
+  .tabs button:active .ic,.sidebar button:active .ic{transform:scale(.84)}
+  button.row:active,button.item:active,button.subc:active,.job-main:active,.yr:active,button.td-plan:active{transform:scale(.98)}
+  .wd:active .lamp{transform:scale(1.35)}
+  .v-in{animation:v-in .26s var(--ease-out) both}
+  .v-in.fwd{animation-name:v-fwd}
+  .v-in.back{animation-name:v-back}
+  .v-in.up{animation-name:v-up;animation-duration:.34s}
+  .step.s-fwd{animation:v-fwd .24s var(--ease-out)}
+  .step.s-back{animation:v-back .24s var(--ease-out)}
+  .formfoot:not([hidden]){animation:foot-up .3s var(--ease-out)}
+  .sheet:not([hidden]) .sheet-bg{animation:fade-in .2s ease-out}
+  .sheet:not([hidden]) .sheet-panel{animation:v-up .34s var(--ease-out)}
+  .toast:not([hidden]):not(.out){animation:toast-in .34s var(--ease-out)}
+  .lamp.pulse{animation:lamp 1.6s ease-in-out 4}
+  .lamp.pop{animation:pop .6s var(--ease-out)}
+  .wk-track i.pop{animation:sleeper .6s var(--ease-out)}
+  .today.just .td-head h2{animation:v-in .4s var(--ease-out)}
+  .row.just{animation:flash 1.8s ease-out}
+  .yr-bar i{transition:transform .8s var(--ease-out)}
+}
+@media (min-width:600px) and (prefers-reduced-motion:no-preference){.sheet:not([hidden]) .sheet-panel{animation-name:drop}}
+@keyframes v-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes v-fwd{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes v-back{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes v-up{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+@keyframes drop{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes foot-up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes toast-in{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes lamp{50%{box-shadow:0 0 0 8px var(--amber-soft)}}
+@keyframes pop{0%{transform:scale(.3)}55%{transform:scale(1.45)}100%{transform:none}}
+@keyframes sleeper{0%{transform:scaleY(.3)}60%{transform:scaleY(1.15)}100%{transform:none}}
+@keyframes flash{0%,35%{background:var(--good-soft)}100%{background:var(--surface)}}
 @media print{
   @page{size:A4;margin:14mm 12mm}
   :root,:root[data-theme="light"]{--bg:#fff;--surface:#fff;--surface-2:#f2f2f2;--ink:#000;--muted:#444;--line:#bbb;color-scheme:light}
@@ -1020,9 +1125,14 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.1.0';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.1.0', ['Neue Startseite: Oben steht „Heute“. Mit einem Tipp übernimmst du den Tag so wie gestern. Ändern kannst du ihn jederzeit.',
+    'Deine Woche als Gleis: Grün ist erfasst, Gelb ist heute noch offen, Rot fehlt. Tipp auf einen Tag, um ihn zu öffnen.',
+    'Am Handy siehst du auf der Startseite, wie hoch deine Werbungskosten schon sind und ob sie über dem Pauschbetrag liegen.',
+    'Die App reagiert spürbarer: Knöpfe geben nach, Seiten gleiten herein, beim Speichern vibriert das Handy kurz.',
+    'Aus Versehen gelöscht? Tipp unten auf „Rückgängig“, dann ist der Eintrag samt Belegfotos wieder da.']],
   ['2.0.0', ['Aus dem Schichtbuch wird MontageBuch: neuer Name, neues Logo, neues Aussehen. Deine Einträge bleiben, wie sie sind.',
     'Dunkel oder hell: Umschalten kannst du unter Mehr > Einstellungen > Darstellung.',
     'Neue Startseite mit deiner Woche, dem aktuellen Einsatz und den letzten Einträgen. Hinweise wie dieser stehen jetzt unter der Glocke.',
@@ -1139,6 +1249,24 @@ const ic = (n, cls = '') => `<svg class="ic${cls ? ' ' + cls : ''}" aria-hidden=
 const DOW_L = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
 const dLong = s => DOW_L[dowOf(s)] + ', ' + (+s.slice(8, 10)) + '. ' + MONTHS[+s.slice(5, 7) - 1] + ' ' + s.slice(0, 4);
 const dDM = s => s.slice(8, 10) + '.' + s.slice(5, 7) + '.';
+// Bewegung und Rückmeldung: kurz vibrieren (Android), Bereiche hereingleiten lassen, Zahlen hochzählen.
+// Wer am Handy „Bewegung reduzieren“ eingestellt hat, bekommt alles ohne Animation.
+const reduceMotion = () => !!window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const buzz = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+function enter(el, dir) {
+  if (!el || reduceMotion()) return;
+  el.classList.remove('v-in', 'fwd', 'back', 'up'); void el.offsetWidth;
+  el.classList.add('v-in'); if (dir) el.classList.add(dir);
+}
+document.addEventListener('animationend', ev => { const c = ev.target.classList; if (c && /^v-/.test(ev.animationName)) c.remove('v-in', 'fwd', 'back', 'up', 's-fwd', 's-back'); });
+let countRaf = 0;
+function countUp(el, from, to, ms) {
+  cancelAnimationFrame(countRaf);
+  if (reduceMotion() || from === to) { el.textContent = eur(to); return; }
+  const t0 = performance.now();
+  const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = eur(from + (to - from) * k); if (p < 1) countRaf = requestAnimationFrame(step); };
+  el.textContent = eur(from); countRaf = requestAnimationFrame(step);
+}
 
 /* ---------- Feiertage ---------- */
 function easter(y) {
@@ -1174,6 +1302,8 @@ let F = null; // offenes Formular
 // Anzeige: gewählter Monat und Tag im Kalender, Tag in der Tagesansicht, Reiter der Auswertung
 let calM = today().slice(0, 7), calSel = today(), dayDate = today(), statsTab = 'over';
 let navStack = [], reportFrom = 'more', welcomeSkip = false;
+// navDir: Richtung, aus der die nächste Ansicht hereingleitet; justSaved: gerade gespeicherter Tag, den die Startseite kurz hervorhebt
+let navDir = '', booted = false, justSaved = null;
 
 function mergeSettings(s) {
   const o = clone(DEF); s = s || {};
@@ -1869,20 +1999,25 @@ function newsList() {
   const seen = S.seenVersion || '1.3.1';
   return CHANGELOG.filter(([v]) => cmpVer(v, seen) > 0 && cmpVer(v, APP_VERSION) <= 0);
 }
-// Wichtiges bleibt sichtbar auf der Startseite: Daten unlesbar, Speichern geht nicht, angefangener Eintrag, Sicherung fällig
+// Wichtiges bleibt sichtbar auf der Startseite: Daten unlesbar, Speichern geht nicht, angefangener Eintrag.
+// Die Erinnerung an die Datensicherung steht weiter unten (backupCard). Jede Zeile hat vorne eine Signallampe.
+const snote = (kind, text, btns) => `<div class="snote"><i class="lamp ${kind}" aria-hidden="true"></i><span>${text}</span>${btns ? `<span class="nb">${btns}</span>` : ''}</div>`;
 function importantCards() {
   let h = '';
-  if (loadError) h += `<div class="warn barnote"><span>Die gespeicherten Daten auf diesem Handy ließen sich nicht lesen. ${storeBlocked ? 'Damit nichts verloren geht, speichert die App im Moment nichts.' : 'Eine Kopie davon ist aufgehoben.'} Lade am besten deine letzte Sicherung (Mehr &gt; Datensicherung).</span>
-    <button class="linkbtn" type="button" data-broken="dl">Defekte Daten herunterladen</button>${storeBlocked ? '<button class="linkbtn" type="button" data-broken="reset">Trotzdem neu beginnen</button>' : ''}</div>`;
-  if (!storageOk) h += `<p class="warn">Dieses Handy lässt gerade nichts speichern, zum Beispiel im privaten Modus des Browsers. Öffne die App normal oder installiere sie auf dem Startbildschirm.</p>`;
+  if (loadError) h += snote('miss', `Die gespeicherten Daten auf diesem Handy ließen sich nicht lesen. ${storeBlocked ? 'Damit nichts verloren geht, speichert die App im Moment nichts.' : 'Eine Kopie davon ist aufgehoben.'} Lade am besten deine letzte Sicherung (Mehr &gt; Datensicherung).`,
+    `<button class="linkbtn" type="button" data-broken="dl">Defekte Daten herunterladen</button>${storeBlocked ? '<button class="linkbtn" type="button" data-broken="reset">Trotzdem neu beginnen</button>' : ''}`);
+  if (!storageOk) h += snote('miss', 'Dieses Handy lässt gerade nichts speichern, zum Beispiel im privaten Modus des Browsers. Öffne die App normal oder installiere sie auf dem Startbildschirm.');
   if (S.draft && !F) {
     const k = S.draft.kind === 'exp';
-    h += `<div class="warn barnote"><span>${k ? 'Angefangene Ausgabe vom' : 'Angefangener Eintrag für'} ${dShort(S.draft.e.date)} ist noch nicht gespeichert.</span>
-      <button class="linkbtn" type="button" data-draft="resume">Weiter bearbeiten</button><button class="linkbtn" type="button" data-draft="drop">Verwerfen</button></div>`;
+    h += snote('open', `${k ? 'Angefangene Ausgabe vom' : 'Angefangener Eintrag für'} ${dShort(S.draft.e.date)} ist noch nicht gespeichert.`,
+      '<button class="linkbtn" type="button" data-draft="resume">Weiter bearbeiten</button><button class="linkbtn" type="button" data-draft="drop">Verwerfen</button>');
   }
-  const due = backupDue();
-  if (due) h += `<div class="warn barnote"><span>Letzte Datensicherung: ${due}. Die Einträge liegen nur auf diesem Handy. Leg jede Woche eine Sicherung in deine Cloud oder schick sie dir per Mail.</span><button class="linkbtn" type="button" data-backup="${canShareFiles ? 'share' : 'save'}">${canShareFiles ? 'Jetzt sichern (Drive, Mail …)' : 'Jetzt sichern'}</button></div>`;
   return h ? `<div class="notes">${h}</div>` : '';
+}
+function backupCard() {
+  const due = backupDue();
+  return due ? `<div class="notes">${snote('open', `Letzte Datensicherung: ${due}. Die Einträge liegen nur auf diesem Handy. Leg jede Woche eine Sicherung in deine Cloud oder schick sie dir per Mail.`,
+    `<button class="linkbtn" type="button" data-backup="${canShareFiles ? 'share' : 'save'}">${canShareFiles ? 'Jetzt sichern (Drive, Mail …)' : 'Jetzt sichern'}</button>`)}</div>` : '';
 }
 // Weniger dringende Hinweise sammelt die Glocke
 function bellItems() {
@@ -1967,10 +2102,113 @@ function donutSVG(parts, total) {
   return `<svg class="donut" viewBox="0 0 140 140" role="img" aria-label="Werbungskosten ${eur(total)}"><circle cx="70" cy="70" r="${r}" stroke="var(--surface-3)" stroke-width="16" fill="none"/>${segs}
     <text x="70" y="68" text-anchor="middle" font-size="15" font-weight="700">${esc(eurS(total))}</text><text x="70" y="86" text-anchor="middle" font-size="11" fill="currentColor" opacity=".7">gesamt</text></svg>`;
 }
+// Gerade gespeichert (in den letzten Sekunden): Startseite hebt den Tag kurz hervor
+const freshSave = () => justSaved && Date.now() - justSaved.at < 8000 ? justSaved : null;
+// Ein Tipp für den häufigsten Fall: heute wie den letzten Arbeitstag. Gleiche Vorbelegung wie im Formular (prefill).
+function quickPlan(d) {
+  const e = newEntry(d), from = prefill(e);
+  return from && WORK.has(e.type) && e.start && e.end ? {e, from} : null;
+}
+// „gestern“, „Freitag“ oder „am 02.10.“
+const sinceWord = (from, d) => { const n = dayDiff(from, d); return n === 1 ? 'gestern' : n < 7 ? DOW_L[dowOf(from)] : 'am ' + dDM(from); };
+function quickSave() {
+  const t = today();
+  if (Object.values(S.entries).some(x => x.date === t)) return;
+  const p = quickPlan(t); if (!p) { openForm(null, t); return; }
+  const e = tidy(normEntry(Object.assign(p.e, {id: newId(), updated: new Date().toISOString()})));
+  S.entries[e.id] = e; listMode = 'days'; persist();
+  justSaved = {date: t, at: Date.now()}; buzz(14);
+  if (e.year !== year) { year = e.year; renderYears(); }
+  renderAll();
+  toastAct(storageOk ? 'Heute gespeichert' : saveMsg(), 'Rückgängig', () => {
+    const x = S.entries[e.id]; if (!x || x.updated !== e.updated) return;
+    delete S.entries[e.id]; persist(); renderAll(); toast('Rückgängig gemacht');
+  });
+  afterSave();
+}
+// Kurzfassung eines Tages für die Karte „Heute“: Zeit groß, darunter Schicht, Stunden, Auswärts und Ort
+function planHTML(e, extra) {
+  const work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, timed = work && e.start && e.end;
+  const dupAway = (e.type === 'anreise' && e.away === 'an') || (e.type === 'abreise' && e.away === 'ab');
+  const what = [timed ? entryTitle(e) : '', wm ? nf(wm / 60, 2) + ' h' : '', isAway(e) && !dupAway ? AWAY_CHIP[e.away] : '', extra].filter(Boolean).join(' · ');
+  const where = [e.place, e.project || e.line].filter(Boolean).join(' · ');
+  return `<span class="td-time">${esc(timed ? e.start + ' – ' + e.end : entryTitle(e))}</span>${what ? `<span class="td-what">${esc(what)}</span>` : ''}${where ? `<span class="td-where">${esc(where)}</span>` : ''}`;
+}
+// „Heute“: Stand des Tages und der schnellste Weg zum Eintrag
+function todayHTML(t) {
+  const list = Object.values(S.entries).filter(e => e.date === t).sort(sortAsc), js = freshSave(), fresh = !!js && js.date === t;
+  const more = `<div class="td-more"><button class="btn" type="button" data-trip="1">${ic('directions-car')}Fahrt</button><button class="btn" type="button" data-newexp="1" data-date="${t}">${ic('receipt-long')}Ausgabe</button></div>`;
+  const edit = `<span class="td-edit">${ic('edit')}Ändern</span>`;
+  if (list.length) {
+    const e = list[0], v = vmaFor([e.year]).vmaOf[e.id];
+    return `<section class="today${fresh ? ' just' : ''}" aria-labelledby="td-h"><div class="td-head"><i class="lamp ok${fresh ? ' pop' : ''}" aria-hidden="true"></i><h2 id="td-h">Heute erfasst</h2></div>
+      <button class="td-plan" type="button" ${list.length > 1 ? `data-day="${t}"` : `data-id="${esc(e.id)}"`}><small><span>${list.length > 1 ? list.length + ' Einträge für heute' : 'Dein Eintrag'}</span>${edit}</small>${planHTML(e, v ? eurS(v) + ' Verpflegung' : '')}</button>${more}</section>`;
+  }
+  const free = isWeekend(t) || !!holiday(t), p = quickPlan(t);
+  const head = `<div class="td-head"><i class="lamp ${free ? 'idle' : 'open pulse'}" aria-hidden="true"></i><h2 id="td-h">${free ? 'Heute nichts erfasst' : 'Heute noch offen'}</h2></div>`;
+  if (!p) return `<section class="today" aria-labelledby="td-h">${head}<p class="td-hint">Trag ein, wann und wo du heute gearbeitet hast.</p>
+    <button class="btn primary block td-go" type="button" data-new="${t}">${ic('add')}Arbeitstag erfassen</button>${more}</section>`;
+  const w = sinceWord(p.from, t);
+  return `<section class="today" aria-labelledby="td-h">${head}
+    <button class="td-plan" type="button" data-new="${t}"><small><span>Vorschlag wie ${w === 'gestern' || w.startsWith('am ') ? w : 'am ' + w + ', ' + dDM(p.from)}</span>${edit}</small>${planHTML(p.e)}</button>
+    <button class="btn primary block td-go" type="button" data-quick="1">${ic('content-copy')}Wie ${w} übernehmen</button>${more}</section>`;
+}
+// Diese Woche als Gleis: jede Schwelle ein Tag. Signal grün = erfasst, gelb = heute offen, rot = fehlt, grau = frei oder noch nicht dran.
+function weekHTML(t) {
+  const mon = addDays(t, -((dowOf(t) + 6) % 7)), have = new Set(Object.values(S.entries).map(e => e.date));
+  const miss = missingWorkdays(), missSet = new Set(miss), w = weekInfo(), js = freshSave();
+  let days = '', sl = '';
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(mon, i), off = isWeekend(d) || !!holiday(d), ok = have.has(d), pop = js && js.date === d && ok ? ' pop' : '';
+    const st = ok ? 'ok' : d > t ? 'idle' : d === t ? (off ? 'idle' : 'open pulse') : missSet.has(d) ? 'miss' : off ? 'idle' : 'empty';
+    const say = ok ? 'erfasst' : d > t ? 'kommt noch' : d === t ? 'heute, noch nichts erfasst' : missSet.has(d) ? 'Eintrag fehlt' : off ? 'frei' : 'nichts erfasst';
+    days += `<button class="wd${d === t ? ' today' : ''}${off ? ' we' : ''}${d > t ? ' fut' : ''}" type="button" data-day="${d}" aria-label="${DOW_L[dowOf(d)]}, ${dDM(d)}: ${say}"><span aria-hidden="true">${DOW[dowOf(d)]}</span><b aria-hidden="true">${+d.slice(8, 10)}</b><i class="lamp ${st}${pop}" aria-hidden="true"></i></button>`;
+    sl += `<i class="${ok ? 'ok' : ''}${pop}"></i>`;
+  }
+  const sum = !w.need ? '' : w.got >= w.need ? `<span class="all">${w.need === 1 ? 'Werktag erfasst' : 'Alle ' + w.need + ' Werktage erfasst'}</span>` : `<span>${w.got} von ${w.need} ${w.need === 1 ? 'Werktag' : 'Werktagen'} erfasst</span>`;
+  let mh = '';
+  if (miss.length) {
+    const rng = miss.length === 1 ? dShort(miss[0]) : dShort(miss[0]) + ' bis ' + dShort(miss[miss.length - 1]);
+    mh = `<p class="wk-miss"><i class="lamp miss" aria-hidden="true"></i><span>${miss.length === 1 ? 'Ein Werktag' : miss.length + ' Werktage'} ohne Eintrag (${rng})</span><button class="linkbtn" type="button" data-new="${miss[0]}">${dShort(miss[0])} nachtragen</button></p>`;
+  }
+  return `<section class="wk" aria-labelledby="wk-h"><div class="wk-h"><h2 id="wk-h">Diese Woche</h2>${sum}</div>
+    <div class="wk-days">${days}<div class="wk-track" aria-hidden="true">${sl}</div></div>${mh}</section>`;
+}
+// Jahresbetrag am Handy: grauer Teil bis zum Arbeitnehmer-Pauschbetrag, grüner Teil = was darüber hinaus die Steuer senkt.
+// Hat sich der Betrag seit dem letzten Blick auf die Startseite geändert, zählt er hoch und der Balken wächst.
+const shownYr = {};
+function yrBar(base, wkp, max) {
+  const a = Math.min(base, wkp) / max, b = base > wkp ? (base - wkp) / (max - wkp) : 0;
+  return {a: `scaleX(${a.toFixed(4)})`, b: `scaleX(${b.toFixed(4)})`};
+}
+function yearHTML(T) {
+  const L = law(year), tot = r2(Math.max(0, T.total)), base = Math.max(0, T.totalNoGew), gew = L.gewExtra ? T.cat.gew || 0 : 0;
+  const max = Math.max(base, L.wkp) * 1.15, now = yrBar(base, L.wkp, max), prev = shownYr[year];
+  const anim = view === 'list' && !!prev && prev.tot !== tot && !reduceMotion(), was = anim ? yrBar(prev.base, L.wkp, max) : now;
+  if (view === 'list') shownYr[year] = {tot, base};
+  const over = r2(base - L.wkp), mk = (L.wkp / max * 100).toFixed(2) + '%';
+  const say = !base ? 'Sobald du Tage einträgst, siehst du hier, was du von der Steuer absetzen kannst.'
+    : over > 0 ? `${eur(over)} mehr als der Pauschbetrag von ${eurS(L.wkp)}${gew ? ' (ohne Gewerkschaft)' : ''}`
+    : `Noch ${eur(-over)} bis zum Pauschbetrag von ${eurS(L.wkp)}, den es ohnehin gibt`;
+  return `<button class="yr m-only" type="button" data-view="stats"><span class="yr-h"><span>Werbungskosten ${year}</span><small>Auswertung${ic('chevron-right')}</small></span>
+    <span class="yr-n"><span data-count="${tot}"${anim ? ` data-from="${prev.tot}"` : ''}>${eur(anim ? prev.tot : tot)}</span><span class="yr-d" aria-hidden="true"></span></span>
+    <span class="yr-bar" aria-hidden="true"><i class="a" style="transform:${was.a}" data-to="${now.a}"></i><i class="b" style="left:${mk};width:calc(100% - ${mk});transform:${was.b}" data-to="${now.b}"></i><b style="left:${mk}"></b></span>
+    <span class="yr-t">${say}</span></button>`;
+}
+// nach dem Zeichnen der Startseite: Betrag hochzählen, Balken wachsen lassen
+function homeMotion() {
+  const n = $('#v-list [data-from]');
+  if (!n) return;
+  const from = +n.dataset.from, to = +n.dataset.count, d = $('#v-list .yr-d');
+  countUp(n, from, to, 800);
+  if (d) { d.textContent = (to > from ? '+' : '−') + eur(Math.abs(to - from)); d.classList.toggle('neg', to < from); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 2400); }
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('#v-list .yr-bar i[data-to]').forEach(i => { i.style.transform = i.dataset.to; })));
+}
 function renderHome() {
   const el = $('#v-list'), t = today(), name = (S.settings.name || '').trim().split(/\s+/)[0];
   const hol = holiday(t);
-  let h = `<div class="home"><div class="hello"><div><h1>${greeting()}${name ? `,<b>${esc(name)}!</b>` : '!'}</h1><p>${dLong(t)}${hol ? ' · ' + esc(hol) : ''}</p><span class="sync ok" id="sync">Gespeichert</span></div>
+  let h = `<div class="home"><div class="hello"><svg class="hl-logo m-only" viewBox="0 0 144 86" aria-hidden="true"><use href="#logo-d" class="t-d"/><use href="#logo-l" class="t-l"/></svg>
+    <div><h1>${greeting()}${name ? `, ${esc(name)}` : ''}</h1><p><span>${dLong(t)}${hol ? ' · ' + esc(hol) : ''}</span><span class="sync ok" id="sync">Gespeichert</span></p></div>
     <div class="hello-act"><label class="yearsel d-only"><span class="sr">Jahr</span><select class="ysel" data-label="Jahr {y}">${yearOpts('Jahr {y}')}</select></label>
     <button class="iconbtn bell" type="button" data-bell="1" aria-label="Hinweise">${ic('notifications')}<span class="badge" hidden></span></button></div></div>`;
   h += importantCards();
@@ -1992,19 +2230,8 @@ function renderHome() {
     + kc('directions-car', 'Gefahrene Kilometer', nf(T.km, 0) + ' km', T.commuteDays ? `dazu ${T.commuteDays} × Sammelpunkt` : 'Dienstfahrten, eigenes Auto')
     + kc('bed', 'Übernachtungen', T.nights, T.lodging ? eur(T.lodging) + ' selbst bezahlt' : 'auswärts')
     + kc('receipt-long', 'Ausgaben', eur(T.exp + T.other), 'Arbeitsmittel, Tickets, Parken');
-  // Diese Woche
-  const w = weekInfo(), miss = missingWorkdays(), C = 2 * Math.PI * 30, share = w.need ? w.got / w.need : 0;
-  h += `<div class="card week"><div><span class="eyebrow">Diese Woche</span><div class="big">${w.need ? `${w.got} / ${w.need}` : '–'}</div>
-      <span class="hint">Werktage erfasst${w.extra ? ` · dazu ${w.extra} am Wochenende` : ''}</span></div>
-    <svg class="ring" viewBox="0 0 72 72" aria-hidden="true"><circle class="tr" cx="36" cy="36" r="30"/>${share > 0 ? `<circle class="val" cx="36" cy="36" r="30" stroke-dasharray="${(C * share).toFixed(1)} ${C.toFixed(1)}"/>` : ''}</svg>`;
-  if (miss.length) {
-    const rng = miss.length === 1 ? dShort(miss[0]) : dShort(miss[0]) + ' bis ' + dShort(miss[miss.length - 1]);
-    h += `<p class="warn">${miss.length === 1 ? 'Ein Werktag' : miss.length + ' Werktage'} ohne Eintrag (${rng}). <button class="linkbtn" type="button" data-new="${miss[0]}">${dShort(miss[0])} nachtragen</button></p>`;
-  }
-  h += `</div>`;
-  h += `<div class="quick"><button class="qt" type="button" data-new="${t}"><span class="qi red">${ic('add')}</span>Arbeitstag<br>erfassen</button>
-    <button class="qt" type="button" data-trip="1"><span class="qi">${ic('directions-car')}</span>Fahrt<br>erfassen</button>
-    <button class="qt" type="button" data-newexp="1"><span class="qi">${ic('receipt-long')}</span>Ausgabe<br>erfassen</button></div>`;
+  // Hauptsache oben: heute, dann die Woche, dann der Jahresbetrag
+  h += todayHTML(t) + weekHTML(t) + backupCard() + yearHTML(T);
   const job = currentJob();
   if (job) h += jobHTML(job, t);
   // Werbungskosten als Ring (am PC)
@@ -2024,6 +2251,14 @@ function renderHome() {
       return `<tr data-day="${esc(e.date)}"><td><button class="linkbtn" type="button" data-day="${esc(e.date)}">${dDot(e.date)}</button></td><td>${esc(entryTitle(e))}</td><td>${esc(e.project || e.line || (isAway(e) ? AWAY_X[e.away] : ''))}</td><td>${esc(e.place)}</td><td class="n">${wm ? nf(wm / 60, 2) + ' h' : e.vehicle === 'pkw' && e.km ? nf(e.km, 0) + ' km' : ''}</td></tr>`;
     }).join('')}</tbody></table></div></div>`;
   el.innerHTML = h;
+  // gerade gespeichert: Zeile in „Letzte Einträge“ kurz grün hinterlegen
+  const js = freshSave();
+  if (view === 'list' && js) {
+    const r = js.exp ? el.querySelector(`.recent .rows [data-exp="${js.exp}"]`) : el.querySelector(`.recent .rows [data-day="${js.date}"]`);
+    if (r) r.classList.add('just');
+    justSaved = null;
+  }
+  homeMotion();
 }
 
 /* ---------- Anzeige: Alle Einträge ---------- */
@@ -2447,6 +2682,7 @@ function topActions(v) {
   return '';
 }
 function show(v) {
+  const prev = view, dir = navDir; navDir = '';
   view = v;
   VIEWS.forEach(k => $('#v-' + k).hidden = k !== v);
   const form = v === 'form' || v === 'exp', full = form || v === 'report' || v === 'welcome';
@@ -2472,16 +2708,18 @@ function show(v) {
     if (!S.settings.profSeen) { S.settings.profSeen = true; persist(); renderBell(); }
   }
   window.scrollTo(0, 0);
+  // neue Ansicht gleitet herein: Unterseiten von rechts, zurück von links, Formulare von unten
+  if (booted && prev !== v) enter($('#v-' + v), dir || (form && prev !== 'form' && prev !== 'exp' ? 'up' : ''));
 }
 // Unterseite öffnen (mit Eintrag im Verlauf) oder Hauptbereich wechseln
 function go(v) {
-  if (SUB.has(v)) { if (view !== v) { navStack.push(view === 'welcome' ? 'list' : view); history.pushState({s: 1}, ''); } }
+  if (SUB.has(v)) { if (view !== v) { navStack.push(view === 'welcome' ? 'list' : view); history.pushState({s: 1}, ''); navDir = 'fwd'; } }
   else navStack = [];
   show(v);
 }
 function goBack() {
   if (history.state && history.state.s) history.back();
-  else show(navStack.pop() || 'list');
+  else { navDir = 'back'; show(navStack.pop() || 'list'); }
 }
 $('#top-back').addEventListener('click', goBack);
 function renderAll() {
@@ -2509,7 +2747,7 @@ function closeBell(then) {
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#bell').hidden) closeBell(); });
 
 /* ---------- Klicks auf Knöpfe mit data-Angaben (überall in der App) ---------- */
-const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add]';
+const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add],[data-quick]';
 document.addEventListener('click', ev => {
   const a = ev.target.closest(ACT); if (!a) return;
   const d = a.dataset, inBell = !!a.closest('#bell');
@@ -2530,16 +2768,16 @@ document.addEventListener('click', ev => {
   if (d.go) { ev.preventDefault(); leave(() => go(d.go)); return; }
   if (d.view) { if (d.listmode) listMode = d.listmode; go(d.view); return; }
   if (d.sbAdd) { openForm(null, defaultNewDate()); return; }
-  if (d.stab) { statsTab = d.stab; showStatsTab(); return; }
+  if (d.stab) { const ch = statsTab !== d.stab; statsTab = d.stab; showStatsTab(); if (ch) enter($(`#stats-body [data-panel="${statsTab}"]`)); return; }
   if (d.mode) { listMode = d.mode; renderList(); if (view === 'all') document.querySelectorAll('#side [data-view="all"]').forEach(b => setCur(b, b.dataset.listmode === listMode)); return; }
   if (d.calDay) { calSel = d.calDay; renderCal(); return; }
   if (d.calM) {
     const [y, m] = calM.split('-').map(Number), nd = new Date(y, m - 1 + +d.calM, 1);
     calM = nd.getFullYear() + '-' + pad(nd.getMonth() + 1); calSel = today().slice(0, 7) === calM ? today() : calM + '-01';
-    renderCal(); return;
+    renderCal(); enter($('#v-cal'), +d.calM > 0 ? 'fwd' : 'back'); return;
   }
   if (d.calToday) { calM = today().slice(0, 7); calSel = today(); renderCal(); return; }
-  if (d.dayStep) { dayDate = addDays(dayDate, +d.dayStep); renderDay(); return; }
+  if (d.dayStep) { dayDate = addDays(dayDate, +d.dayStep); renderDay(); enter($('#v-day'), +d.dayStep > 0 ? 'fwd' : 'back'); return; }
   if (d.draft) { if (d.draft === 'resume') resumeDraft(); else { const ad = S.draft && S.draft.added; dropDraft(); discardPhotos(ad); renderList(); } return; }
   if (d.backup) { backup(d.backup === 'share'); return; }
   if (d.broken) {
@@ -2548,6 +2786,7 @@ document.addEventListener('click', ev => {
     return;
   }
   if (d.report) { openReport(view); return; }
+  if (d.quick) { quickSave(); return; }
   if (d.copy) { copyNext(d.copy); return; }
   if (d.trip) { openTrip(); return; }
   if (d.new) { openForm(null, d.new); return; }
@@ -2630,10 +2869,10 @@ window.addEventListener('popstate', () => {
   if (ignorePop) { ignorePop--; const f = afterPop; afterPop = null; if (f) f(); return; }
   if (!$('#viewer').hidden) { closeViewer(); if (F) history.pushState({f: 1}, ''); return; }
   if (!$('#bell').hidden) { $('#bell').hidden = true; return; }
-  if (view === 'report') { show(reportFrom || 'more'); return; }
+  if (view === 'report') { navDir = 'back'; show(reportFrom || 'more'); return; }
   if (F) { history.pushState({f: 1}, ''); tryLeave(); return; }
-  if (SUB.has(view)) { show(navStack.pop() || 'list'); return; }
-  if (view !== 'list' && view !== 'welcome') show('list');
+  if (SUB.has(view)) { navDir = 'back'; show(navStack.pop() || 'list'); return; }
+  if (view !== 'list' && view !== 'welcome') { navDir = 'back'; show('list'); }
 });
 
 /* ---------- Formular: Arbeitstag ---------- */
@@ -2708,13 +2947,15 @@ function openForm(id, date, step, src) {
 const stepEl = n => $(`#v-form .step[data-step="${n}"]`);
 const stepHas = n => [...stepEl(n).children].some(c => !c.hidden);
 const stepsVisible = () => [1, 2, 3].filter(stepHas);
-function setStep(n) {
+// anim: Schritt gleitet in Leserichtung herein (vorwärts von rechts, zurück von links)
+function setStep(n, anim) {
   if (!F || F.kind !== 'day') return;
-  const vis = stepsVisible();
+  const vis = stepsVisible(), was = F.step;
   if (!vis.includes(n)) n = vis.find(x => x >= n) || vis[vis.length - 1] || 1;
   F.step = n;
   [1, 2, 3].forEach(k => { stepEl(k).hidden = k !== n; });
   syncStepUI(); window.scrollTo(0, 0);
+  if (anim && n !== was && !reduceMotion()) { const el = stepEl(n); el.classList.remove('s-fwd', 's-back'); void el.offsetWidth; el.classList.add(n > was ? 's-fwd' : 's-back'); }
 }
 function syncStepUI() {
   if (!F) return;
@@ -2730,9 +2971,9 @@ function syncStepUI() {
   $('#f-stepback').hidden = !day; $('#f-stepnext').hidden = !day || last; $('#f-save').hidden = day && !last;
   $('#f-delete').hidden = F.isNew;
 }
-$('#f-steps').addEventListener('click', ev => { const b = ev.target.closest('[data-step]'); if (b && !b.disabled && F) setStep(+b.dataset.step); });
-$('#f-stepnext').addEventListener('click', () => { if (!F) return; const n = stepsVisible().find(x => x > F.step); if (n) setStep(n); });
-$('#f-stepback').addEventListener('click', () => { if (!F) return; const p = stepsVisible().filter(x => x < F.step).pop(); if (p) setStep(p); else tryLeave(); });
+$('#f-steps').addEventListener('click', ev => { const b = ev.target.closest('[data-step]'); if (b && !b.disabled && F) setStep(+b.dataset.step, true); });
+$('#f-stepnext').addEventListener('click', () => { if (!F) return; const n = stepsVisible().find(x => x > F.step); if (n) setStep(n, true); });
+$('#f-stepback').addEventListener('click', () => { if (!F) return; const p = stepsVisible().filter(x => x < F.step).pop(); if (p) setStep(p, true); else tryLeave(); });
 $('#f-quick').addEventListener('click', () => { if (!F) return; if (F.kind === 'exp') saveExp(); else saveDay(); });
 const SEGS = {
   'g-type': {items: TYPES, get: () => F.e.type, set: v => {
@@ -3013,6 +3254,7 @@ function saveDay() {
   }
   listMode = 'days';
   persist(); commitPhotos(F);
+  justSaved = {date: ds ? ds[0] : base.date, at: Date.now()}; buzz(12);
   toast(storageOk ? (msg || 'Gespeichert') : saveMsg());
   if (savedYear && savedYear !== year) year = savedYear;
   // aus der Tagesansicht geöffnet: danach den gespeicherten Tag zeigen
@@ -3045,6 +3287,7 @@ function saveExp() {
   const x = normExp(Object.assign(clone(F.e), {id: F.id || newId(), updated: new Date().toISOString()}));
   S.expenses[x.id] = x;
   listMode = 'exp'; persist(); commitPhotos(F);
+  justSaved = {date: x.date, exp: x.id, at: Date.now()}; buzz(12);
   if (x.year !== year) year = x.year;
   if (F.from === 'day') dayDate = x.date;
   renderYears(); fillDatalists(); closeForm(); toast(saveMsg()); afterSave();
@@ -3059,10 +3302,22 @@ $('#f-delete').addEventListener('click', () => {
   const b = $('#f-delete');
   if (!F.armed) { F.armed = true; b.classList.add('armed'); b.querySelector('.lbl').textContent = 'Wirklich löschen?'; b.setAttribute('aria-label', 'Wirklich löschen?'); setTimeout(() => F && F.armed && disarm(), 4000); return; }
   const col = F.kind === 'exp' ? 'expenses' : 'entries', msg = F.kind === 'exp' ? 'Ausgabe gelöscht' : 'Eintrag gelöscht';
+  const old = bucket(col)[F.id] ? clone(bucket(col)[F.id]) : null;
   const gone = ((bucket(col)[F.id] || {}).photos || []).concat(F.e.photos);
-  delete bucket(col)[F.id]; persist();
-  F.added = []; const refs = photoRefs(); pDel([...new Set(gone)].filter(id => !refs.has(id)));
-  closeForm(); toast(msg); afterSave();
+  delete bucket(col)[F.id]; persist(); buzz(20);
+  F.added = []; const refs = photoRefs(), drop = [...new Set(gone)].filter(id => !refs.has(id));
+  // Belegfotos des gelöschten Eintrags erst einlesen, dann löschen: „Rückgängig“ legt sie wieder ab
+  const keep = old ? old.photos.filter(id => drop.includes(id)) : [];
+  const recs = Promise.all(keep.map(id => pGet(id).catch(() => null))).then(r => { pDel(drop); return r; });
+  closeForm();
+  if (!old) { toast(msg); afterSave(); return; }
+  toastAct(msg, 'Rückgängig', () => {
+    if (bucket(col)[old.id]) return;
+    bucket(col)[old.id] = old; persist(); buzz(12);
+    recs.then(r => Promise.all(r.filter(Boolean).map(x => pPut(x).catch(() => {})))).then(() => renderAll());
+    renderAll(); toast((col === 'expenses' ? 'Ausgabe' : 'Eintrag') + ' wiederhergestellt');
+  });
+  afterSave();
 });
 function fillDatalists() {
   const list = Object.values(S.entries).sort((a, b) => a.date < b.date ? 1 : -1);
@@ -3075,12 +3330,24 @@ function fillDatalists() {
 }
 
 /* ---------- Toast ---------- */
+// Die Meldung gleitet unten herein und blendet wieder aus. Eine neue Meldung ersetzt die alte sofort.
 let toastT = null;
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+function showToast(t, ms) {
+  clearTimeout(toastT); t.classList.remove('out');
+  if (!t.hidden) { t.hidden = true; void t.offsetWidth; }
+  t.hidden = false; toastT = setTimeout(hideToast, ms);
+}
+function hideToast() {
+  const t = $('#toast'); clearTimeout(toastT);
+  if (t.hidden) return;
+  if (reduceMotion()) { t.hidden = true; return; }
+  t.classList.add('out'); toastT = setTimeout(() => { t.hidden = true; t.classList.remove('out'); }, 170);
+}
+function toast(msg) { const t = $('#toast'); t.textContent = msg; showToast(t, 2600); }
 function toastAct(msg, label, fn) {
-  const t = $('#toast'); t.innerHTML = esc(msg) + ` <button type="button">${esc(label)}</button>`; t.hidden = false; clearTimeout(toastT);
-  t.querySelector('button').onclick = () => { t.hidden = true; fn(); };
-  toastT = setTimeout(() => t.hidden = true, 7000);
+  const t = $('#toast'); t.innerHTML = esc(msg) + ` <button type="button">${esc(label)}</button>`;
+  t.querySelector('button').onclick = () => { hideToast(); fn(); };
+  showToast(t, 7000);
 }
 
 /* ---------- Excel ---------- */
@@ -3493,6 +3760,7 @@ loadLocal();
 applyTheme();
 renderYears(); fillDatalists(); renderList();
 show(shouldWelcome() ? 'welcome' : 'list');
+booted = true;
 registerSW();
 photoGC();
 })();

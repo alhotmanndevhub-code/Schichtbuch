@@ -69,9 +69,9 @@ const seed = (entries, settings, extra) => {
   ]);
   await start();
   const home = T($('#v-list').textContent);
-  check('Begrüßung mit Vorname und Datum', /(Guten Morgen|Guten Tag|Guten Abend|Hallo),Thomas!/.test(home) && home.includes('Dienstag, 13. Oktober 2026'), home.slice(0, 80));
-  check('Diese Woche: 0 von 2 Werktagen', T($('.week .big').textContent) === '0 / 2', T($('.week .big').textContent));
-  check('Fehlende Tage nachtragen', home.includes('2 Werktage ohne Eintrag (Fr 09.10. bis Mo 12.10.)') && !!$('.week [data-new="2026-10-09"]'));
+  check('Begrüßung mit Vorname und Datum', /(Guten Morgen|Guten Tag|Guten Abend|Hallo), Thomas/.test(home) && home.includes('Dienstag, 13. Oktober 2026'), home.slice(0, 80));
+  check('Diese Woche: 0 von 2 Werktagen', T($('.wk-h').textContent) === 'Diese Woche0 von 2 Werktagen erfasst', T($('.wk-h').textContent));
+  check('Fehlende Tage nachtragen', home.includes('2 Werktage ohne Eintrag (Fr 09.10. bis Mo 12.10.)') && !!$('.wk [data-new="2026-10-09"]'));
   check('Aktueller Einsatz: Ort, Strecke, Zeitraum', T($('.job').textContent).includes('Hamm (Westf)') && T($('.job').textContent).includes('2650, km 112,4') && T($('.job').textContent).includes('Mi 07.10. – Do 08.10.'), T($('.job').textContent));
   check('Letzte Einträge mit Datum und Wochentag', T($('#v-list .rows').textContent).startsWith('Do08.10.'), T($('#v-list .rows').textContent).slice(0, 40));
   check('PC-Kacheln und Werbungskosten-Ring vorhanden', d.querySelectorAll('#v-list .kc').length === 4 && !!$('#v-list .donut circle[stroke-dasharray]'));
@@ -132,7 +132,7 @@ const seed = (entries, settings, extra) => {
   await start();
   check('Glocke zählt Neuigkeiten und Einrichten', $('[data-bell] .badge').textContent === '2' && !$('[data-bell] .badge').hidden);
   $('[data-bell]').click();
-  check('Glocke offen, Neuigkeiten 2.0.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.0.0');
+  check('Glocke offen, Neuigkeiten 2.1.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.1.0');
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Neuigkeit weg, Glocke bleibt offen für den Rest', !$('#bell-list .news') && !$('#bell').hidden && $('[data-bell] .badge').textContent === '1');
   $('#bell [data-bell-close].iconbtn').click(); await wait(20);

@@ -2,3 +2,4 @@ node_modules/
 # Design-Vorlagen und Werkzeug-Einstellungen bleiben nur lokal
 MontageBuch_Design_Pack/
 .claude/
+.impeccable/
