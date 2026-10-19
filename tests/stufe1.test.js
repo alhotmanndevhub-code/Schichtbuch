@@ -70,7 +70,7 @@ const idbPut = rec => new Promise((res, rej) => {
   const news = $('.news');
   check('Nach Update: Hinweis „Neu in Version 2.3.0“ mit 2.2.0, 2.1.0, 2.0.0 und 1.4.0', news && T(news.querySelector('b').textContent) === 'Neu in Version 2.3.0' && T(news.textContent).includes('Gleis') && T(news.textContent).includes('MontageBuch') && T(news.textContent).includes('Belegfotos') && !T(news.textContent).includes('„Deine Arbeit“'), news && T(news.textContent).slice(0, 80));
   news.querySelector('[data-news]').click(); await wait(10);
-  check('Verstanden: weg und gemerkt', !$('.news') && data().seenVersion === '2.3.0', data().seenVersion);
+  check('Verstanden: weg und gemerkt (aktuelle Version)', !$('.news') && data().seenVersion === html.match(/APP_VERSION = '([^']+)'/)[1], data().seenVersion);
   await start();
   check('Nach Neustart bleibt er weg', !$('.news'));
   // Wer von 1.2 kommt, sieht alles seitdem

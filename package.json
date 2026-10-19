@@ -3,7 +3,8 @@
   "private": true,
   "description": "SAKRA Schichtbuch – Prüftests",
   "scripts": {
-    "test": "node tests/run-all.js"
+    "test": "node tests/run-all.js",
+    "csp": "node tests/csp.js"
   },
   "devDependencies": {
     "exceljs": "4.4.0",

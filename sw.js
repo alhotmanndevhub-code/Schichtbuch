@@ -1,5 +1,5 @@
 /* MontageBuch – Offline-Speicher. Bei jeder neuen Version VERSION hochzählen. */
-const VERSION = '2.3.0';
+const VERSION = '2.3.1';
 // Der Name „schichtbuch-“ bleibt, damit alte Speicherstände beim Update sauber gelöscht werden
 const CACHE = 'schichtbuch-' + VERSION;
 // Fotos (*.webp) kommen beim ersten Anzeigen in den Speicher, nicht schon bei der Installation
@@ -33,6 +33,8 @@ self.addEventListener('fetch', event => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
   const isPage = req.mode === 'navigate';
+  // Als Startseite wird nur die App selbst gespeichert. Ein Aufruf von z. B. LIESMICH.txt geht direkt ans Netz und ersetzt sie nicht.
+  if (isPage && !/\/(index\.html)?$/.test(url.pathname)) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(isPage ? './index.html' : req, {ignoreSearch: true});

@@ -2,6 +2,10 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<!-- Sicherheitsregeln für den Browser (Content-Security-Policy): Skripte, Bilder, Schriften und Verbindungen nur von dieser Seite, keine fremden Server.
+     Die sha256-Werte sind Prüfsummen der beiden Skripte in dieser Datei. Nach jeder Änderung an einem Skript „npm run csp“ ausführen (ein Test prüft das).
+     'unsafe-inline' gilt nur für Stile: Die App setzt Farben und Breiten direkt am Element. CSS startet kein Skript, und Bilder dürfen nur von hier kommen. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-PbZyyupX1uv4tVMSSZAk3cQXcBpbLZdDpQEs9isgrfg='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MontageBuch</title>
 <meta name="description" content="Schichten, Fahrten, Montage und Ausgaben erfassen und als Excel-Datei für die Steuererklärung exportieren.">
@@ -1177,7 +1181,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.3.1';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
   ['2.3.0', ['Neu anfangen geht schneller: drei kurze Fragen zum Weg zur Arbeit, zum festen Sammelpunkt und zur Auslöse. Alles andere stellst du wie bisher unter Mehr > Einstellungen ein.',
@@ -1280,23 +1284,29 @@ const dowOf = s => parseD(s).getDay();
 const isWeekend = s => { const w = dowOf(s); return w === 0 || w === 6; };
 const dShort = s => DOW[dowOf(s)] + ' ' + s.slice(8, 10) + '.' + s.slice(5, 7) + '.';
 const dDot = s => s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4);
-const validDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '') && !isNaN(parseD(s));
+const validDate = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(parseD(s));
 const r2 = n => Math.round((n || 0) * 100) / 100;
 const NF = {}; const nfmt = (d, min) => NF[d + '/' + min] || (NF[d + '/' + min] = new Intl.NumberFormat('de-DE', {minimumFractionDigits: min, maximumFractionDigits: d}));
 const nf = (n, d = 2) => nfmt(d, 0).format(n || 0);
 const nf2 = n => nfmt(2, 2).format(n || 0);
 const eur = n => nf2(n) + ' €';
 const eurS = n => (Math.abs(n - Math.round(n)) < 0.005 ? nf(n, 0) : nf2(n)) + ' €';
+// Zahl aus einem Eingabefeld oder aus gespeicherten Daten; was weder Zahl noch Text ist, zählt als 0
 const num = v => {
-  if (v == null || v === '') return 0;
   if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
-  const s = String(v).replace(/\s|€/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.');
+  if (typeof v !== 'string' || v === '') return 0;
+  const s = v.replace(/\s|€/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.');
   const n = parseFloat(s); return Number.isFinite(n) ? n : 0;
 };
+// Beträge, Kilometer und Minuten aus Einträgen, Einstellungen oder einer Sicherung: nie negativ, nie unsinnig groß
+const lim = (v, max = 1e6) => Math.min(max, Math.max(0, num(v)));
 const inMoney = n => n ? nf2(n).replace(/\./g, '') : '';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const txt = (v, max = 200) => String(v == null ? '' : v).slice(0, max);
-const tmin = t => { if (!/^\d{1,2}:\d{2}$/.test(t || '')) return null; const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+// Text aus gespeicherten Daten oder einer Sicherung: nur Text oder Zahl, sonst leer (ein Objekt kann beim Umwandeln einen Fehler werfen)
+const txt = (v, max = 200) => (typeof v === 'string' ? v : typeof v === 'number' && Number.isFinite(v) ? String(v) : '').slice(0, max);
+// Auswahl aus einer festen Liste: nur eigene Schlüssel zählen, nicht geerbte wie „constructor“ oder „toString“
+const has = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
+const tmin = t => { if (typeof t !== 'string' || !/^\d{1,2}:\d{2}$/.test(t)) return null; const [h, m] = t.split(':').map(Number); return h * 60 + m; };
 // Zeitspanne; Ende vor oder gleich Beginn = über Mitternacht (gleich = 24 Stunden)
 const spanF = (a, b) => { const x = tmin(a), y = tmin(b); if (x == null || y == null) return 0; let d = y - x; if (d <= 0) d += 1440; return d; };
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -1392,21 +1402,21 @@ let navStack = [], reportFrom = 'more', welcomeSkip = false;
 let navDir = '', booted = false, justSaved = null;
 
 function mergeSettings(s) {
-  const o = clone(DEF); s = s || {};
+  const o = clone(DEF); s = s && typeof s === 'object' ? s : {};
   ['name','employer','home'].forEach(k => { if (s[k] != null) o[k] = txt(s[k]); });
-  if (STATE_L[s.state] != null) o.state = s.state;
-  if (s.pause != null && s.pause !== '') o.pause = num(s.pause);
-  ['ausFull','ausHalf','ausDay','fixedKm','kmGeld'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = Math.max(0, num(s[k])); });
+  if (has(STATE_L, s.state)) o.state = s.state;
+  if (s.pause != null && s.pause !== '') o.pause = lim(s.pause, 1440);
+  ['ausFull','ausHalf','ausDay','fixedKm','kmGeld'].forEach(k => { if (s[k] != null && s[k] !== '') o[k] = lim(s[k]); });
   o.ausOn = s.ausOn != null ? !!s.ausOn : (o.ausFull > 0 || o.ausHalf > 0 || o.ausDay > 0);
   o.kmOn = s.kmOn != null ? !!s.kmOn : o.kmGeld > 0;
-  if (s.veh != null && VEH_L[s.veh] != null) o.veh = s.veh;
+  if (has(VEH_L, s.veh)) o.veh = s.veh;
   if (['none','sammel','betrieb'].includes(s.fixed)) o.fixed = s.fixed;
   if (s.fixedName != null) o.fixedName = txt(s.fixedName);
   if (s.lodgingBy === 'firma' || s.lodgingBy === 'self') o.lodgingBy = s.lodgingBy;
   if (s.travelPaid != null) o.travelPaid = !!s.travelPaid;
   o.profSeen = !!s.profSeen;
-  if (s.nr20 && typeof s.nr20 === 'object') Object.keys(s.nr20).forEach(y => { const v = s.nr20[y]; if (/^\d{4}$/.test(y) && v !== '' && v != null && num(v) >= 0) o.nr20[y] = r2(num(v)); });
-  if (s.shifts) Object.keys(o.shifts).forEach(k => { const v = s.shifts[k]; if (Array.isArray(v) && v.length === 2) o.shifts[k] = [txt(v[0], 5), txt(v[1], 5)]; });
+  if (s.nr20 && typeof s.nr20 === 'object') Object.keys(s.nr20).forEach(y => { const v = s.nr20[y]; if (/^\d{4}$/.test(y) && (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && num(v) >= 0) o.nr20[y] = r2(lim(v)); });
+  if (s.shifts && typeof s.shifts === 'object') Object.keys(o.shifts).forEach(k => { const v = s.shifts[k]; if (Array.isArray(v) && v.length === 2 && tmin(v[0]) != null && tmin(v[1]) != null) o.shifts[k] = [txt(v[0], 5), txt(v[1], 5)]; });
   return o;
 }
 function blankEntry(date) {
@@ -1420,16 +1430,17 @@ function normEntry(x) {
   e.id = txt(x.id, 100);
   // früherer „Reisetag“ wird zu Anreise bzw. Abreise
   const ty = x.type === 'reise' ? (x.away === 'ab' ? 'abreise' : 'anreise') : x.type;
-  e.type = TYPE_L[ty] ? ty : 'arbeit';
-  e.travelMin = Math.min(1440, Math.max(0, Math.round(num(x.travelMin))));
-  e.shift = SHIFT_L[x.shift] ? x.shift : '';
-  e.away = AWAY_X[x.away] != null ? x.away : 'none';
-  e.vehicle = VEH_L[x.vehicle] != null ? x.vehicle : '';
+  e.type = has(TYPE_L, ty) ? ty : 'arbeit';
+  e.travelMin = Math.round(lim(x.travelMin, 1440));
+  e.shift = has(SHIFT_L, x.shift) ? x.shift : '';
+  e.away = has(AWAY_X, x.away) ? x.away : 'none';
+  e.vehicle = has(VEH_L, x.vehicle) ? x.vehicle : '';
   e.trip = x.trip === 'sammel' ? 'sammel' : 'dienst';
   ['start','end','depart','ret'].forEach(k => e[k] = tmin(x[k]) != null ? txt(x[k], 5) : '');
   ['place','line','project','lodgingName','otherNote','meet'].forEach(k => e[k] = txt(x[k]));
   e.note = txt(x.note, 1000);
-  ['pause','lodging','km','allowance','otherCost'].forEach(k => e[k] = Math.max(0, num(x[k])));
+  e.pause = lim(x.pause, 1440);
+  ['lodging','km','allowance','otherCost'].forEach(k => e[k] = lim(x[k]));
   const m = x.meals || {}; e.meals = {b: !!m.b, l: !!m.l, d: !!m.d};
   e.photos = normPhotos(x.photos);
   e.updated = txt(x.updated, 40);
@@ -1441,7 +1452,7 @@ function blankExp(date) { return {id:'', date, year:+date.slice(0, 4), amount:0,
 function normExp(x) {
   const date = validDate(x.date) ? x.date : today();
   const e = blankExp(date);
-  e.id = txt(x.id, 100); e.amount = Math.max(0, num(x.amount)); e.cat = CAT_L[x.cat] ? x.cat : 'sonst';
+  e.id = txt(x.id, 100); e.amount = lim(x.amount); e.cat = has(CAT_L, x.cat) ? x.cat : 'sonst';
   e.text = txt(x.text); e.note = txt(x.note, 1000); e.photos = normPhotos(x.photos); e.updated = txt(x.updated, 40);
   return e;
 }
@@ -1450,20 +1461,21 @@ function normExp(x) {
 const REV_KEY = KEY + '-rev', BROKEN_KEY = KEY + '-defekt';
 let base = {rev: 0, e: {}, x: {}, s: ''};
 let loadError = false, storeBlocked = false, brokenRaw = '';
-const strMap = (obj, norm) => { const m = {}; Object.values(obj || {}).forEach(x => { if (x && x.id) m[x.id] = JSON.stringify(norm(x)); }); return m; };
+// Einträge nach Kennung; Schlüssel ist immer die bereinigte Kennung (Text), nie ein Wert direkt aus den Daten
+const strMap = (obj, norm) => { const m = {}; Object.values(obj || {}).forEach(x => { if (!x || typeof x !== 'object') return; const n = norm(x); if (n.id) m[n.id] = JSON.stringify(n); }); return m; };
 const curMaps = () => ({e: strMap(S.entries, normEntry), x: strMap(S.expenses, normExp), s: JSON.stringify(S.settings)});
 const storedMaps = o => ({e: strMap(o.entries, normEntry), x: strMap(o.expenses, normExp), s: JSON.stringify(mergeSettings(o.settings))});
 const readRev = () => { try { return +(localStorage.getItem(REV_KEY) || 0); } catch (e) { return 0; } };
 function legacySettings(o) {
   // Daten aus Version 1.0 bis 1.2: dort war die Auslöse 42 / 21 € fest eingestellt
-  if (o && o.settings && !('ausFull' in o.settings)) Object.assign(o.settings, {ausFull: 42, ausHalf: 21, ausOn: true});
+  if (o && o.settings && typeof o.settings === 'object' && !('ausFull' in o.settings)) Object.assign(o.settings, {ausFull: 42, ausHalf: 21, ausOn: true});
   return o;
 }
 function applyStored(o, keepDraft) {
   legacySettings(o);
   const ent = {}, exp = {};
-  Object.values(o.entries || {}).forEach(x => { if (x && x.id) ent[x.id] = normEntry(x); });
-  Object.values(o.expenses || {}).forEach(x => { if (x && x.id) exp[x.id] = normExp(x); });
+  Object.values(o.entries || {}).forEach(x => { if (!x || typeof x !== 'object') return; const e = normEntry(x); if (e.id) ent[e.id] = e; });
+  Object.values(o.expenses || {}).forEach(x => { if (!x || typeof x !== 'object') return; const e = normExp(x); if (e.id) exp[e.id] = e; });
   S.entries = ent; S.expenses = exp;
   S.settings = mergeSettings(o.settings);
   if (!keepDraft) S.draft = o.draft && o.draft.e && validDate(o.draft.e.date) ? o.draft : null;
@@ -1813,7 +1825,12 @@ const pDel = ids => ids.length ? pTx('readwrite', st => { ids.forEach(id => st.d
 const pKeys = () => pTx('readonly', st => st.getAllKeys());
 const photoId = () => 'b' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
 const readBuf = blob => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsArrayBuffer(blob); });
-const recBlob = r => new Blob([r.buf], {type: r.type || 'application/octet-stream'});
+// Belege sind Fotos oder PDF. SVG und andere Typen (z. B. eine Webseite aus einer fremden Sicherung) gelten als einfache Datei,
+// damit der Browser darin nie ein Skript ausführt, auch nicht über „Bild in neuem Tab öffnen“.
+const okType = t => typeof t === 'string' && (t === 'application/pdf' || (/^image\/[a-z0-9.+-]+$/.test(t) && !/svg|xml/.test(t)));
+const safeType = t => okType(t) ? t : 'application/octet-stream';
+const PHOTO_MAX = 15e6; // Bytes je Beleg, beim Hinzufügen und beim Laden einer Sicherung
+const recBlob = r => new Blob([r.buf], {type: safeType(r.type)});
 // Kennungen, die gespeicherte Einträge, Ausgaben oder ein Entwurf noch brauchen
 function photoRefs() {
   const s = new Set();
@@ -1850,9 +1867,9 @@ async function addPhotos(files) {
   for (const f of list) {
     if (F !== form) break;
     if (form.e.photos.length >= 20) { skipped++; continue; }
-    if (!(/^image\//.test(f.type) || f.type === 'application/pdf')) { skipped++; continue; }
+    if (!okType(f.type)) { skipped++; continue; }
     const blob = (await shrink(f)) || f;
-    if (blob.size > 15e6) { skipped++; continue; }
+    if (blob.size > PHOTO_MAX) { skipped++; continue; }
     const rec = {id: photoId(), type: blob.type || f.type, name: txt(f.name, 120), size: blob.size, created: new Date().toISOString(), buf: await readBuf(blob)};
     try { await pPut(rec); } catch (e) { toast('Beleg ließ sich nicht speichern. Ist der Speicher voll?'); break; }
     if (F !== form) { pDel([rec.id]); break; } // Formular wurde inzwischen geschlossen
@@ -3710,7 +3727,9 @@ $('#x-xlsx-share').addEventListener('click', () => exportXlsx(true));
 $('#x-copy').addEventListener('click', () => {
   const list = yearList(year).sort(sortAsc), R = computeYear(list, []), status = $('#x-status'), ta = $('#x-tsv');
   if (!list.length) { status.textContent = 'Für ' + year + ' gibt es noch keine Arbeitstage.'; return; }
-  const cell = c => c === '' || c == null ? '' : typeof c === 'object' ? (c.s != null ? c.s : String(r2(c.v)).replace('.', ',')) : String(c).replace(/[\t\n\r]+/g, ' ');
+  // Text, der mit = + - @ beginnt, würde Excel beim Einfügen als Formel ausführen. Mit einem Hochkomma davor bleibt er Text.
+  const noFormula = s => /^[=+\-@]/.test(s) ? "'" + s : s;
+  const cell = c => c === '' || c == null ? '' : typeof c === 'object' ? (c.s != null ? c.s : String(r2(c.v)).replace('.', ',')) : noFormula(String(c).replace(/[\t\n\r]+/g, ' '));
   const tsv = [ENTRY_COLS.map(c => c[0]).join('\t')].concat(list.map(e => entryRow(e, R).map(cell).join('\t'))).join('\n');
   const fallback = () => { ta.hidden = false; ta.value = tsv; ta.focus(); ta.select(); status.textContent = 'Text ist markiert. Kopieren und in Excel oder Google Tabellen einfügen.'; };
   try {
@@ -3921,16 +3940,18 @@ $('#x-restore').addEventListener('change', async ev => {
   let n = 0, k = 0;
   (arr || []).forEach(x => { if (!x || !validDate(x.date)) return; const e = normEntry(x); e.id = okId(e.id); S.entries[e.id] = e; n++; });
   xs.forEach(x => { if (!x || !validDate(x.date)) return; const e = normExp(x); e.id = okId(e.id); S.expenses[e.id] = e; k++; });
-  if (o && o.settings) { S.settings = mergeSettings(o.settings); Object.keys(HOL).forEach(key => delete HOL[key]); fillSettings(); }
+  if (o && o.settings && typeof o.settings === 'object' && !Array.isArray(o.settings)) { S.settings = mergeSettings(o.settings); Object.keys(HOL).forEach(key => delete HOL[key]); fillSettings(); }
   persist(); askPersistent(); renderYears(); fillDatalists(); renderAll();
-  // Belegfotos zurückholen (vorhandene bleiben, wie sie sind)
+  // Belegfotos zurückholen (vorhandene bleiben, wie sie sind): nur die, die ein Eintrag braucht, höchstens so groß wie beim Hinzufügen,
+  // Typen außer Foto und PDF nur als einfache Datei
   let p = 0;
   if (photoOk && o && Array.isArray(o.files) && o.files.length) {
-    const have = new Set(await pKeys().catch(() => []));
+    const have = new Set(await pKeys().catch(() => [])), need = photoRefs();
     for (const f of o.files) {
-      if (!f || typeof f.id !== 'string' || !/^[A-Za-z0-9_-]{1,60}$/.test(f.id) || typeof f.data !== 'string') continue;
+      if (!f || typeof f.id !== 'string' || !/^[A-Za-z0-9_-]{1,60}$/.test(f.id) || typeof f.data !== 'string' || !need.has(f.id)) continue;
       if (have.has(f.id)) { p++; continue; }
-      try { await pPut({id: f.id, type: txt(f.type, 60) || 'image/jpeg', name: txt(f.name, 120), created: txt(f.created, 40), size: 0, buf: unb64(f.data)}); p++; } catch (e) {}
+      if (f.data.length > Math.ceil(PHOTO_MAX / 3) * 4) continue;
+      try { await pPut({id: f.id, type: safeType(txt(f.type, 60) || 'image/jpeg'), name: txt(f.name, 120), created: txt(f.created, 40), size: 0, buf: unb64(f.data)}); p++; } catch (e) {}
     }
   }
   status.textContent = `${n} ${n === 1 ? 'Arbeitstag' : 'Arbeitstage'} und ${k} ${k === 1 ? 'Ausgabe' : 'Ausgaben'}${p ? ` mit ${p} ${p === 1 ? 'Belegfoto' : 'Belegfotos'}` : ''} aus der Sicherung übernommen.`;

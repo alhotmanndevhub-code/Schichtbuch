@@ -12,7 +12,9 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 
 - Die ganze App steht in `index.html` (HTML, CSS und JavaScript in einer Funktion). Kein Build-Schritt, kein Framework.
 - `sw.js` ist der Service Worker: offline nutzbar, Hinweis „Neue Version verfügbar“ bei Updates.
-- Keine fremden Server oder CDNs (Datenschutz). Schriften (`barlow-*.woff2`) und `exceljs.min.js` liegen im Repository.
+- Keine fremden Server oder CDNs (Datenschutz). Schriften (`barlow-*.woff2`) und `exceljs.min.js` liegen im Repository. `exceljs.min.js` ist byte-gleich mit `dist/exceljs.min.js` aus exceljs 4.4.0 (ein Test vergleicht mit `node_modules`).
+- Content-Security-Policy (seit 2.3.1) als `<meta>` im `<head>`: Skripte, Bilder, Schriften und Verbindungen nur von der eigenen Seite. Die beiden Skripte in `index.html` sind über sha256-Prüfsummen freigegeben. Nach jeder Änderung an einem Skript `npm run csp` ausführen, sonst blockiert der Browser die App (`tests/sicherheit.test.js` prüft das). Keine `on…=`-Attribute, kein `javascript:`, kein `eval`. `'unsafe-inline'` nur für Stile.
+- Fremde Daten kommen nur über eine Sicherungsdatei. Alles läuft durch `normEntry`, `normExp`, `mergeSettings`: Texte über `txt()` (nur Text oder Zahl, begrenzt), Zahlen über `lim()` (0 bis 1 Mio., Minuten bis 1440), Auswahlwerte über `has()` (nur eigene Schlüssel, nicht `constructor`). Text in `innerHTML` immer mit `esc()`. Belege nur als Foto oder PDF (`okType`, `safeType`), alles andere, auch SVG, gilt als einfache Datei. „Tabelle kopieren“ setzt vor Text mit `= + - @` ein Hochkomma, damit Excel keine Formel ausführt.
 - Daten liegen nur im `localStorage` des Geräts. Die Schlüssel heißen weiter „schichtbuch“, damit nichts verloren geht:
   - `sakra-schichtbuch-v1`: alle Einträge, Ausgaben, Einstellungen
   - `sakra-schichtbuch-v1-rev`: Speichernummer. `persist()` führt Änderungen aus zwei offenen Fenstern Eintrag für Eintrag zusammen, statt zu überschreiben.
@@ -37,7 +39,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 
 ## Regeln bei Änderungen
 
-1. Vor jedem Commit `npm test` ausführen. Die Tests in `tests/` laufen mit jsdom und einer festen Uhrzeit (13.10.2026, siehe `tests/helpers.js`). Neue Funktionen bekommen eigene Tests.
+1. Vor jedem Commit `npm test` ausführen, nach Änderungen an einem Skript in `index.html` vorher `npm run csp`. Die Tests in `tests/` laufen mit jsdom und einer festen Uhrzeit (13.10.2026, siehe `tests/helpers.js`). Neue Funktionen bekommen eigene Tests.
 2. Bei jeder Änderung, die live geht, `APP_VERSION` in `index.html` und `VERSION` in `sw.js` gleich hochzählen (ein Test prüft das). Sonst bekommen installierte Apps das Update nicht. Für Änderungen, die Nutzer merken, einen Eintrag in `CHANGELOG` ergänzen.
 3. Nutzerdaten dürfen nie verloren gehen. Den Speicherschlüssel nicht ändern. Alte Formate weiter lesen (`normEntry`, `mergeSettings`, `legacySettings`), z. B. den alten Typ `reise` oder Einstellungen ohne `ausFull`.
 4. Handy zuerst: 360 px Breite ohne waagerechtes Scrollen, Hell- und Dunkelmodus prüfen, dazu Tablet (768 px) und PC (ab 840 px Seitenleiste). Geprüft wird im Browser-Fenster von Claude mit einem kleinen lokalen Server ohne Service Worker. Steuerlich falsche Inhalte aus dem Referenzbild (25-km-Grenze, Anlage-N-Zeilen 46–48, „rechtssicher“) nicht übernehmen.
@@ -47,7 +49,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 
 ## Veröffentlichen
 
-- Die GitHub Action `.github/workflows/pruefen.yml` lässt bei jedem Push die Tests laufen.
+- Die GitHub Action `.github/workflows/pruefen.yml` lässt bei jedem Push die Tests laufen. Die Actions sind auf feste Commit-Kennungen gepinnt (Version im Kommentar dahinter). Für ein Update die Kennung des neuen Tags eintragen, z. B. mit `git ls-remote --tags https://github.com/actions/checkout`.
 - Veröffentlicht wird nur nach bestandenen Tests, und nur wenn unter Settings > Pages die Quelle „GitHub Actions“ eingestellt ist. Sonst veröffentlicht GitHub Pages direkt aus `main`.
 - Für die Webseite werden nur die App-Dateien veröffentlicht, nicht `tests/` oder diese Datei.
 
@@ -76,13 +78,14 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 - Diese Werte füllen neue Einträge vor. Gespeicherte Tage ändern sie nicht.
 - Neue Nutzer starten ohne Auslöse. Daten aus den Versionen 1.0 bis 1.2 ohne `ausFull` bekommen 42 € / 21 € (Werte der Firma des Testers).
 
-## Offene Punkte (Stand Version 2.3.0)
+## Offene Punkte (Stand Version 2.3.1)
 
 - Stufe 1 ist mit Version 1.4.0 erledigt: „Was ist neu“, Jahresbericht mit Ausfüllhilfe, Belegfotos, Zuschlagsstunden, „24 Std. auswärts“ statt „Ganzer Tag“, Nr. 20.
 - Version 2.0.0: neuer Name MontageBuch, Design „Rail Command“ in Dunkel und Hell, Startseite, Kalender, Tagesdetail mit Kopie für den nächsten Tag, Erfassen in drei Schritten, Glocke, Seitenleiste am PC. Die Rechenlogik ist unverändert.
 - Version 2.1.0 (nach der Design-Kritik vom 19.10.2026, Bericht in `.impeccable/critique/`, nur lokal): Paket A „App-Gefühl“ (Bewegung, Drück-Effekte, Vibrieren, Rückgängig nach dem Löschen) und Paket B „neue Startseite“.
 - Version 2.2.0: Paket C „Aufräumen“ (Erklärungen hinter dem Info-Zeichen, seltene Auswahl hinter „Mehr“, Signalfarben mit fester Bedeutung, keine Randstreifen und gesperrten Großbuchstaben, dunkle Karten im Tagesdetail).
 - Version 2.3.0: Paket D „Erster Start“ (Einrichten in drei Fragen, leere Startseite führt zum ersten Arbeitstag). Damit sind alle vier Pakete aus der Design-Kritik umgesetzt.
+- Version 2.3.1: Sicherheits-Check ohne sichtbare Änderung für Nutzer (Content-Security-Policy, Sicherungsdateien streng geprüft, Belege nur als Foto oder PDF, Schutz vor Excel-Formeln beim Kopieren, Service Worker speichert nur die App, Actions gepinnt).
 - Stufe 2, vor dem Abo:
   - Konto und Cloud-Synchronisation (Server in der EU)
   - anderes Hosting, denn GitHub Pages erlaubt keinen kommerziellen Betrieb
@@ -90,7 +93,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
   - Version für den Play Store
   - Prüfung der Rechenlogik durch einen Steuerberater, mehr Tester
 - Stufe 3: Teamversion für Sicherungsfirmen, Auslandspauschalen, mehrere Sprachen.
-- Bekannte Lücken: Vertragsänderungen ab einem Datum (z. B. neuer Sammelpunkt ab Juli) lassen sich nicht abbilden. Feiertage richten sich nach dem Bundesland in den Einstellungen, nicht nach dem Einsatzort.
+- Bekannte Lücken: Vertragsänderungen ab einem Datum (z. B. neuer Sammelpunkt ab Juli) lassen sich nicht abbilden. Feiertage richten sich nach dem Bundesland in den Einstellungen, nicht nach dem Einsatzort. Alle GitHub-Pages-Seiten eines Kontos teilen sich die Adresse alhotmanndevhub-code.github.io und damit localStorage und IndexedDB: Bis zum eigenen Hosting keine weitere Seite unter diesem Konto veröffentlichen.
 
 ## Sonstiges
 
