@@ -45,17 +45,17 @@
   --nav-h:66px; --side-w:244px; --app-w:640px;
   --bg:#10181C; --surface:#1C2529; --surface-2:#253034; --surface-3:#2F3B40; --line:#334047; --line-2:#435159;
   --ink:#F6F6F4; --muted:#A3AAB0; --faint:#7A868D;
-  --accent:#D32F2F; --accent-hi:#E53935; --on-accent:#FFFFFF; --accent-ink:#FF7A72; --accent-soft:rgba(211,47,47,.18);
-  --amber-ink:#FBBF24; --on-amber:#1E1E1E; --amber-soft:rgba(245,158,11,.15);
-  --info-ink:#8CC4F5; --info-soft:rgba(100,181,246,.13);
-  --good:#4CC38A; --warn-bg:rgba(245,158,11,.13); --warn-ink:#FCD67A; --danger:#FF7A72;
-  --nav:#0B1114; --nav-line:#1F2A30; --nav-ink:#F6F6F4; --nav-muted:#8D979E; --nav-active:#FF5A4F;
-  --hl:#E7EAEC; --hl-ink:#171C1F; --hl-muted:#56626A; --hl-line:#CDD3D7;
+  --accent:#D32F2F; --accent-hi:#E53935; --on-accent:#FFFFFF; --accent-soft:rgba(211,47,47,.18);
+  --on-amber:#1E1E1E; --amber-soft:rgba(245,158,11,.15);
+  --info-ink:#8CC4F5; --info-soft:rgba(100,181,246,.13); --night-ink:#AEB8F0; --night-soft:rgba(121,134,203,.22);
+  --good:#4CC38A; --danger:#FF7A72;
+  --nav:#0B1114; --nav-line:#1F2A30; --nav-ink:#F6F6F4; --nav-muted:#8D979E; --nav-active:#F6F6F4;
   --input:#20292D; --input-line:#3E4C54; --btn-gray:#3A464C; --toast-act:#C62828;
-  --c-trip:#3987E5; --c-lodge:#D94848; --c-other:#9085E9; --c-meal:#C98500;
-  --d-work:#F59E0B; --d-trip:#64B5F6; --d-lodge:#F48FB1; --d-exp:#EF5350; --d-off:#8D979E;
-  /* Signale und Gleis auf der Startseite: Grün erfasst, Gelb heute offen, Rot fehlt */
-  --good-soft:rgba(76,195,138,.2); --lamp-off:#3A464C; --track:#6E7D85; --sleeper:#34434A; --sleeper-ok:#226B4C; --nav-pill:rgba(255,90,79,.16);
+  /* Kategorien (Ring, Kalenderpunkte) ohne Signalfarben, geprüft auf Farbfehlsichtigkeit; nur „Arbeitstag erfasst“ ist grün */
+  --c-trip:#3987E5; --c-lodge:#D55181; --c-other:#9085E9; --c-meal:#199E70;
+  --d-work:#4CC38A; --d-trip:#3987E5; --d-lodge:#D55181; --d-exp:#9085E9; --d-off:#8D979E;
+  /* Signalfarben überall gleich: Grün erfasst oder in Ordnung, Gelb bitte prüfen, Rot fehlt (oder die eine Hauptaktion) */
+  --good-soft:rgba(76,195,138,.2); --lamp-off:#3A464C; --track:#6E7D85; --sleeper:#34434A; --sleeper-ok:#226B4C; --nav-pill:rgba(246,246,244,.12);
   --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 30px rgba(0,0,0,.28);
   --ease-out:cubic-bezier(.16,1,.3,1);
   color-scheme:dark;
@@ -63,15 +63,14 @@
 :root[data-theme="light"]{
   --bg:#F6F6F4; --surface:#FFFFFF; --surface-2:#F0F1EF; --surface-3:#E5E7E5; --line:#DCDFE1; --line-2:#C5CBCF;
   --ink:#171C1F; --muted:#5F6368; --faint:#80868B;
-  --accent-ink:#C62828; --accent-soft:#FBE4E4;
-  --amber-ink:#A15C00; --amber-soft:#FEF3D7;
-  --info-ink:#1D5FA0; --info-soft:#E6F0FA;
-  --good:#1D7A4C; --warn-bg:#FFF4D6; --warn-ink:#7A4700; --danger:#C62828;
+  --accent-soft:#FBE4E4;
+  --amber-soft:#FEF3D7;
+  --info-ink:#1D5FA0; --info-soft:#E6F0FA; --night-ink:#3949AB; --night-soft:#E6E9F8;
+  --good:#1D7A4C; --danger:#C62828;
   --nav:#1E1E1E; --nav-line:#2E2E2E; --nav-ink:#F6F6F4; --nav-muted:#A5ABB0;
-  --hl:#1E1E1E; --hl-ink:#F6F6F4; --hl-muted:#B9BFC3; --hl-line:#3A3F43;
   --input:#FFFFFF; --input-line:#C5CBCF; --btn-gray:#E3E6E8; --toast-act:#FF8A80;
-  --c-trip:#2A78D6; --c-lodge:#D32F2F; --c-other:#6250D6; --c-meal:#F59E0B;
-  --d-work:#E39200; --d-trip:#2A78D6; --d-lodge:#D6457C; --d-exp:#D32F2F; --d-off:#80868B;
+  --c-trip:#2A78D6; --c-lodge:#C2457A; --c-other:#6250D6; --c-meal:#138A60;
+  --d-work:#1D7A4C; --d-trip:#2A78D6; --d-lodge:#C2457A; --d-exp:#6250D6; --d-off:#80868B;
   --good-soft:#DCF1E5; --lamp-off:#C3C9CC; --track:#9EA8AE; --sleeper:#E3E6E4; --sleeper-ok:#A8DBBF;
   --shadow:0 1px 2px rgba(23,28,31,.06),0 8px 24px rgba(23,28,31,.08);
   color-scheme:light;
@@ -99,13 +98,13 @@ body.full .app{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .top-act{grid-column:3;display:flex;align-items:center;justify-content:flex-end;gap:2px}
 .iconbtn{display:inline-grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:0;border-radius:var(--r-s);background:none;color:var(--ink);position:relative}
 .iconbtn:hover{background:var(--surface-2)}
-.textbtn{border:0;background:none;color:var(--accent-ink);font:600 15px var(--f-body);min-height:44px;padding:0 10px;border-radius:var(--r-s);white-space:nowrap}
+.textbtn{border:0;background:none;color:var(--ink);font:600 15px var(--f-body);min-height:44px;padding:0 10px;border-radius:var(--r-s);white-space:nowrap}
 .textbtn:hover{background:var(--surface-2)}
-.badge{position:absolute;top:2px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--accent);color:#fff;font:700 10px/16px var(--f-body);text-align:center;border:2px solid var(--bg);box-sizing:content-box}
+.badge{position:absolute;top:2px;right:-1px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--amber);color:var(--on-amber);font:700 10px/16px var(--f-body);text-align:center;border:2px solid var(--bg);box-sizing:content-box}
 
 /* Grundelemente */
 input,select,textarea{width:100%;min-height:48px;padding:11px 12px;border:1px solid var(--input-line);border-radius:var(--r-s);background:var(--input);color:var(--ink);font-size:16px;line-height:1.3}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ink);outline-offset:-1px;border-color:var(--ink)}
 textarea{min-height:76px;resize:vertical}
 input[type="time"],input[type="date"]{font-variant-numeric:tabular-nums}
 input[readonly]{background:var(--surface-2);color:var(--muted)}
@@ -113,7 +112,7 @@ input[readonly]{background:var(--surface-2);color:var(--muted)}
 select{appearance:none;-webkit-appearance:none;padding-right:40px;background-repeat:no-repeat;background-position:right 10px center;background-size:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960' fill='%239AA0A6'%3E%3Cpath d='M462.85-359.84q-8.2-3.09-14.92-9.81L264.17-553.41q-12.67-12.68-12.67-31.83t12.67-31.83q12.68-12.67 31.83-12.67t31.83 12.67L480-464.89l152.17-152.18q12.68-12.67 31.83-12.67t31.83 12.67q12.67 12.68 12.67 31.83t-12.67 31.83L512.07-369.65q-6.72 6.72-14.92 9.81-8.19 3.1-17.15 3.1-8.96 0-17.15-3.1Z'/%3E%3C/svg%3E")}
 label{display:grid;gap:6px;font-size:14px;font-weight:500;color:var(--muted)}
 label.check{display:flex;align-items:flex-start;gap:10px;color:var(--ink);font-size:15px;font-weight:400}
-label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;accent-color:var(--accent)}
+label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;accent-color:var(--ink)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:var(--r-s);border:1.5px solid var(--line-2);background:transparent;color:var(--ink);font:600 16px/1.2 var(--f-body);text-decoration:none;text-align:center}
 .btn:hover{background:var(--surface-2)}
 .btn .ic{width:20px;height:20px}
@@ -124,15 +123,26 @@ label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;a
 .btn.danger{color:var(--danger)}
 .btn.danger.armed{background:var(--danger);border-color:var(--danger);color:#fff}
 .btn:disabled{opacity:.5;cursor:default}
-.linkbtn{background:none;border:0;padding:0;color:var(--accent-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
-.warn .linkbtn{color:inherit}
-.eyebrow{font:600 13px/1.2 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.eyebrow{font:600 14px/1.3 var(--f-body);color:var(--muted)}
 .hint{margin:0;font-size:14px;color:var(--muted)}
-.warn{background:var(--warn-bg);color:var(--warn-ink);padding:12px 14px;border-radius:var(--r-s);border-left:4px solid var(--amber);font-size:14px;margin:0}
-.barnote{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
-.note{background:var(--surface-2);border-radius:var(--r-s);padding:12px 14px;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
-.info{display:flex;gap:12px;align-items:flex-start;background:var(--info-soft);border-radius:var(--r-m);padding:12px 14px;font-size:14px;color:var(--ink);margin:0}
-.info .ic{color:var(--info-ink);width:22px;height:22px;margin-top:1px}
+.unit{font-size:14px;color:var(--muted)}
+/* Erklärungen auf Abruf: Der Text bleibt zu, bis man auf das Info-Zeichen (ⓘ) daneben tippt */
+.tip:not(.on){display:none}
+.ib{display:inline-grid;place-items:center;width:44px;height:44px;margin:-12px -10px -12px -4px;padding:0;border:0;border-radius:50%;background:none;color:var(--faint);vertical-align:middle}
+.ib::before{content:"";grid-area:1/1;width:30px;height:30px;border-radius:50%;transition:background-color .15s}
+.ib .ic{grid-area:1/1;width:20px;height:20px}
+.ib:hover,.ib[aria-expanded="true"]{color:var(--ink)}
+.ib:hover::before{background:var(--surface-2)}
+.ib[aria-expanded="true"]::before{background:var(--surface-3)}
+label.lt{display:block}
+.nobr{white-space:nowrap}
+/* Bitte prüfen: ruhige Zeile mit gelber Signallampe wie auf der Startseite, ohne Kasten und ohne Randstreifen */
+.warn{position:relative;margin:0;padding:0 0 0 26px;font-size:14px;line-height:1.4;color:var(--ink)}
+.warn::before{content:"";position:absolute;left:1px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.form>.warn,.stack>.warn{padding:13px 14px 13px 40px;border-radius:var(--r-m);background:var(--surface)}
+.form>.warn::before,.stack>.warn::before{left:15px;top:17px}
+.barnote{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
 .card{background:var(--surface);border-radius:var(--r-m);padding:16px;display:grid;gap:12px}
 .card h3{margin:0;font:700 19px/1.2 var(--f-body)}
 .stack{display:grid;gap:12px;margin-top:8px}
@@ -148,15 +158,22 @@ label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;a
 /* Auswahlknöpfe */
 .seg{display:flex;flex-wrap:wrap;gap:8px}
 .seg button{min-height:44px;padding:0 14px;border-radius:var(--r-s);border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);font:500 15px/1.15 var(--f-body)}
-.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600}
+/* Gewählt ist hell auf dunkel (bzw. umgekehrt), nicht rot: Rot bleibt der einen Hauptaktion vorbehalten */
+.seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
+/* Seltene Auswahl steckt hinter „Mehr“; die gewählte bleibt immer sichtbar */
+.seg:not(.open) .rare{display:none}
+.seg .seg-more{display:inline-flex;align-items:center;gap:2px;padding:0 6px 0 10px;border-color:transparent;background:none;color:var(--muted);font-weight:600}
+.seg .seg-more .ic{width:20px;height:20px}
+.seg .seg-more:hover{color:var(--ink);background:var(--surface-2)}
 .tabsw{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 .tabsw button{flex:1 0 auto;min-height:46px;padding:0 14px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);font:600 15px var(--f-body);white-space:nowrap}
-.tabsw button[aria-selected="true"],.tabsw button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-.chip{font:600 12px/1 var(--f-body);text-transform:uppercase;letter-spacing:.05em;padding:4px 7px;border-radius:5px;background:var(--surface-3);color:var(--ink);white-space:nowrap}
-.chip.nacht{background:var(--info-soft);color:var(--info-ink)}
-.chip.away{background:var(--amber-soft);color:var(--amber-ink)}
+.tabsw button[aria-selected="true"],.tabsw button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.chip{font:600 13px/1 var(--f-body);padding:4px 8px;border-radius:5px;background:var(--surface-3);color:var(--ink);white-space:nowrap}
+.chip.nacht{background:var(--night-soft);color:var(--night-ink)}
+.chip.away{background:var(--info-soft);color:var(--info-ink)}
 .chip.off{color:var(--muted)}
-.pill{display:inline-flex;align-items:center;gap:6px;justify-self:center;font:600 13px/1 var(--f-body);padding:7px 12px;border-radius:999px;background:var(--amber);color:var(--on-amber)}
+.pill{display:inline-flex;align-items:center;gap:6px;justify-self:center;font:600 14px/1 var(--f-body);padding:7px 12px;border-radius:999px;background:var(--info-soft);color:var(--info-ink)}
+.pill .ic{width:20px;height:20px}
 .pill.off{background:var(--surface-3);color:var(--ink)}
 
 /* Einträge als Zeilen */
@@ -165,9 +182,9 @@ label.check input{width:22px;height:22px;min-height:0;flex:none;margin:1px 0 0;a
 button.row:hover{background:var(--surface-2)}
 .row.example{opacity:.75;border:1px dashed var(--line-2);background:transparent;cursor:default}
 .dt{display:grid;gap:1px;line-height:1.1;font-variant-numeric:tabular-nums}
-.dt .dw{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.dt .dw{font-size:13px;font-weight:600;color:var(--muted)}
 .dt .dd{font:700 17px/1.15 var(--f-body)}
-.dt.we .dw{color:var(--amber-ink)}
+.dt.we .dw{color:var(--ink);font-weight:700}
 .main{min-width:0;display:grid;gap:3px}
 .l1{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
 .l2{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -180,7 +197,6 @@ button.row:hover{background:var(--surface-2)}
 .empty{background:var(--surface);border-radius:var(--r-m);padding:22px 18px;display:grid;gap:14px;margin-top:12px}
 .empty h2{margin:0;font:700 22px/1.2 var(--f-body)}
 .empty p{margin:0}
-.more-link{justify-self:end;margin-top:10px;color:var(--accent-ink)}
 
 /* Untere Leiste und Seitenleiste */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--nav);border-top:1px solid var(--nav-line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
@@ -200,12 +216,13 @@ button.row:hover{background:var(--surface-2)}
 .hello p{margin:3px 0 0;color:var(--muted);font-size:14px;line-height:1.3;display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px}
 .sync{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .sync::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
-.sync.ok::before{background:var(--good)} .sync.local::before{background:var(--amber)}
+.sync.ok::before{background:var(--good)} .sync.local::before{background:var(--danger)}
 .hello-act{display:flex;align-items:center;gap:8px}
 .notes{display:grid;gap:8px;margin-top:12px}
 .snote{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:start;background:var(--surface);border-radius:var(--r-m);padding:13px 14px;font-size:14px;line-height:1.4}
 .snote .lamp{margin-top:4px}
 .snote .nb{grid-column:2;display:flex;flex-wrap:wrap;gap:6px 18px}
+.sheet .snote{background:var(--surface-2)}
 /* Signallampe: grün erfasst, gelb heute offen, rot fehlt, grau frei oder noch nicht dran */
 .lamp{display:block;flex:none;width:12px;height:12px;border-radius:50%;background:var(--lamp-off);transition:background-color .3s,box-shadow .3s,transform .15s var(--ease-out)}
 .lamp.ok{background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
@@ -222,7 +239,7 @@ button.row:hover{background:var(--surface-2)}
 .td-hint{margin:-4px 0 0;color:var(--muted);font-size:15px}
 .td-plan{display:grid;gap:3px;width:100%;padding:12px 14px 14px;border:0;border-radius:var(--r-m);background:var(--surface-2);color:var(--ink);text-align:left;font-size:15px;line-height:1.35}
 .td-plan small{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;color:var(--muted);font-size:13px}
-.td-edit{display:inline-flex;align-items:center;gap:4px;color:var(--accent-ink);font-weight:600;white-space:nowrap}
+.td-edit{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-weight:600;white-space:nowrap}
 .td-edit .ic{width:16px;height:16px}
 .td-time{font:700 32px/1 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .td-what{font-weight:600}
@@ -257,7 +274,7 @@ button.row:hover{background:var(--surface-2)}
 .yr{display:grid;gap:4px;width:100%;margin-top:12px;padding:16px;border:0;border-radius:var(--r-l);background:var(--surface);color:var(--ink);text-align:left;font-size:15px}
 .yr-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .yr-h>span{font:700 17px/1.2 var(--f-body)}
-.yr-h small{display:inline-flex;align-items:center;color:var(--accent-ink);font:600 14px var(--f-body)}
+.yr-h small{display:inline-flex;align-items:center;color:var(--muted);font:600 14px var(--f-body)}
 .yr-h small .ic{width:20px;height:20px}
 .yr-n{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;font:700 44px/1.05 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:.005em}
 .yr-d{font:600 16px var(--f-body);color:var(--good);opacity:0;transition:opacity .3s}
@@ -291,10 +308,10 @@ button.row:hover{background:var(--surface-2)}
 .cday{position:relative;display:grid;justify-items:center;align-content:start;gap:3px;min-height:52px;padding:6px 0 4px;border:0;border-radius:var(--r-s);background:none;color:var(--ink);font:500 16px/1 var(--f-body);font-variant-numeric:tabular-nums}
 .cday:hover{background:var(--surface-2)}
 .cday .n{display:grid;place-items:center;width:34px;height:34px;border-radius:50%}
-.cday.hol .n{color:var(--amber-ink);font-weight:700}
+.cday.hol .n{font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 .cday.out{visibility:hidden}
 .cday.sel .n{box-shadow:inset 0 0 0 2px var(--ink)}
-.cday.today .n{background:var(--accent);color:#fff;font-weight:700;box-shadow:none}
+.cday.today .n{background:var(--ink);color:var(--bg);font-weight:700;box-shadow:none}
 .dots{display:flex;gap:3px;min-height:6px}
 .dots i{width:6px;height:6px;border-radius:50%}
 .k-work{background:var(--d-work)} .k-trip{background:var(--d-trip)} .k-lodge{background:var(--d-lodge)} .k-exp{background:var(--d-exp)} .k-off{background:var(--d-off)}
@@ -305,8 +322,8 @@ button.row:hover{background:var(--surface-2)}
 .item{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;padding:14px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font-size:15px}
 .item:last-child{border-bottom:0}
 button.item:hover{background:var(--surface-2)}
-.item .ii{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--surface-3);color:var(--amber)}
-.item .ii.trip{color:var(--ink)} .item .ii.exp{color:var(--accent-ink)} .item .ii.off{color:var(--muted)}
+.item .ii{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--surface-3);color:var(--ink)}
+.item .ii.off{color:var(--muted)}
 .item b{display:block;font-weight:600}
 .item small{display:block;color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
@@ -315,10 +332,10 @@ button.item:hover{background:var(--surface-2)}
 /* Tagesansicht */
 .dhead{text-align:center;margin:8px 0 12px}
 .dhead h2{margin:0;font:700 22px/1.2 var(--f-body)}
-.dhead p{margin:4px 0 0;color:var(--amber-ink);font-size:14px}
+.dhead p{margin:4px 0 0;color:var(--muted);font-size:14px}
 .dcard{background:var(--surface);border-radius:var(--r-m);overflow:hidden}
 .dtop{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 10px 14px 14px}
-.dtop .ii{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--surface-3);color:var(--amber)}
+.dtop .ii{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--surface-3);color:var(--ink)}
 .dtop b{display:block;font-size:17px}
 .dtop small{display:block;color:var(--muted);font-size:14px}
 .kv{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0;border-top:1px solid var(--line)}
@@ -326,20 +343,20 @@ button.item:hover{background:var(--surface-2)}
 .kv dt{color:var(--muted);padding-right:6px}
 .kv dd{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .kv dt:nth-last-child(2),.kv dd:last-child{border-bottom:0}
-.subc{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--hl);color:var(--hl-ink);border-radius:var(--r-m);padding:14px;border:0;width:100%;text-align:left;font-size:15px}
-:root[data-theme="light"] .subc{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
-.subc .ic{width:32px;height:32px}
+/* Fahrt, Übernachtung, Verpflegung, Ausgabe: ruhige Karten wie die übrigen, in Dunkel dunkel */
+.subc{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--surface);color:var(--ink);border-radius:var(--r-m);padding:14px;border:0;width:100%;text-align:left;font-size:15px}
+.subc>.ic{width:28px;height:28px;margin:2px 0 0 4px;color:var(--muted)}
+.subc>span{display:block;min-width:0}
 .subc b{display:block;font-size:16px}
-.subc span{display:block;color:var(--hl-muted)}
-:root[data-theme="light"] .subc span{color:var(--muted)}
+.subc>span>span{display:block;color:var(--muted)}
 .subc .v{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-button.subc:hover{filter:brightness(.97)}
+button.subc:hover{background:var(--surface-2)}
 
 /* Auswertung */
 .statsbar{display:grid;gap:12px}
 .yearsel select{width:auto;min-width:170px;font-weight:600}
 .bigsum{display:grid;gap:4px;margin-top:6px}
-.bigsum .amount{font:700 40px/1.1 var(--f-display);color:var(--accent-ink);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.bigsum .amount{font:700 40px/1.1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .sumtable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .sumtable td{padding:11px 0;border-bottom:1px solid var(--line)}
 .sumtable td.n{text-align:right;font-weight:600;white-space:nowrap;padding-left:12px}
@@ -356,17 +373,17 @@ button.subc:hover{filter:brightness(.97)}
 .ttable td.n{text-align:right;white-space:nowrap;padding-left:12px}
 #law-table td:first-child{width:58%}
 #law-table td.n{white-space:normal}
-.ttable tr.sec td{padding-top:18px;font:600 13px var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ttable tr.sec td{padding-top:22px;font:700 15px/1.3 var(--f-body);color:var(--muted)}
 .ttable tr.sub td{color:var(--muted);font-size:14px;padding-block:3px;border-bottom:0}
 .ttable tr.sub td:first-child{padding-left:12px}
 .ttable tr.sum td{font-weight:700;border-bottom:2px solid var(--line-2)}
 .ttable tr.big td{font:700 24px var(--f-display);border-bottom:0;padding-top:16px}
 .mtab{display:grid;gap:2px;font-variant-numeric:tabular-nums}
 .mrow{display:grid;grid-template-columns:34px minmax(0,1fr) 62px 70px;gap:10px;align-items:center;font-size:14px;padding:3px 0}
-.mrow.h{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.mrow.h{color:var(--muted);font-size:13px;font-weight:600}
 .mrow .n{text-align:right}
 .bar{height:12px;background:var(--surface-3);border-radius:4px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--amber);border-radius:4px}
+.bar i{display:block;height:100%;background:var(--muted);border-radius:4px}
 .places{display:grid;gap:10px}
 .place{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .place:last-child{border-bottom:0;padding-bottom:0}
@@ -377,7 +394,7 @@ button.subc:hover{filter:brightness(.97)}
 details.card summary{cursor:pointer;font:700 19px var(--f-body)}
 details.card p{margin:0;max-width:65ch}
 .anl{display:grid}
-.anl h4{margin:18px 0 6px;font:600 13px var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.anl h4{margin:22px 0 4px;font:700 15px/1.3 var(--f-body);color:var(--muted)}
 .anl h4:first-child{margin-top:0}
 .anl-row{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
 .anl-row .z{font-weight:700;white-space:nowrap;color:var(--muted)}
@@ -390,15 +407,14 @@ details.card p{margin:0;max-width:65ch}
 .xcard h3{text-align:center;font-size:21px}
 .checks{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
 .checks li{display:flex;gap:10px;align-items:flex-start}
-.checks .ic{color:var(--accent);width:22px;height:22px}
-.news{background:var(--surface-2);border-left:4px solid var(--accent);border-radius:var(--r-s);padding:12px 14px;display:grid;gap:8px}
-.news b{font:700 18px var(--f-body)}
-.news ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:15px}
-.news .linkbtn{justify-self:start}
+.checks .ic{color:var(--muted);width:22px;height:22px}
+/* Neuigkeiten: ruhige Zeile mit grüner Lampe (Update da, alles in Ordnung), ohne Randstreifen */
+.news b{display:block;font:700 17px/1.3 var(--f-body)}
+.news ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px;font-size:15px}
 .newslog{display:grid;gap:10px}
 .newslog h4{margin:0;font-size:15px}
 .newslog ul{margin:4px 0 0;padding-left:20px;font-size:14px;color:var(--muted);display:grid;gap:3px}
-details.more summary{cursor:pointer;font-weight:600;color:var(--accent-ink);list-style-position:inside}
+details.more summary{cursor:pointer;font-weight:600;color:var(--ink);list-style-position:inside}
 details.more[open] summary{margin-bottom:10px}
 details.more>div{display:grid;gap:14px}
 .t-l{display:none}
@@ -416,17 +432,19 @@ details.more>div{display:grid;gap:14px}
 .stepper{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);margin:2px 0 6px;padding:0}
 .stepper li{position:relative;display:grid;justify-items:center}
 .stepper li+li::before{content:"";position:absolute;top:21px;right:calc(50% + 22px);left:calc(-50% + 22px);height:2px;background:var(--line-2)}
-.stepper li.done+li::before,.stepper li.done::before{background:var(--accent)}
+.stepper li.done+li::before,.stepper li.done::before{background:var(--muted)}
 .stepper button{display:grid;justify-items:center;gap:5px;border:0;background:none;color:var(--muted);font:500 14px var(--f-body);padding:4px 0;min-width:72px}
-.stepper .num{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--surface-3);color:var(--ink);font:700 16px var(--f-body);font-variant-numeric:tabular-nums}
+.stepper .num{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--surface-3);color:var(--muted);font:700 16px var(--f-body);font-variant-numeric:tabular-nums}
 .stepper button[aria-current="step"]{color:var(--ink)}
-.stepper button[aria-current="step"] .num{background:var(--accent);color:#fff;box-shadow:0 0 0 4px var(--accent-soft)}
-.stepper li.done .num{background:var(--accent-soft);color:var(--accent-ink)}
+.stepper button[aria-current="step"] .num{background:var(--ink);color:var(--bg);box-shadow:0 0 0 4px var(--surface-3)}
+.stepper li.done .num{color:var(--ink)}
 .stepper button:disabled{opacity:.4;cursor:default}
 .form{display:grid;gap:12px;margin-top:8px}
 .step{display:grid;gap:12px}
 .fblock{background:var(--surface);border-radius:var(--r-m);padding:16px;display:grid;gap:14px}
-.blk-h{margin:0;font:600 13px/1.2 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+/* Titel eines Blocks; Rangfolge über Größe und Gewicht statt gesperrter Großbuchstaben */
+.blk-h{margin:0;font:700 17px/1.25 var(--f-body);color:var(--ink)}
+.flbl{font:500 14px/1.3 var(--f-body);color:var(--muted)}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:end}
 .daterow{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;gap:8px}
 .daterow button{display:grid;place-items:center;border:1px solid var(--input-line);border-radius:var(--r-s);background:var(--input);color:var(--ink)}
@@ -435,10 +453,9 @@ details.more>div{display:grid;gap:14px}
 .calc{font-variant-numeric:tabular-nums;font-size:15px;padding:10px 12px;border-radius:var(--r-s);background:var(--surface-2);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .calc b{font:700 20px var(--f-body)}
 .calc:empty{display:none}
-#f-prefill{background:var(--accent-soft)}
 details.multi summary{cursor:pointer;font-weight:600}
 details.multi[open] summary{margin-bottom:6px}
-details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+details.fblock>summary{cursor:pointer;font:700 17px/1.25 var(--f-body);color:var(--ink)}
 .formfoot{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--nav);border-top:1px solid var(--nav-line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
 .formfoot .in{max-width:var(--app-w);margin:0 auto;display:flex;gap:10px}
 .formfoot .btn{flex:1}
@@ -488,7 +505,7 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
 
 /* Jahresbericht: immer wie Papier */
 .rtools{display:grid;gap:10px;margin-top:8px;background:var(--surface);border-radius:var(--r-m);padding:16px}
-.paper{--ink:#171C1F;--muted:#5F6368;--line:#D5DADD;--line-2:#9AA0A6;--warn-bg:#FFF4D6;--warn-ink:#7A4700;background:#fff;color:#171C1F;border-radius:var(--r-m);padding:20px 18px;margin-top:12px;font-size:14px;line-height:1.4;overflow-wrap:break-word;hyphens:auto}
+.paper{--ink:#171C1F;--muted:#5F6368;--line:#D5DADD;--line-2:#9AA0A6;background:#fff;color:#171C1F;border-radius:var(--r-m);padding:20px 18px;margin-top:12px;font-size:14px;line-height:1.4;overflow-wrap:break-word;hyphens:auto}
 .paper .rlogo{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .paper .rlogo svg{width:64px;height:38px}
 .paper .rlogo span{font:700 22px var(--f-body);letter-spacing:.03em;-webkit-text-stroke:.022em currentColor}
@@ -533,7 +550,7 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
   .sidebar button{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:var(--r-s);background:none;color:var(--nav-muted);font:600 15px var(--f-body);text-align:left}
   .sidebar button .ic{width:22px;height:22px}
   .sidebar button:hover{background:rgba(255,255,255,.07);color:var(--nav-ink)}
-  .sidebar button[aria-current="page"]{background:var(--accent);color:#fff}
+  .sidebar button[aria-current="page"]{background:rgba(255,255,255,.1);color:var(--nav-ink)}
   .sidebar .sb-add{justify-content:center;background:var(--accent);color:#fff;margin:0 0 12px}
   .sidebar .sb-add:hover{background:var(--accent-hi);color:#fff}
   .sb-foot{margin-top:auto;display:grid;gap:4px;padding-top:12px;border-top:1px solid var(--nav-line)}
@@ -570,10 +587,11 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
   .home .job .jh{font-size:15px;color:#E9ECEE;font-weight:600}
   .home .job .jt b{font-size:24px}
   .home .job .jl,.home .job .jd{color:#D5DADD;border-top:0;padding-top:0;margin-top:4px}
-  .home .job .btn{justify-self:start}
+  .home .job .btn{justify-self:start;border-color:rgba(255,255,255,.7);color:#fff}
+  .home .job .btn:hover{background:rgba(255,255,255,.12)}
   .wkc{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px}
   .wkc h3{font-size:17px}
-  .wkc .amount{font:700 30px/1.1 var(--f-display);color:var(--accent-ink);font-variant-numeric:tabular-nums;margin-top:4px}
+  .wkc .amount{font:700 30px/1.1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums;margin-top:4px}
   .donut{width:150px;height:150px}
   .donut text{fill:var(--ink);font-family:var(--f-body)}
   .lg{display:grid;gap:6px;font-size:14px;margin-top:10px}
@@ -597,12 +615,12 @@ details.fblock>summary{cursor:pointer;font:600 13px/1.2 var(--f-body);text-trans
 }
 /* Bewegung und Rückmeldung: Knöpfe geben beim Drücken nach, Ansichten gleiten herein, Meldungen und Blätter kommen von unten.
    Alles kurz (0,15 bis 0,35 s). Bei „Bewegung reduzieren“ am Handy bleibt es bei Farbwechseln ohne Bewegung. */
-.btn,.iconbtn,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
+.btn,.iconbtn,.ib,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
 button.row:active,button.item:active,button.td-plan:active,.job-main:active{background:var(--surface-2)}
 .toast.out{opacity:0;transform:translateY(10px);transition:opacity .16s,transform .16s}
 @media (prefers-reduced-motion:no-preference){
   .btn:not(:disabled):active,.seg button:active,.textbtn:active,.daterow button:active,.stepper button:not(:disabled):active{transform:scale(.96)}
-  .iconbtn:active,.cday:active{transform:scale(.9)}
+  .iconbtn:active,.cday:active,.ib:active{transform:scale(.9)}
   .tabs button .ic,.sidebar button .ic{transition:transform .14s var(--ease-out)}
   .tabs button:active .ic,.sidebar button:active .ic{transform:scale(.84)}
   button.row:active,button.item:active,button.subc:active,.job-main:active,.yr:active,button.td-plan:active{transform:scale(.98)}
@@ -623,6 +641,8 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
   .today.just .td-head h2{animation:v-in .4s var(--ease-out)}
   .row.just{animation:flash 1.8s ease-out}
   .yr-bar i{transition:transform .8s var(--ease-out)}
+  .tip.on{animation:tip-in .22s var(--ease-out)}
+  .seg.open .rare{animation:fade-in .2s ease-out}
 }
 @media (min-width:600px) and (prefers-reduced-motion:no-preference){.sheet:not([hidden]) .sheet-panel{animation-name:drop}}
 @keyframes v-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -632,6 +652,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 @keyframes drop{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes foot-up{from{transform:translateY(100%)}to{transform:none}}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes tip-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @keyframes toast-in{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes lamp{50%{box-shadow:0 0 0 8px var(--amber-soft)}}
 @keyframes pop{0%{transform:scale(.3)}55%{transform:scale(1.45)}100%{transform:none}}
@@ -752,7 +773,8 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
       <div class="stack">
         <div class="card xcard">
           <span class="xico" aria-hidden="true"><svg class="ic"><use href="#i-table-view"/></svg></span>
-          <h3>Daten für die Steuererklärung als Excel-Datei</h3>
+          <h3 data-tip="h-xlsx">Daten für die Steuererklärung als Excel-Datei</h3>
+          <p class="hint tip" id="h-xlsx">Die Datei enthält deine erfassten Daten und eine Aufbereitung für die Anlage N. Sie ersetzt keine Steuerberatung.</p>
           <ul class="checks">
             <li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg>Alle Arbeitstage und Ausgaben des Jahres</li>
             <li><svg class="ic" aria-hidden="true"><use href="#i-check-circle"/></svg>Monate, Einsatzorte und Zuschlagsstunden</li>
@@ -767,18 +789,17 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
           <button class="btn block" id="x-copy" type="button">Tabelle kopieren (zum Einfügen in Excel)</button>
           <p class="hint" id="x-status" role="status"></p>
           <textarea id="x-tsv" rows="5" readonly hidden aria-label="Tabelle zum Kopieren"></textarea>
-          <p class="info"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Die Datei enthält deine erfassten Daten und eine Aufbereitung für die Anlage N. Sie ersetzt keine Steuerberatung.</span></p>
         </div>
 
         <div class="card">
-          <h3>Jahresbericht (PDF)</h3>
-          <p class="hint" id="r-info">Alles für die Steuererklärung auf ein paar Seiten: Ausfüllhilfe für die Anlage N mit Zeilennummern, Monate, Einsatzorte, Ausgaben und auf Wunsch alle Tage und Belegfotos.</p>
+          <h3 data-tip="r-info">Jahresbericht (PDF)</h3>
+          <p class="hint tip" id="r-info">Alles für die Steuererklärung auf ein paar Seiten: Ausfüllhilfe für die Anlage N mit Zeilennummern, Monate, Einsatzorte, Ausgaben und auf Wunsch alle Tage und Belegfotos.</p>
           <button class="btn block" id="x-report" type="button"><svg class="ic" aria-hidden="true"><use href="#i-description"/></svg>Jahresbericht ansehen</button>
         </div>
 
         <div class="card">
-          <h3>Datensicherung</h3>
-          <p class="hint">Speichert alle Jahre mit Tagen und Ausgaben als Datei. Leg sie zum Beispiel in deine Cloud oder schick sie dir per Mail. Auf einem neuen Handy lädst du sie einfach wieder.</p>
+          <h3 data-tip="h-backup">Datensicherung</h3>
+          <p class="hint tip" id="h-backup">Speichert alle Jahre mit Tagen und Ausgaben als Datei. Leg sie zum Beispiel in deine Cloud oder schick sie dir per Mail. Auf einem neuen Handy lädst du sie einfach wieder.</p>
           <p class="hint" id="b-last"></p>
           <div class="btnrow">
             <button class="btn" id="x-backup" type="button"><svg class="ic" aria-hidden="true"><use href="#i-cloud-upload"/></svg>Sicherung speichern</button>
@@ -791,8 +812,8 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
         </div>
 
         <div class="card">
-          <h3>Einstellungen</h3>
-          <p class="hint">Hell oder Dunkel, wie deine Firma Sammelpunkt, Auslöse und Unterkunft regelt, dazu Name, Bundesland und Schichtzeiten.</p>
+          <h3 data-tip="h-settings">Einstellungen</h3>
+          <p class="hint tip" id="h-settings">Hell oder Dunkel, wie deine Firma Sammelpunkt, Auslöse und Unterkunft regelt, dazu Name, Bundesland und Schichtzeiten.</p>
           <button class="btn block" type="button" data-go="settings"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg>Einstellungen öffnen</button>
         </div>
 
@@ -811,37 +832,37 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
     <section id="v-settings" class="view" aria-label="Einstellungen" hidden>
       <form id="settings" class="stack" autocomplete="off">
         <div class="card" id="theme-card">
-          <h3>Darstellung</h3>
+          <h3 data-tip="h-theme">Darstellung</h3>
           <div class="seg" id="g-theme" role="group" aria-label="Darstellung">
             <button type="button" data-theme-set="dark" aria-pressed="true">Dunkel</button>
             <button type="button" data-theme-set="light" aria-pressed="false">Hell</button>
             <button type="button" data-theme-set="auto" aria-pressed="false">Wie am Handy</button>
           </div>
-          <p class="hint">Hell liest sich draußen in der Sonne besser, dunkel blendet nachts nicht. Gilt nur für dieses Gerät.</p>
+          <p class="hint tip" id="h-theme">Hell liest sich draußen in der Sonne besser, dunkel blendet nachts nicht. Gilt nur für dieses Gerät.</p>
         </div>
 
         <div class="card" id="prof">
-          <h3>Deine Arbeit</h3>
-          <p class="hint">Stell einmal ein, wie deine Firma es regelt. Die App füllt damit neue Tage vor und rechnet danach. Jeden Tag kannst du trotzdem einzeln ändern. Änderungen werden sofort gespeichert.</p>
+          <h3 data-tip="h-prof">Deine Arbeit</h3>
+          <p class="hint tip" id="h-prof">Stell einmal ein, wie deine Firma es regelt. Die App füllt damit neue Tage vor und rechnet danach. Jeden Tag kannst du trotzdem einzeln ändern. Änderungen werden sofort gespeichert.</p>
 
           <div class="q">
-            <span class="q-h">Wie kommst du meistens zur Arbeit?</span>
+            <span class="q-h" data-tip="h-veh">Wie kommst du meistens zur Arbeit?</span>
             <div class="seg" data-pset="veh"></div>
-            <p class="hint">Mitfahrer heißt: im Privatauto eines Kollegen.</p>
+            <p class="hint tip" id="h-veh">Mitfahrer heißt: im Privatauto eines Kollegen.</p>
           </div>
 
           <div class="q">
-            <span class="q-h">Steht im Arbeitsvertrag ein fester Ort, zu dem du jeden Arbeitstag fährst?</span>
+            <span class="q-h" data-tip="p-fixed-h">Steht im Arbeitsvertrag ein fester Ort, zu dem du jeden Arbeitstag fährst?</span>
             <div class="seg" data-pset="fixed"></div>
             <div class="grid2" id="p-fixed-w">
               <label>Name des Orts<input id="p-fixed-name" placeholder="z. B. Bf Soest, Lager Hamm" autocomplete="off"></label>
               <label>Entfernung von zu Hause, einfache Strecke (km)<input id="p-fixed-km" inputmode="decimal" placeholder="z. B. 24"></label>
             </div>
-            <p class="hint" id="p-fixed-h"></p>
+            <p class="hint tip" id="p-fixed-h"></p>
           </div>
 
           <div class="q">
-            <span class="q-h">Zahlt deine Firma Auslöse oder Spesen?</span>
+            <span class="q-h" data-tip="h-aus">Zahlt deine Firma Auslöse oder Spesen?</span>
             <div class="seg" data-pset="ausOn"></div>
             <div id="p-aus-w" class="q">
               <div class="grid2">
@@ -849,7 +870,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
                 <label>An- und Abreisetag (€)<input id="s-aus-half" inputmode="decimal" placeholder="0,00"></label>
                 <label>Tagestour ohne Übernachtung (€)<input id="s-aus-day" inputmode="decimal" placeholder="0,00"></label>
               </div>
-              <p class="hint">Die App trägt die Beträge an solchen Tagen von selbst ein. Für die Steuer wird die Auslöse mit der Verpflegungspauschale verrechnet und, wenn du die Unterkunft selbst zahlst, mit der Übernachtung. Deine Fahrtkosten bleiben davon unberührt.</p>
+              <p class="hint tip" id="h-aus">Die App trägt die Beträge an solchen Tagen von selbst ein. Für die Steuer wird die Auslöse mit der Verpflegungspauschale verrechnet und, wenn du die Unterkunft selbst zahlst, mit der Übernachtung. Deine Fahrtkosten bleiben davon unberührt.</p>
               <button class="btn block" id="p-aus-fill" type="button" hidden></button>
             </div>
           </div>
@@ -883,7 +904,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
           <h3>Arbeitszeit</h3>
           <label>Übliche Pause (Minuten)<input id="s-pause" inputmode="numeric"></label>
           <div class="grid2" style="gap:8px 12px">
-            <span class="blk-h" style="grid-column:1/-1">Schichtzeiten zum Vorausfüllen</span>
+            <span class="q-h" style="grid-column:1/-1">Schichtzeiten zum Vorausfüllen</span>
             <label>Früh von<input type="time" id="s-frueh-a"></label><label>bis<input type="time" id="s-frueh-b"></label>
             <label>Tag von<input type="time" id="s-tag-a"></label><label>bis<input type="time" id="s-tag-b"></label>
             <label>Spät von<input type="time" id="s-spaet-a"></label><label>bis<input type="time" id="s-spaet-b"></label>
@@ -893,6 +914,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 
         <details class="card" id="law-card">
           <summary>Gesetzliche Werte</summary>
+          <p class="warn" id="law-warn" hidden></p>
           <p class="hint">Diese Werte stehen im Gesetz und gelten für alle. Du kannst sie nicht ändern. Sie werden mit Updates der App aktuell gehalten.</p>
           <table class="ttable" id="law-table"></table>
         </details>
@@ -915,7 +937,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
       </ol>
       <div class="form">
         <div class="warn barnote" id="f-leave" hidden><span>Änderungen sind noch nicht gespeichert.</span><button class="linkbtn" type="button" data-leave="save">Speichern</button><button class="linkbtn" type="button" data-leave="drop">Verwerfen</button></div>
-        <div class="note" id="f-prefill" hidden><span>Vorausgefüllt wie <b id="f-prefill-date"></b> Bitte prüfen.</span><button class="linkbtn" id="f-clear" type="button">Felder leeren</button></div>
+        <div class="warn barnote" id="f-prefill" hidden><span>Vorausgefüllt wie <b id="f-prefill-date"></b> Bitte prüfen.</span><button class="linkbtn" id="f-clear" type="button">Felder leeren</button></div>
 
         <div class="step" data-step="1">
           <div class="fblock" id="b-date">
@@ -927,7 +949,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
             </div>
             <p class="hint" id="f-hol" hidden></p>
             <p class="warn" id="f-dup" hidden></p>
-            <span class="blk-h">Was war an dem Tag?</span>
+            <span class="flbl">Was war an dem Tag?</span>
             <div class="seg" id="g-type"></div>
           </div>
 
@@ -946,30 +968,30 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 
         <div class="step" data-step="2" hidden>
           <div class="fblock" id="b-time">
-            <span class="blk-h">Schicht</span>
+            <span class="blk-h" data-tip="h-shift">Schicht</span>
             <div class="seg" id="g-shift"></div>
-            <p class="hint" id="h-shift" hidden>Schicht ist ausgefallen. Werden Stunden bezahlt, trag Beginn und Ende ein. Sonst leer lassen.</p>
+            <p class="hint tip" id="h-shift" hidden>Schicht ist ausgefallen. Werden Stunden bezahlt, trag Beginn und Ende ein. Sonst leer lassen.</p>
             <div class="grid2">
               <label>Beginn<input type="time" id="f-start"></label>
               <label>Ende<input type="time" id="f-end"></label>
             </div>
             <div style="display:grid;gap:6px">
-              <span class="blk-h">Pause</span>
-              <div class="pauserow"><div class="seg" id="g-pause"></div><input id="f-pause" inputmode="numeric" aria-label="Pause in Minuten"><span class="hint">Min.</span></div>
+              <span class="flbl">Pause</span>
+              <div class="pauserow"><div class="seg" id="g-pause"></div><input id="f-pause" inputmode="numeric" aria-label="Pause in Minuten"><span class="unit">Min.</span></div>
             </div>
             <div class="calc" id="c-work"></div>
           </div>
 
           <div class="fblock" id="b-travel" hidden>
-            <span class="blk-h">Fahrzeit</span>
+            <span class="blk-h" data-tip="h-travel">Fahrzeit</span>
             <label><span id="l-travel">Stunden für die Fahrt</span><input id="f-travel" inputmode="decimal" placeholder="z. B. 5 oder 4,5" autocomplete="off"></label>
-            <p class="hint">Die Stunden, die dir für die Fahrt angerechnet werden. Sie zählen zu deinen Stunden, auf die Steuer haben sie keinen Einfluss.</p>
+            <p class="hint tip" id="h-travel">Die Stunden, die dir für die Fahrt angerechnet werden. Sie zählen zu deinen Stunden, auf die Steuer haben sie keinen Einfluss.</p>
           </div>
 
           <div class="fblock" id="b-away">
-            <span class="blk-h">Auswärts / Montage</span>
+            <span class="blk-h" data-tip="h-away">Auswärts / Montage</span>
             <div class="seg" id="g-away"></div>
-            <p class="hint" id="h-away"></p>
+            <p class="hint tip" id="h-away"></p>
             <p class="warn" id="h-prev" hidden></p>
             <div class="grid2">
               <label id="w-depart">Abfahrt von zu Hause<input type="time" id="f-depart"></label>
@@ -980,7 +1002,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
               <label>Unterkunft<input id="f-lodgingName" list="dl-lodging" placeholder="Hotel, Pension" autocomplete="off"></label>
             </div>
             <div id="w-meals" style="display:grid;gap:6px">
-              <span class="blk-h">Essen vom Arbeitgeber bezahlt?</span>
+              <span class="flbl">Essen vom Arbeitgeber bezahlt?</span>
               <div class="seg" id="g-meals"></div>
             </div>
             <div class="calc" id="c-away"></div>
@@ -989,24 +1011,25 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 
         <div class="step" data-step="3" hidden>
           <div class="fblock" id="b-drive">
-            <span class="blk-h">Fahrt</span>
+            <span class="blk-h" data-tip="h-drive">Fahrt</span>
             <div class="seg" id="g-vehicle"></div>
             <div id="w-trip" style="display:grid;gap:14px">
               <div style="display:grid;gap:6px">
-                <span class="blk-h">Gefahren bis</span>
+                <span class="flbl" data-tip="h-trip">Gefahren bis</span>
                 <div class="seg" id="g-trip"></div>
-                <p class="hint" id="h-trip"></p>
+                <p class="hint tip" id="h-trip"></p>
               </div>
               <label>Treffpunkt / Sammelpunkt<input id="f-meet" list="dl-meet" placeholder="z. B. Bf Soest, Parkplatz P2" autocomplete="off"></label>
               <label id="w-km"><span id="l-km">Gefahrene Kilometer an diesem Tag</span><input id="f-km" inputmode="decimal" placeholder="z. B. 124"></label>
             </div>
             <div class="calc" id="c-drive"></div>
+            <p class="hint tip" id="h-drive"></p>
           </div>
 
           <div class="fblock" id="b-money">
-            <span class="blk-h">Geld</span>
+            <span class="blk-h" data-tip="h-allow">Geld</span>
             <label>Auslöse / Spesen vom Arbeitgeber, steuerfrei (€)<input id="f-allowance" inputmode="decimal" placeholder="0,00"></label>
-            <p class="hint" id="h-allow" hidden></p>
+            <p class="hint tip" id="h-allow" hidden></p>
             <div class="grid2">
               <label>Sonstige Ausgaben (€)<input id="f-other" inputmode="decimal" placeholder="0,00"></label>
               <label>Wofür?<input id="f-otherNote" placeholder="Parken, Ticket" autocomplete="off"></label>
@@ -1014,11 +1037,11 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
           </div>
 
           <div class="fblock" id="b-beleg" hidden>
-            <span class="blk-h">Belege</span>
+            <span class="blk-h" data-tip="h-beleg">Belege</span>
             <div class="thumbs" id="f-thumbs"></div>
             <label class="btn" for="f-photo-in"><svg class="ic" aria-hidden="true"><use href="#i-photo-camera"/></svg>Foto oder PDF hinzufügen</label>
             <input type="file" id="f-photo-in" class="sr" accept="image/*,application/pdf" multiple>
-            <p class="hint">Hotelrechnung, Parkschein, Tankquittung. Die Fotos bleiben auf diesem Handy und kommen mit in die Datensicherung.</p>
+            <p class="hint tip" id="h-beleg">Hotelrechnung, Parkschein, Tankquittung. Die Fotos bleiben auf diesem Handy und kommen mit in die Datensicherung.</p>
           </div>
 
           <details class="fblock" id="d-note">
@@ -1030,7 +1053,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
             <summary>Für mehrere Tage auf einmal speichern</summary>
             <label>bis einschließlich<input type="date" id="m-until"></label>
             <div style="display:grid;gap:6px">
-              <span class="blk-h">Samstag und Sonntag</span>
+              <span class="flbl">Samstag und Sonntag</span>
               <div class="seg" id="g-we"></div>
             </div>
             <label class="check"><input type="checkbox" id="m-montage"> Montage: erster Tag Anreise, letzter Tag Abreise, dazwischen 24 Std. auswärts</label>
@@ -1053,18 +1076,18 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
             <label>Datum<input type="date" id="p-date"></label>
             <label>Betrag (€)<input id="p-amount" inputmode="decimal" placeholder="0,00"></label>
           </div>
-          <span class="blk-h">Art der Ausgabe</span>
+          <span class="flbl" data-tip="h-cat">Art der Ausgabe</span>
           <div class="seg" id="g-cat"></div>
-          <p class="hint" id="h-cat"></p>
+          <p class="hint tip" id="h-cat"></p>
           <label>Was genau?<input id="p-text" list="dl-exptext" placeholder="z. B. Sicherheitsschuhe S3" autocomplete="off"></label>
           <label>Notiz<textarea id="p-note" rows="2" placeholder="z. B. Beleg im Ordner Steuer 2026"></textarea></label>
         </div>
         <div class="fblock" id="p-beleg" hidden>
-          <span class="blk-h">Belege</span>
+          <span class="blk-h" data-tip="h-pbeleg">Belege</span>
           <div class="thumbs" id="p-thumbs"></div>
           <label class="btn" for="p-photo-in"><svg class="ic" aria-hidden="true"><use href="#i-photo-camera"/></svg>Foto oder PDF hinzufügen</label>
           <input type="file" id="p-photo-in" class="sr" accept="image/*,application/pdf" multiple>
-          <p class="hint">Rechnung oder Quittung abfotografieren. Das Finanzamt kann Belege nachfordern.</p>
+          <p class="hint tip" id="h-pbeleg">Rechnung oder Quittung abfotografieren. Das Finanzamt kann Belege nachfordern.</p>
         </div>
       </div>
     </section>
@@ -1125,9 +1148,13 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.2.0';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.2.0', ['Aufgeräumt: Erklärungen stehen jetzt hinter dem kleinen i neben der Überschrift. Tipp darauf, wenn du sie lesen willst. Warnungen siehst du weiter sofort.',
+    'Beim Erfassen siehst du zuerst die üblichen Möglichkeiten. Seltenes wie Urlaub, Krank oder eine ausgefallene Schicht steht unter „Mehr“. Bei „Auswärts“ richtet sich das nach dem Vortag.',
+    'Die Farben bedeuten überall dasselbe: Grün ist erfasst oder in Ordnung, Gelb heißt bitte prüfen, Rot fehlt. Sonst ist nur der wichtigste Knopf rot.',
+    'Ruhigere Schrift ohne Überschriften in Großbuchstaben, dazu dunkle Karten im Tagesdetail.']],
   ['2.1.0', ['Neue Startseite: Oben steht „Heute“. Mit einem Tipp übernimmst du den Tag so wie gestern. Ändern kannst du ihn jederzeit.',
     'Deine Woche als Gleis: Grün ist erfasst, Gelb ist heute noch offen, Rot fehlt. Tipp auf einen Tag, um ihn zu öffnen.',
     'Am Handy siehst du auf der Startseite, wie hoch deine Werbungskosten schon sind und ob sie über dem Pauschbetrag liegen.',
@@ -1267,6 +1294,34 @@ function countUp(el, from, to, ms) {
   const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = eur(from + (to - from) * k); if (p < 1) countRaf = requestAnimationFrame(step); };
   el.textContent = eur(from); countRaf = requestAnimationFrame(step);
 }
+
+/* ---------- Erklärungen auf Abruf (ⓘ) ---------- */
+// Erklärtexte (.tip) bleiben zu, bis man auf das Info-Zeichen daneben tippt. Echte Warnungen (.warn) stehen immer da.
+// Das Zeichen sitzt am Titel (data-tip="ID …") und erscheint nur, wenn es gerade etwas zu erklären gibt.
+const tipOpen = new Set();
+const ibHTML = (ids, about) => `<button class="ib" type="button" aria-controls="${ids}" aria-expanded="false" aria-label="Erklärung zu ${esc(about)}">${ic('info')}</button>`;
+const tipIds = b => (b.getAttribute('aria-controls') || '').split(' ').filter(Boolean);
+// Text ist da, solange ihn nichts ausblendet, was nicht auch das Zeichen ausblendet (z. B. Auslöse-Felder bei „Nein“)
+const tipShown = (t, b) => { for (let n = t; n && !n.contains(b); n = n.parentElement) if (n.hidden) return false; return true; };
+function syncTips() {
+  document.querySelectorAll('.ib').forEach(b => {
+    const ids = tipIds(b), ts = ids.map(id => document.getElementById(id)).filter(Boolean), open = ids.some(id => tipOpen.has(id));
+    ts.forEach(t => t.classList.toggle('on', open));
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    b.hidden = !ts.some(t => tipShown(t, b) && t.textContent.trim());
+  });
+}
+// neues Formular oder neue Seite: alle Erklärungen darin wieder zu
+function resetTips(root) { root.querySelectorAll('.ib').forEach(b => tipIds(b).forEach(id => tipOpen.delete(id))); syncTips(); }
+// Titel mit Info-Zeichen; das letzte Wort bleibt beim Zeichen, damit es nie allein in einer Zeile steht
+const withTip = (text, ids, about) => { const m = String(text).match(/^(.*?)(\S+)\s*$/s) || ['', '', String(text)]; return `${esc(m[1])}<span class="nobr">${esc(m[2])}${ibHTML(ids, about || text)}</span>`; };
+document.querySelectorAll('[data-tip]').forEach(h => { h.innerHTML = withTip(h.textContent.trim(), h.dataset.tip); });
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('.ib'); if (!b) return;
+  const open = b.getAttribute('aria-expanded') !== 'true';
+  tipIds(b).forEach(id => { if (open) tipOpen.add(id); else tipOpen.delete(id); });
+  syncTips();
+});
 
 /* ---------- Feiertage ---------- */
 function easter(y) {
@@ -2023,14 +2078,18 @@ function backupCard() {
 function bellItems() {
   const out = [];
   const news = loadError ? [] : newsList();
+  // jede Zeile mit Signallampe: grün = Update ist da, gelb = bitte ansehen, hohl = freiwillig
   if (news.length) {
-    out.push(`<div class="news" role="status"><b>Neu in Version ${esc(news[0][0])}</b><ul>${news.map(([, l]) => l.map(t => `<li>${esc(t)}</li>`).join('')).join('')}</ul>
-      <button class="linkbtn" type="button" data-news="ok">Verstanden</button></div>`);
+    out.push(`<div class="snote news" role="status"><i class="lamp ok" aria-hidden="true"></i><div><b>Neu in Version ${esc(news[0][0])}</b><ul>${news.map(([, l]) => l.map(t => `<li>${esc(t)}</li>`).join('')).join('')}</ul></div>
+      <span class="nb"><button class="linkbtn" type="button" data-news="ok">Verstanden</button></span></div>`);
   } else if (S.seenVersion !== APP_VERSION && !loadError) S.seenVersion = APP_VERSION;
-  if (!S.settings.profSeen && !loadError) out.push(`<div class="note"><span>Stell einmal ein, wie deine Firma es regelt: Sammelpunkt, Auslöse, Unterkunft. Dann füllt die App neue Tage passend vor und rechnet genauer.</span><button class="linkbtn" type="button" data-go="settings">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button></div>`);
+  if (!S.settings.profSeen && !loadError) out.push(snote('open', 'Stell einmal ein, wie deine Firma es regelt: Sammelpunkt, Auslöse, Unterkunft. Dann füllt die App neue Tage passend vor und rechnet genauer.',
+    '<button class="linkbtn" type="button" data-go="settings">Jetzt einrichten</button><button class="linkbtn" type="button" data-setup="later">Später</button>'));
   if (!isStandalone() && !S.installHintClosed) {
-    if (installEvt) out.push(`<div class="note"><span>Als App installieren, dann startet MontageBuch vom Startbildschirm und läuft auch ohne Netz.</span><button class="linkbtn" type="button" data-install="1">Installieren</button><button class="linkbtn" type="button" data-hint-close="1">Später</button></div>`);
-    else if (isIOS()) out.push(`<div class="note"><span>Zum Installieren unten auf das Teilen-Symbol tippen und „Zum Home-Bildschirm“ wählen. Erst dann bleiben die Daten auf dem iPhone sicher gespeichert.</span><button class="linkbtn" type="button" data-hint-close="1">Verstanden</button></div>`);
+    if (installEvt) out.push(snote('empty', 'Als App installieren, dann startet MontageBuch vom Startbildschirm und läuft auch ohne Netz.',
+      '<button class="linkbtn" type="button" data-install="1">Installieren</button><button class="linkbtn" type="button" data-hint-close="1">Später</button>'));
+    else if (isIOS()) out.push(snote('open', 'Zum Installieren unten auf das Teilen-Symbol tippen und „Zum Home-Bildschirm“ wählen. Erst dann bleiben die Daten auf dem iPhone sicher gespeichert.',
+      '<button class="linkbtn" type="button" data-hint-close="1">Verstanden</button>'));
   }
   return out;
 }
@@ -2079,7 +2138,7 @@ function jobHTML(j, t) {
       <span class="jt"><span class="d-only jh">Aktueller Einsatz</span><b>${esc(title)}</b><span class="jl">${lines.map(l => `<span>${esc(l)}</span>`).join('')}</span></span>
       ${ic('chevron-right', 'chev')}
       <span class="jd">${ic('calendar-month')}${range}</span></button>
-      <button class="btn primary d-only" type="button" data-new="${t}">Weiteren Arbeitstag erfassen</button></div>`;
+      <button class="btn d-only" type="button" data-new="${t}">Weiteren Arbeitstag erfassen</button></div>`;
 }
 // Werbungskosten nach Abzug der Erstattungen, aufgeteilt wie im Ring (Summe = Werbungskosten gesamt)
 function netParts(T) {
@@ -2445,16 +2504,17 @@ function renderStats() {
   if (T.vma || T.allowance || T.nr20 != null) {
     const diff = T.nr20 != null && Math.abs(T.nr20 - T.offVCalc) >= 1;
     lstb = `<div class="q" id="st-lstb">
-      <label>Nr. 20 deiner Lohnsteuerbescheinigung ${year} (€)<input id="st-nr20" inputmode="decimal" placeholder="noch nicht da" value="${T.nr20 != null ? inMoney(T.nr20) || '0' : ''}"></label>
-      <p class="hint">Dort steht, wie viel Verpflegungsgeld die Firma steuerfrei gezahlt hat. Die Bescheinigung kommt Anfang ${year + 1}. ${T.nr20 != null
-        ? `Gerechnet wird mit diesem Betrag. Aus deinen Einträgen ergäben sich ${eur(T.offVCalc)}.` : `Bis dahin schätzt die App den Betrag aus deinen Einträgen: ${eur(T.offVCalc)}.`}</p>
+      <label class="lt" for="st-nr20">${withTip(`Nr. 20 deiner Lohnsteuerbescheinigung ${year} (€)`, 't-nr20', 'Nr. 20')}</label>
+      <input id="st-nr20" inputmode="decimal" placeholder="noch nicht da" value="${T.nr20 != null ? inMoney(T.nr20) || '0' : ''}">
+      <p class="hint tip" id="t-nr20">Dort steht, wie viel Verpflegungsgeld die Firma steuerfrei gezahlt hat. Die Bescheinigung kommt Anfang ${year + 1}.</p>
+      <p class="hint">${T.nr20 != null ? `Gerechnet wird mit diesem Betrag. Aus deinen Einträgen ergäben sich ${eur(T.offVCalc)}.` : `Solange das Feld leer ist, schätzt die App den Betrag aus deinen Einträgen: ${eur(T.offVCalc)}.`}</p>
       ${diff ? `<p class="warn">Die Lohnsteuerbescheinigung weicht um ${eur(Math.abs(T.nr20 - T.offVCalc))} von deinen Einträgen ab. Prüfe, ob alle Montagetage und die Auslöse stimmen.${T.nr20 > T.vma ? ' Nr. 20 ist sogar höher als deine Verpflegungspauschalen.' : ''}</p>` : ''}
     </div>`;
   }
   const zSum = ZK.reduce((n, [k]) => n + T[k], 0);
-  const zCard = zSum ? `<div class="card"><h3>Zuschlagsstunden</h3>
-      <table class="ttable">${ZK.filter(([k]) => T[k]).map(([k, l, p]) => row(`${l} <span class="hint">bis ${p}</span>`, nf(T[k] / 60, 2) + ' h')).join('')}</table>
-      <p class="hint">So viele Stunden darf die Firma mit diesen Zuschlägen steuerfrei bezahlen (§ 3b EStG, Grundlohn bis 50 € je Stunde). Vergleiche mit deiner Lohnabrechnung. Feiertage nach dem Bundesland in den Einstellungen, Pause anteilig abgezogen, Ausfallschichten zählen nicht.</p>
+  const zCard = zSum ? `<div class="card"><h3>${withTip('Zuschlagsstunden', 't-zuschlag')}</h3>
+      <table class="ttable">${ZK.filter(([k]) => T[k]).map(([k, l, p]) => row(`${l} <span class="unit">bis ${p}</span>`, nf(T[k] / 60, 2) + ' h')).join('')}</table>
+      <p class="hint tip" id="t-zuschlag">So viele Stunden darf die Firma mit diesen Zuschlägen steuerfrei bezahlen (§ 3b EStG, Grundlohn bis 50 € je Stunde). Vergleiche mit deiner Lohnabrechnung. Feiertage nach dem Bundesland in den Einstellungen, Pause anteilig abgezogen, Ausfallschichten zählen nicht.</p>
     </div>` : '';
   const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
   const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
@@ -2468,22 +2528,22 @@ function renderStats() {
     : `<div class="anl-row"><span class="z">${r.z ? 'Zeile ' + esc(r.z) : ''}</span><span>${esc(r.l)}${r.note ? `<small>${esc(r.note)}</small>` : ''}</span><span class="v">${r.x != null ? (r.xz === Z.i ? nf(r.x, 0) : eur(r.x)) : esc(r.v)}</span></div>`).join('');
 
   el.innerHTML = `<div data-panel="over" class="stack">
-    <div class="card bigsum"><span class="eyebrow">Voraussichtliche Werbungskosten ${year}</span><b class="amount">${eur(T.total)}</b>
+    <div class="card bigsum"><h3>${withTip('Voraussichtliche Werbungskosten ' + year, 't-sum', 'Werbungskosten')}</h3>
+      <p class="hint tip" id="t-sum">Die App rechnet die Beträge aus deinen Einträgen nach den gesetzlichen Pauschalen ${year}. Erstattungen der Firma sind schon abgezogen. Das ersetzt keine Steuerberatung.</p>
+      <b class="amount">${eur(T.total)}</b>
       <table class="sumtable">${parts.map(([k, l, v]) => `<tr><td><span class="sw" style="background:var(--c-${k})"></span>${l}</td><td class="n">${eur(v)}</td></tr>`).join('')}</table>
-      <p class="info">${ic('info')}<span>Die App rechnet die Beträge aus deinen Einträgen nach den gesetzlichen Pauschalen ${year}. Erstattungen der Firma sind schon abgezogen. Das ersetzt keine Steuerberatung.</span></p>
     </div>
     ${frist}
-    <div class="card"><h3>Für die Steuererklärung ${year}</h3>
-      <p class="hint">Werbungskosten für die Anlage N, geschätzt nach den gesetzlichen Pauschalen ${year}.</p>
+    <div class="card"><h3>${withTip('Für die Steuererklärung ' + year, 't-tax', 'Steuererklärung')}</h3>
+      <p class="hint tip" id="t-tax">Werbungskosten für die Anlage N, geschätzt nach den gesetzlichen Pauschalen ${year}. Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
       ${lawKnown(year) ? '' : `<p class="warn">Für ${year} sind noch keine gesetzlichen Werte hinterlegt. Gerechnet wird mit den Werten von ${lawYear(year)}, bis ein Update kommt.</p>`}
       <table class="ttable">${tax}</table>
       <p class="hint">${pb}</p>
       ${lstb}
       ${T.allowance ? `<p class="hint">Auslöse und Spesen erhalten: ${eur(T.allowance)}. Davon mit Kosten verrechnet: ${eur(T.offV + T.offL)}. ${T.allowance - T.offV - T.offL > 0.004 ? `Der Rest (${eur(T.allowance - T.offV - T.offL)}) liegt über den steuerlichen Pauschalen und mindert hier nichts.` : ''}</p>` : ''}
-      <p class="hint">Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
       ${T.kmOther ? `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>` : ''}
     </div>
-    <div class="card"><h3>Jahresbericht</h3><p class="hint">Alle Zahlen mit Ausfüllhilfe für die Anlage N als PDF.</p><button class="btn block" type="button" data-report="1">${ic('description')}Jahresbericht ansehen</button></div>
+    <div class="card"><h3>${withTip('Jahresbericht', 't-report')}</h3><p class="hint tip" id="t-report">Alle Zahlen mit Ausfüllhilfe für die Anlage N als PDF.</p><button class="btn block" type="button" data-report="1">${ic('description')}Jahresbericht ansehen</button></div>
     <details class="card"><summary>So rechnet MontageBuch</summary>
       <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(L.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(L.rateSmall)} und für jeden Tag dazwischen, an dem du 24 Stunden weg bist, ${eurS(L.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(L.rateFull * 0.2)} (Frühstück) bzw. ${eur(L.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
       <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie sind für deine eigene Übersicht und zum Vergleich mit der Lohnabrechnung.</p>
@@ -2523,7 +2583,7 @@ function renderStats() {
     ${places ? `<div class="card"><h3>Einsatzorte</h3><div class="places">${places}</div></div>` : ''}
   </div>`;
   if (wasOpen) el.querySelector('details').open = true;
-  showStatsTab();
+  showStatsTab(); syncTips();
 }
 
 $('#v-stats').addEventListener('change', ev => {
@@ -2538,7 +2598,7 @@ $('#v-stats').addEventListener('change', ev => {
 const xlsxName = () => 'MontageBuch_' + year + '.xlsx';
 function renderMore() {
   const n = yearList(year).length, x = expList(year).length;
-  $('#x-info').textContent = `${n} ${n === 1 ? 'Arbeitstag' : 'Arbeitstage'} und ${x} ${x === 1 ? 'Ausgabe' : 'Ausgaben'} aus ${year}, mit Monatsübersicht, Einsatzorten und Steuer-Zusammenfassung in einer Datei.`;
+  $('#x-info').textContent = `${n} ${n === 1 ? 'Arbeitstag' : 'Arbeitstage'} und ${x} ${x === 1 ? 'Ausgabe' : 'Ausgaben'} aus ${year}.`;
   $('#x-name').value = xlsxName();
   $('#x-xlsx-share').hidden = !canShareFiles;
   $('#x-backup-share').hidden = !canShareFiles;
@@ -2595,6 +2655,7 @@ function syncProf() {
   // Auslöse bei alten Tagen nachtragen
   const n = PV.ausOn === '1' ? allowFillList().length : 0, fb = $('#p-aus-fill');
   fb.hidden = !n; fb.textContent = `Bei ${n} ${n === 1 ? 'bisherigen Tag' : 'bisherigen Tagen'} ohne Auslöse nachtragen`;
+  syncTips();
 }
 function allowFillList() {
   const taken = new Set();
@@ -2617,7 +2678,8 @@ $('#p-aus-fill').addEventListener('click', () => {
 function renderLaw() {
   const y = year, L = law(y), row = (l, v) => `<tr><td>${l}</td><td class="n">${v}</td></tr>`;
   $('#law-card summary').textContent = 'Gesetzliche Werte ' + y;
-  $('#law-table').innerHTML = (lawKnown(y) ? '' : `<tr><td colspan="2" class="warn">Für ${y} sind noch keine Werte hinterlegt. Gerechnet wird mit ${lawYear(y)}.</td></tr>`) +
+  const lw = $('#law-warn'); lw.hidden = lawKnown(y); lw.textContent = lawKnown(y) ? '' : `Für ${y} sind noch keine Werte hinterlegt. Gerechnet wird mit ${lawYear(y)}.`;
+  $('#law-table').innerHTML =
     row('Verpflegung über 8 Std., An- und Abreisetag', eurS(L.rateSmall)) + row('Verpflegung 24 Std. auswärts', eurS(L.rateFull)) +
     row('Kürzung Frühstück / Mittag- oder Abendessen', eur(L.rateFull * 0.2) + ' / ' + eur(L.rateFull * 0.4)) +
     row('Dienstfahrt eigenes Auto je gefahrenem km', nf2(L.kmRate) + ' €') + row('Entfernungspauschale je km einfach', commuteDesc(y)) +
@@ -2634,6 +2696,7 @@ function fillSettings() {
   $('#p-fixed-name').value = s.fixedName; $('#p-fixed-km').value = s.fixedKm ? nf(s.fixedKm, 1).replace(/\./g, '') : '';
   $('#p-kmgeld').value = s.kmGeld ? nf2(s.kmGeld) : '';
   PV = {veh: s.veh, fixed: s.fixed, ausOn: s.ausOn ? '1' : '0', lodgingBy: s.lodgingBy, kmOn: s.kmOn ? '1' : '0', travelPaid: s.travelPaid ? '1' : '0'};
+  resetTips($('#v-settings'));
   syncProf();
 }
 function saveSettings(quiet) {
@@ -2761,7 +2824,7 @@ document.addEventListener('click', ev => {
     else { welcomeSkip = true; show('list'); }
     return;
   }
-  if (d.news) { S.seenVersion = APP_VERSION; persist(); renderBell(); if (!$('#bell-list .news, #bell-list .note')) closeBell(); return; }
+  if (d.news) { S.seenVersion = APP_VERSION; persist(); renderBell(); if (!$('#bell-list .snote')) closeBell(); return; }
   if (d.setup) { S.settings.profSeen = true; persist(); renderBell(); return; }
   if (d.hintClose) { S.installHintClosed = true; persist(); renderBell(); return; }
   if (d.install) { leave(doInstall); return; }
@@ -2975,24 +3038,31 @@ $('#f-steps').addEventListener('click', ev => { const b = ev.target.closest('[da
 $('#f-stepnext').addEventListener('click', () => { if (!F) return; const n = stepsVisible().find(x => x > F.step); if (n) setStep(n, true); });
 $('#f-stepback').addEventListener('click', () => { if (!F) return; const p = stepsVisible().filter(x => x < F.step).pop(); if (p) setStep(p, true); else tryLeave(); });
 $('#f-quick').addEventListener('click', () => { if (!F) return; if (F.kind === 'exp') saveExp(); else saveDay(); });
+/* Seltene Auswahl steht hinter „Mehr“ (rare). Die gewählte bleibt immer sichtbar, „Mehr“ zeigt den Rest.
+   Auswärts richtet sich nach dem Vortag: ohne Übernachtung davor sind „24 Std. auswärts“ und „Abreise“ selten,
+   nach einer Anreise „Tagestour“ und „Anreise“. Beim Fahrzeug bleibt das aus „Deine Arbeit“ immer vorne. */
+const nightBefore = () => {
+  const p = validDate(F.e.date) ? addDays(F.e.date, -1) : '';
+  return !!p && Object.values(S.entries).some(x => x.id !== F.id && x.date === p && isAway(x) && (x.away === 'an' || x.away === 'voll'));
+};
 const SEGS = {
-  'g-type': {items: TYPES, get: () => F.e.type, set: v => {
+  'g-type': {items: TYPES, rare: () => ['schulung', 'frei', 'urlaub', 'krank'], get: () => F.e.type, set: v => {
     const pa = F.e.away, pt = F.e.type;
     F.e.type = v;
     if (v === 'anreise') F.e.away = 'an';
     if (v === 'abreise') F.e.away = 'ab';
     syncAllowance(pa, pt);
   }},
-  'g-shift': {items: SHIFT_BTNS, get: () => F.e.shift, set: v => {
+  'g-shift': {items: SHIFT_BTNS, rare: () => ['ausfall'], get: () => F.e.shift, set: v => {
     const isDef = Object.values(S.settings.shifts).some(s => s[0] === F.e.start && s[1] === F.e.end);
     F.e.shift = F.e.shift === v ? '' : v;
     const d = S.settings.shifts[F.e.shift];
     if (d && (!F.e.start || !F.e.end || isDef)) { F.e.start = d[0]; F.e.end = d[1]; $('#f-start').value = d[0]; $('#f-end').value = d[1]; }
   }},
   'g-pause': {items: PAUSES.map(p => [String(p), p + ' min']), get: () => String(F.e.pause), set: v => { F.e.pause = +v; $('#f-pause').value = v; }},
-  'g-away': {items: AWAY, get: () => F.e.away, set: v => { const pa = F.e.away; F.e.away = v; syncAllowance(pa, F.e.type); }},
+  'g-away': {items: AWAY, rare: () => nightBefore() ? ['tag', 'an'] : ['voll', 'ab'], get: () => F.e.away, set: v => { const pa = F.e.away; F.e.away = v; syncAllowance(pa, F.e.type); }},
   'g-meals': {items: MEALS, multi: true, get: v => F.e.meals && F.e.meals[v], set: v => { F.e.meals[v] = !F.e.meals[v]; }},
-  'g-vehicle': {items: VEH, get: () => F.e.vehicle, set: v => {
+  'g-vehicle': {items: VEH, rare: () => ['', 'mit', 'oepnv'].filter(v => v !== S.settings.veh), get: () => F.e.vehicle, set: v => {
     F.e.vehicle = v;
     // fester Sammelpunkt/Betrieb laut „Deine Arbeit“ gleich mit eintragen
     const p = S.settings;
@@ -3008,9 +3078,15 @@ const SEGS = {
 Object.entries(SEGS).forEach(([id, g]) => {
   const el = $('#' + id);
   el.setAttribute('role', 'group');
-  el.innerHTML = g.items.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="false">${l}</button>`).join('');
+  el.innerHTML = g.items.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="false">${l}</button>`).join('')
+    + (g.rare ? `<button type="button" class="seg-more" aria-expanded="false" aria-label="Mehr Auswahl">Mehr${ic('expand-more')}</button>` : '');
   el.addEventListener('click', ev => {
     const b = ev.target.closest('button'); if (!b || !F) return;
+    if (b.classList.contains('seg-more')) {
+      el.classList.add('open'); b.setAttribute('aria-expanded', 'true'); syncSegs();
+      const r = el.querySelector('.rare'); if (r) r.focus();
+      return;
+    }
     g.set(b.dataset.v); touch(); syncSegs();
     if (F.kind === 'exp') updateExp(); else updateForm();
   });
@@ -3019,12 +3095,18 @@ function syncSegs() {
   if (!F) return;
   Object.entries(SEGS).forEach(([id, g]) => {
     if ((id === 'g-cat') !== (F.kind === 'exp')) return;
-    document.querySelectorAll('#' + id + ' button').forEach(b => {
-      const on = g.multi ? !!g.get(b.dataset.v) : g.get() === b.dataset.v;
+    const el = $('#' + id), rare = g.rare ? g.rare() : [], cur = g.multi ? null : g.get();
+    el.querySelectorAll('button[data-v]').forEach(b => {
+      const on = g.multi ? !!g.get(b.dataset.v) : cur === b.dataset.v;
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.classList.toggle('rare', !on && rare.includes(b.dataset.v));
     });
+    const more = el.querySelector('.seg-more');
+    if (more) more.hidden = el.classList.contains('open') || !el.querySelector('.rare');
   });
 }
+// neues Formular: seltene Auswahl wieder einklappen
+const foldSegs = root => root.querySelectorAll('.seg.open').forEach(s => { s.classList.remove('open'); const m = s.querySelector('.seg-more'); if (m) m.setAttribute('aria-expanded', 'false'); });
 const FIELDS = {date:'f-date', start:'f-start', end:'f-end', place:'f-place', line:'f-line', project:'f-project', depart:'f-depart', ret:'f-ret',
   lodgingName:'f-lodgingName', otherNote:'f-otherNote', note:'f-note', meet:'f-meet'};
 const MONEY = {lodging:'f-lodging', allowance:'f-allowance', otherCost:'f-other'};
@@ -3044,6 +3126,7 @@ function fillForm() {
   $('#f-delete').hidden = F.isNew; disarm();
   // Eingeklappte Felder öffnen, wenn schon etwas drinsteht
   $('#d-place').open = !!(e.line || e.project); $('#d-note').open = !!e.note;
+  foldSegs($('#v-form')); resetTips($('#v-form'));
   syncSegs(); updateForm(); renderThumbs();
 }
 function readInputs() {
@@ -3088,7 +3171,7 @@ function updateForm() {
     ab: `Letzter Tag der Montage, heute zurück nach Hause. Pauschale fürs Finanzamt: ${eurS(L.rateSmall)}.${ausTxt(st.ausHalf)}`}[a];
   // 24 Std. auswärts und Abreise setzen voraus, dass man die Nacht davor schon auswärts war
   const prevD = validDate(e.date) ? addDays(e.date, -1) : '';
-  const prevAway = !!prevD && Object.values(S.entries).some(x => x.id !== F.id && x.date === prevD && isAway(x) && (x.away === 'an' || x.away === 'voll'));
+  const prevAway = nightBefore();
   const montageMulti = F.isNew && $('#b-multi').open && $('#m-montage').checked;
   const hp = $('#h-prev'), needPrev = !off && !!prevD && (a === 'voll' || a === 'ab') && !prevAway && !montageMulti;
   hp.hidden = !needPrev;
@@ -3135,18 +3218,19 @@ function updateForm() {
   }
   $('#c-away').innerHTML = ca;
 
-  let cd = '';
+  // Rechnung zur Fahrt; reine Erklärungen stehen hinter dem ⓘ bei „Fahrt“ (h-drive)
+  let cd = '', hd = '';
   if (!off && sv && e.trip === 'sammel' && e.km) {
     cd = `<span>${nf(e.km, 1)} km ${L.farFrom <= 1 || e.km < L.farFrom ? '× ' + nf2(L.commuteRate) + ' €' : '(' + commuteDesc(e.date.slice(0, 4)) + ')'} = <b>${eur(commuteCost(e))}</b></span><span class="hint">Entfernungspauschale, einmal pro Tag${e.vehicle !== 'pkw' ? `, ohne eigenes Auto höchstens ${eurS(L.cap)} im Jahr` : ''}</span>`;
-    if (e.vehicle === 'oepnv') cd += '<span class="hint">Ist dein Ticket im Jahr teurer als die Pauschale, zählen stattdessen die Ticketkosten.</span>';
+    if (e.vehicle === 'oepnv') hd = 'Ist dein Ticket im Jahr teurer als die Pauschale, zählen stattdessen die Ticketkosten.';
   } else if (!off && e.vehicle === 'pkw' && e.km) {
     if (isAway(e)) {
       cd = `<span>${nf(e.km, 1)} km × ${nf2(L.kmRate)} € = <b>${eur(kmCost(e))}</b></span>`;
       if (kmRefund(e)) cd += `<span class="hint">minus ${eur(kmRefund(e))} Kilometergeld der Firma</span>`;
-    } else cd = '<span class="hint">Zählt als Dienstfahrt nur an Tagen mit Auswärts-Angabe. Sonst erscheint die Strecke in der Auswertung separat.</span>';
+    } else cd = '<span class="warn">Zählt als Dienstfahrt nur an Tagen mit Auswärts-Angabe. Sonst erscheint die Strecke in der Auswertung separat.</span>';
   } else if (!off && e.vehicle === 'oepnv') cd = '<span class="hint">Ticketkosten bei „Sonstige Ausgaben“ eintragen.</span>';
-  else if (!off && e.vehicle === 'firma') cd = '<span class="hint">Mit Firmenwagen oder Firmenbus hast du keine Fahrtkosten. Bringt dich die Firma zum Sammelpunkt (Sammelbeförderung), gibt es dafür auch keine Entfernungspauschale.</span>';
-  $('#c-drive').innerHTML = cd;
+  else if (!off && e.vehicle === 'firma') hd = 'Mit Firmenwagen oder Firmenbus hast du keine Fahrtkosten. Bringt dich die Firma zum Sammelpunkt (Sammelbeförderung), gibt es dafür auch keine Entfernungspauschale.';
+  $('#c-drive').innerHTML = cd; $('#h-drive').textContent = hd;
 
   const dup = validDate(e.date) ? Object.values(S.entries).filter(x => x.date === e.date && x.id !== F.id) : [];
   const dEl = $('#f-dup');
@@ -3154,7 +3238,7 @@ function updateForm() {
   if (dup.length) dEl.innerHTML = `Für ${dShort(e.date)} gibt es schon einen Eintrag. Zwei Einsätze am selben Tag sind möglich. <button class="linkbtn" type="button" data-open="${esc(dup[0].id)}">Den anderen öffnen</button>`;
   if (!F.isNew && validDate(e.date)) $('#f-title').textContent = dShort(e.date);
   updateMultiInfo();
-  syncStepUI();
+  syncStepUI(); syncTips();
 }
 function multiDates() {
   const from = F.e.date, until = $('#m-until').value;
@@ -3274,10 +3358,11 @@ function fillExp() {
   $('#p-date').value = F.e.date; $('#p-amount').value = inMoney(F.e.amount); $('#p-text').value = F.e.text; $('#p-note').value = F.e.note;
   $('#p-title').textContent = F.isNew ? 'Neue Ausgabe' : 'Ausgabe';
   $('#p-leave').hidden = true; $('#f-delete').hidden = F.isNew; disarm();
+  resetTips($('#v-exp'));
   syncSegs(); updateExp(); renderThumbs(); syncStepUI();
 }
 function readExp() { F.e.date = $('#p-date').value; F.e.amount = Math.max(0, num($('#p-amount').value)); F.e.text = $('#p-text').value.trim(); F.e.note = $('#p-note').value.trim(); }
-function updateExp() { readExp(); $('#h-cat').textContent = CAT_HINT[F.e.cat] || ''; }
+function updateExp() { readExp(); $('#h-cat').textContent = CAT_HINT[F.e.cat] || ''; syncTips(); }
 ['p-date','p-amount','p-text','p-note'].forEach(id => $('#' + id).addEventListener('input', () => { if (F && F.kind === 'exp') { touch(); updateExp(); } }));
 function saveExp() {
   if (!F || F.kind !== 'exp') return;
@@ -3760,6 +3845,7 @@ loadLocal();
 applyTheme();
 renderYears(); fillDatalists(); renderList();
 show(shouldWelcome() ? 'welcome' : 'list');
+syncTips();
 booted = true;
 registerSW();
 photoGC();

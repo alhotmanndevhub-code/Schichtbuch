@@ -1,5 +1,5 @@
 /* MontageBuch – Offline-Speicher. Bei jeder neuen Version VERSION hochzählen. */
-const VERSION = '2.1.0';
+const VERSION = '2.2.0';
 // Der Name „schichtbuch-“ bleibt, damit alte Speicherstände beim Update sauber gelöscht werden
 const CACHE = 'schichtbuch-' + VERSION;
 // Fotos (*.webp) kommen beim ersten Anzeigen in den Speicher, nicht schon bei der Installation

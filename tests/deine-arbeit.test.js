@@ -60,7 +60,7 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   await save();
   // Firmenbus: keine Pauschale
   openNew('2026-10-06'); $('#g-shift [data-v="frueh"]').click(); $('#g-vehicle [data-v="firma"]').click();
-  check('Firmenbus: Hinweis Sammelbeförderung', T($('#c-drive').textContent).includes('Sammelbeförderung') && $('#w-trip').hidden);
+  check('Firmenbus: Hinweis Sammelbeförderung (hinter ⓘ bei „Fahrt“)', T($('#h-drive').textContent).includes('Sammelbeförderung') && $('#h-drive').classList.contains('tip') && !$('#b-drive .ib').hidden && $('#w-trip').hidden);
   await save();
   check('Firmenbus gespeichert ohne Sammelpunkt-km', byDate('2026-10-06')[0].trip === 'dienst' && byDate('2026-10-06')[0].km === 0 && byDate('2026-10-06')[0].meet === 'Bf Soest', JSON.stringify(byDate('2026-10-06')[0].trip));
   // Anreise: Fahrzeit-Feld aus (nicht angerechnet), Unterkunftskosten-Feld aus (zahlt die Firma)

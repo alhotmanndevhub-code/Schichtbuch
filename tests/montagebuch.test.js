@@ -132,7 +132,7 @@ const seed = (entries, settings, extra) => {
   await start();
   check('Glocke zählt Neuigkeiten und Einrichten', $('[data-bell] .badge').textContent === '2' && !$('[data-bell] .badge').hidden);
   $('[data-bell]').click();
-  check('Glocke offen, Neuigkeiten 2.1.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.1.0');
+  check('Glocke offen, Neuigkeiten 2.2.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.2.0');
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Neuigkeit weg, Glocke bleibt offen für den Rest', !$('#bell-list .news') && !$('#bell').hidden && $('[data-bell] .badge').textContent === '1');
   $('#bell [data-bell-close].iconbtn').click(); await wait(20);
