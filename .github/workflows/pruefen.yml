@@ -57,7 +57,7 @@ jobs:
         if: steps.mode.outputs.build_type == 'workflow'
         run: |
           mkdir _site
-          cp index.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png LICENSE LICENSE-*.txt LIESMICH.txt _site/
+          cp index.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png *.svg *.webp LICENSE LICENSE-*.txt LIESMICH.txt _site/
       - uses: actions/upload-pages-artifact@v3
         if: steps.mode.outputs.build_type == 'workflow'
         with:

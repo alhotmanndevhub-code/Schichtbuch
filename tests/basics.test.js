@@ -25,7 +25,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
 
 (async () => {
   let dom = boot(), w = dom.window, d = w.document; await wait(50);
-  check('Start leer', T(d.querySelector('.empty h2').textContent) === 'Noch keine Einträge für 2026' && d.querySelector('#sync').textContent === 'Gespeichert');
+  check('Start leer: Willkommen, darunter leere Startseite', !d.querySelector('#v-welcome').hidden && T(d.querySelector('#v-list .empty h2').textContent) === 'Noch keine Einträge' && d.querySelector('#sync').textContent === 'Gespeichert');
   d.querySelector('#nav-add').click();
   check('Formular legt Verlaufseintrag an (Zurück-Taste)', JSON.stringify(w.history.state) === '{"f":1}');
   d.querySelector('#f-clear').click();
@@ -55,7 +55,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   check('Version angezeigt', /^Version \d+\.\d+\.\d+/.test(d.querySelector('#about-ver').textContent), d.querySelector('#about-ver').textContent);
   d.querySelector('#x-xlsx').click(); await wait(1500);
   const x = saved.find(s => s.name.endsWith('.xlsx'));
-  check('Excel-Datei erzeugt', x && x.name === 'Schichtbuch_2026.xlsx');
+  check('Excel-Datei erzeugt', x && x.name === 'MontageBuch_2026.xlsx');
   const wb = new ExcelJS.Workbook(); await wb.xlsx.load(await read(w, x.blob));
   check('Excel-Blätter', wb.worksheets.map(s => s.name).join(',') === 'Übersicht,Einträge,Ausgaben,Monate,Einsatzorte,Anlage N');
   const ws = wb.getWorksheet('Einträge'), hd = ws.getRow(1).values.slice(1), r = ws.getRow(2), c = n => r.getCell(hd.indexOf(n) + 1).value;
@@ -64,7 +64,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   // Sicherung
   d.querySelector('#x-backup').click(); await wait(50);
   const b = saved.find(s => s.name.endsWith('.json')); const bj = JSON.parse((await read(w, b.blob)).toString());
-  check('Sicherung', b.name === 'Schichtbuch_Sicherung_2026-10-13.json' && bj.entries.length === 1 && bj.expenses.length === 1 && !!JSON.parse(store[KEY]).lastBackup, b.name);
+  check('Sicherung', b.name === 'MontageBuch_Sicherung_2026-10-13.json' && bj.entries.length === 1 && bj.expenses.length === 1 && !!JSON.parse(store[KEY]).lastBackup, b.name);
   // Import einer Sicherung im alten Format (12 Einträge)
   const old = {app: 'sakra-schichtbuch', version: 2, settings: {name: 'Test', state: 'NW'}, entries: [], expenses: [{id: 'x1', date: '2026-03-14', amount: 240, cat: 'gew', text: 'Beitrag'}]};
   for (let i = 0; i < 12; i++) old.entries.push({id: 'old' + i, date: '2026-09-' + String(i + 1).padStart(2, '0'), year: 2026, type: 'arbeit', shift: 'frueh', start: '05:00', end: '13:30', pause: 30, away: 'tag', depart: '04:00', ret: '15:00', meals: {}});

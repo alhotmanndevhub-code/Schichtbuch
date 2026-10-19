@@ -1,8 +1,8 @@
-# SAKRA Schichtbuch – Hinweise für Claude
+# MontageBuch (früher SAKRA Schichtbuch) – Hinweise für Claude
 
 ## Was das ist
 
-Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisbau, die oft auf Montage sind. Man erfasst Arbeitstage, Schichten, An- und Abreise mit Fahrzeit, Montage, Fahrten, Auslöse und Ausgaben. Die App rechnet die Werbungskosten für die Anlage N aus, exportiert eine Excel-Datei und einen Jahresbericht zum Drucken oder als PDF (mit Ausfüllhilfe für die Anlage N).
+MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisbau, die oft auf Montage sind. Man erfasst Arbeitstage, Schichten, An- und Abreise mit Fahrzeit, Montage, Fahrten, Auslöse und Ausgaben. Die App rechnet die Werbungskosten für die Anlage N aus, exportiert eine Excel-Datei und einen Jahresbericht zum Drucken oder als PDF (mit Ausfüllhilfe für die Anlage N).
 
 - Live: https://alhotmanndevhub-code.github.io/Schichtbuch/
 - Repository: `alhotmanndevhub-code/schichtbuch`, Branch `main`
@@ -13,10 +13,17 @@ Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisb
 - Die ganze App steht in `index.html` (HTML, CSS und JavaScript in einer Funktion). Kein Build-Schritt, kein Framework.
 - `sw.js` ist der Service Worker: offline nutzbar, Hinweis „Neue Version verfügbar“ bei Updates.
 - Keine fremden Server oder CDNs (Datenschutz). Schriften (`barlow-*.woff2`) und `exceljs.min.js` liegen im Repository.
-- Daten liegen nur im `localStorage` des Geräts:
+- Daten liegen nur im `localStorage` des Geräts. Die Schlüssel heißen weiter „schichtbuch“, damit nichts verloren geht:
   - `sakra-schichtbuch-v1`: alle Einträge, Ausgaben, Einstellungen
   - `sakra-schichtbuch-v1-rev`: Speichernummer. `persist()` führt Änderungen aus zwei offenen Fenstern Eintrag für Eintrag zusammen, statt zu überschreiben.
   - `sakra-schichtbuch-v1-defekt`: Kopie unlesbarer Daten, bevor etwas überschrieben wird
+  - `sakra-schichtbuch-v1-theme`: Hell, Dunkel oder „Wie am Handy“ (`light`, `dark`, `auto`), gilt nur für dieses Gerät, nicht in der Sicherung. Ein kleines Skript im `<head>` setzt `data-theme` schon vor dem ersten Bild.
+- Design „Rail Command“ (seit 2.0.0): Farben, Abstände und Radien stehen als CSS-Variablen oben im `<style>`, Dunkel in `:root`, Hell in `:root[data-theme="light"]`. Komponenten nutzen nur die Rollen (`--bg`, `--surface`, `--ink`, `--accent` …), keine festen Farbwerte. Rot (`#D32F2F`) ist für Aktionen, Amber für Status. Schrift Barlow (Schriftzug Barlow 700 mit `-webkit-text-stroke`).
+- Logo: zwei SVG-Symbole im Dokument, `#logo-d` (dunkler Grund) und `#logo-l` (heller Grund), nachgezeichnet nach `MontageBuch_Design_Pack/reference/reference_original.png`. App-Symbole (`icon-*.png`, `apple-touch-icon.png`, `favicon.svg`) sind daraus erzeugt. Das Design-Pack liegt nur lokal (in `.gitignore`).
+- Symbole: Material Symbols Rounded (Gewicht 500) als SVG-Sammlung im Dokument (`#i-…`), Aufruf mit `ic('name')`. Lizenz in `LICENSE-MaterialSymbols-Apache.txt`. Neue Symbole von `fonts.gstatic.com/s/i/short-term/release/materialsymbolsrounded/<name>/wght500/24px.svg` holen und als `<symbol>` ergänzen.
+- Fotos `bg-start-handy.webp`, `bg-start-gross.webp` (Willkommen) und `einsatz.webp` (Startseite am PC). Sie kommen erst beim ersten Anzeigen in den Offline-Speicher. Neue Dateitypen müssen in `.github/workflows/pruefen.yml` in die `cp`-Zeile, sonst fehlen sie online.
+- Ansichten (`show(v)`): `list` ist die Startseite, `cal` Kalender, `day` Tagesdetail, `all` alle Einträge, `stats` Auswertung mit Reitern (Übersicht, Anlage N, Stunden), `more` Export und Sicherung, `settings`, `form` (Erfassen in drei Schritten, `setStep()`), `exp`, `report`, `welcome` (nur ohne Daten und ohne Einrichtung). Unterseiten (`day`, `all`, `settings`) öffnet `go()` mit Eintrag im Verlauf, damit die Zurück-Taste des Handys passt. Klicks laufen über einen gemeinsamen Verteiler für `data-…`-Knöpfe. Ab 840 px Breite Seitenleiste statt unterer Leiste.
+- Wichtige Hinweise (Sicherung fällig, Daten unlesbar, Entwurf) stehen auf der Startseite. „Was ist neu“, „Einrichten“ und „Installieren“ stehen unter der Glocke (`renderBell()`).
 - Belegfotos liegen in IndexedDB (`sakra-schichtbuch-v1-belege`, Store `files`, Bild als ArrayBuffer). Einträge und Ausgaben speichern nur die Kennungen in `photos`. Fotos werden auf 1600 px verkleinert. Neue Fotos eines verworfenen Formulars werden gelöscht, beim Start räumt `photoGC()` Fotos ohne Bezug auf, die älter als einen Tag sind. Ohne IndexedDB ist das Feld ausgeblendet.
 - Sicherung und Wiederherstellung als JSON-Datei (Export > Sicherung), seit Version 4 mit den Belegfotos als Base64 in `files`.
 - `CHANGELOG` in `index.html` steuert den Hinweis „Was ist neu“. `S.seenVersion` merkt sich, was der Nutzer schon gesehen hat.
@@ -27,7 +34,7 @@ Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisb
 1. Vor jedem Commit `npm test` ausführen. Die Tests in `tests/` laufen mit jsdom und einer festen Uhrzeit (13.10.2026, siehe `tests/helpers.js`). Neue Funktionen bekommen eigene Tests.
 2. Bei jeder Änderung, die live geht, `APP_VERSION` in `index.html` und `VERSION` in `sw.js` gleich hochzählen (ein Test prüft das). Sonst bekommen installierte Apps das Update nicht. Für Änderungen, die Nutzer merken, einen Eintrag in `CHANGELOG` ergänzen.
 3. Nutzerdaten dürfen nie verloren gehen. Den Speicherschlüssel nicht ändern. Alte Formate weiter lesen (`normEntry`, `mergeSettings`, `legacySettings`), z. B. den alten Typ `reise` oder Einstellungen ohne `ausFull`.
-4. Handy zuerst: 360 px Breite ohne waagerechtes Scrollen, Hell- und Dunkelmodus prüfen (Screenshots mit Playwright).
+4. Handy zuerst: 360 px Breite ohne waagerechtes Scrollen, Hell- und Dunkelmodus prüfen, dazu Tablet (768 px) und PC (ab 840 px Seitenleiste). Geprüft wird im Browser-Fenster von Claude mit einem kleinen lokalen Server ohne Service Worker. Steuerlich falsche Inhalte aus dem Referenzbild (25-km-Grenze, Anlage-N-Zeilen 46–48, „rechtssicher“) nicht übernehmen.
 5. Texte auf Deutsch, in Du-Form und einfacher Sprache. Die Nutzer sind keine Steuerexperten.
 6. Nach dem Hochladen prüfen, ob die Live-Seite die neue Version ausliefert (`sw.js` abrufen).
 7. Der Inhaber möchte vor größeren Änderungen gefragt werden und danach kurz hören, was sich geändert hat.
@@ -63,9 +70,10 @@ Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisb
 - Diese Werte füllen neue Einträge vor. Gespeicherte Tage ändern sie nicht.
 - Neue Nutzer starten ohne Auslöse. Daten aus den Versionen 1.0 bis 1.2 ohne `ausFull` bekommen 42 € / 21 € (Werte der Firma des Testers).
 
-## Offene Punkte (Stand Version 1.4.0)
+## Offene Punkte (Stand Version 2.0.0)
 
 - Stufe 1 ist mit Version 1.4.0 erledigt: „Was ist neu“, Jahresbericht mit Ausfüllhilfe, Belegfotos, Zuschlagsstunden, „24 Std. auswärts“ statt „Ganzer Tag“, Nr. 20.
+- Version 2.0.0: neuer Name MontageBuch, Design „Rail Command“ in Dunkel und Hell, Startseite, Kalender, Tagesdetail mit Kopie für den nächsten Tag, Erfassen in drei Schritten, Glocke, Seitenleiste am PC. Die Rechenlogik ist unverändert.
 - Stufe 2, vor dem Abo:
   - Konto und Cloud-Synchronisation (Server in der EU)
   - anderes Hosting, denn GitHub Pages erlaubt keinen kommerziellen Betrieb

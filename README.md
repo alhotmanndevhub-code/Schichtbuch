@@ -1,2 +1,2 @@
-# Schichtbuch
-App zum Erfassen der Schichten
+# MontageBuch
+App zum Erfassen von Schichten, Fahrten, Montage und Ausgaben (früher „Schichtbuch“)

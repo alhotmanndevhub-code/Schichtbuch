@@ -1,11 +1,13 @@
-/* Schichtbuch – Offline-Speicher. Bei jeder neuen Version VERSION hochzählen. */
-const VERSION = '1.4.0';
+/* MontageBuch – Offline-Speicher. Bei jeder neuen Version VERSION hochzählen. */
+const VERSION = '2.0.0';
+// Der Name „schichtbuch-“ bleibt, damit alte Speicherstände beim Update sauber gelöscht werden
 const CACHE = 'schichtbuch-' + VERSION;
+// Fotos (*.webp) kommen beim ersten Anzeigen in den Speicher, nicht schon bei der Installation
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './exceljs.min.js',
   './barlow-400.woff2', './barlow-500.woff2', './barlow-600.woff2', './barlow-700.woff2',
   './barlow-condensed-600.woff2', './barlow-condensed-700.woff2',
-  './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'
+  './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon.svg'
 ];
 
 self.addEventListener('install', event => {

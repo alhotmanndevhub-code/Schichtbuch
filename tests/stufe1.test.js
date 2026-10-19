@@ -54,7 +54,7 @@ const idbPut = rec => new Promise((res, rej) => {
   const start = async withIdb => { if (dom) dom.window.close(); dom = boot(withIdb); w = dom.window; d = w.document; $ = s => d.querySelector(s); await wait(60); };
   const openNew = date => { const b = d.createElement('button'); b.dataset.new = date; $('#v-list').appendChild(b); b.click(); b.remove(); };
   const openId = id => { const b = d.createElement('button'); b.dataset.id = id; $('#v-list').appendChild(b); b.click(); b.remove(); };
-  const view = () => ['list','stats','more','report','form','exp'].filter(k => !$('#v-' + k).hidden).join(',');
+  const view = () => ['list','cal','day','all','stats','more','report','form','exp'].filter(k => !$('#v-' + k).hidden).join(',');
   const pressed = g => [...d.querySelectorAll(g + ' [aria-pressed="true"]')].map(b => b.dataset.v).join(',');
 
   // ---------- A: Was ist neu ----------
@@ -68,9 +68,9 @@ const idbPut = rec => new Promise((res, rej) => {
   seed([E('a1', '2026-10-12', {shift: 'frueh', start: '05:00', end: '13:30', pause: 30})], {}, {top: {seenVersion: undefined}});
   await start();
   const news = $('.news');
-  check('Nach Update: Hinweis „Neu in Version 1.4.0“', news && T(news.querySelector('b').textContent) === 'Neu in Version 1.4.0' && T(news.textContent).includes('Belegfotos') && !T(news.textContent).includes('„Deine Arbeit“'), news && T(news.textContent).slice(0, 80));
+  check('Nach Update: Hinweis „Neu in Version 2.0.0“ mit 1.4.0', news && T(news.querySelector('b').textContent) === 'Neu in Version 2.0.0' && T(news.textContent).includes('MontageBuch') && T(news.textContent).includes('Belegfotos') && !T(news.textContent).includes('„Deine Arbeit“'), news && T(news.textContent).slice(0, 80));
   news.querySelector('[data-news]').click(); await wait(10);
-  check('Verstanden: weg und gemerkt', !$('.news') && data().seenVersion === '1.4.0', data().seenVersion);
+  check('Verstanden: weg und gemerkt', !$('.news') && data().seenVersion === '2.0.0', data().seenVersion);
   await start();
   check('Nach Neustart bleibt er weg', !$('.news'));
   // Wer von 1.2 kommt, sieht alles seitdem
@@ -207,7 +207,7 @@ const idbPut = rec => new Promise((res, rej) => {
   $('[data-view="stats"]').click(); $('[data-report]').click(); await wait(20);
   check('Bericht auch aus der Auswertung', !$('#v-report').hidden);
   $('#r-back').click(); await wait(60);
-  check('Zurück-Knopf', !$('#v-more').hidden && $('#v-report').hidden, view());
+  check('Zurück-Knopf: wieder Auswertung', !$('#v-stats').hidden && $('#v-report').hidden, view());
   // Bericht ohne Einträge
   seed([]); await start(); $('[data-view="more"]').click(); $('#x-report').click(); await wait(20);
   check('Leerer Bericht', T($('#r-paper').textContent).includes('noch keine Einträge'));

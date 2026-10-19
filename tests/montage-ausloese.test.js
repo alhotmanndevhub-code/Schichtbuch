@@ -95,8 +95,8 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   check('Montagewoche Auslöse', wk.map(e => e.away + ':' + e.allowance).join(' ') === 'an:21 voll:42 voll:42 voll:42 ab:21', wk.map(e => e.away + ':' + e.allowance).join(' '));
 
   // 5 Liste und Auswertung
-  $('[data-view="list"]').click(); await wait(10);
-  check('Liste zeigt Ausfallschicht', T($('#v-list').textContent).includes('Ausfallschicht'));
+  $('[data-view="all"]').click(); await wait(10);
+  check('Liste zeigt Ausfallschicht', !$('#v-all').hidden && T($('#v-all').textContent).includes('Ausfallschicht'));
   $('[data-view="stats"]').click(); await wait(10);
   const wide = $('.kpi.wide');
   check('Auswertung: Ausfall-Kachel', wide && T(wide.textContent) === '2Ausfallschichten, davon 4 Std. bezahlt (in den Stunden enthalten)', wide && T(wide.textContent));

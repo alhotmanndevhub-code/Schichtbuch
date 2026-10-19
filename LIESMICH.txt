@@ -1,15 +1,17 @@
-SAKRA Schichtbuch – eigenständige Web-App (Version 1.4.0)
-=========================================================
+MontageBuch – eigenständige Web-App (Version 2.0.0, früher „SAKRA Schichtbuch“)
+==============================================================================
 
 Was in diesem Ordner liegt
 --------------------------
-index.html              die App
+index.html              die App (Aussehen, Logo und Symbole stecken mit drin)
 sw.js                   sorgt dafür, dass die App offline läuft
 manifest.webmanifest    Name und Symbol für den Startbildschirm
 exceljs.min.js          Baustein für den Excel-Export
 barlow-*.woff2          Schriften (liegen bei, damit nichts von fremden Servern geladen wird)
-icon-*.png, apple-touch-icon.png   App-Symbole
-LICENSE-*.txt           Lizenzen der Schrift (SIL OFL) und des Excel-Bausteins (MIT)
+icon-*.png, apple-touch-icon.png, favicon.svg   App-Symbole
+bg-start-*.webp, einsatz.webp                   Fotos für den Willkommensbildschirm und die Startseite am PC
+LICENSE-*.txt           Lizenzen der Schrift (SIL OFL), des Excel-Bausteins (MIT)
+                        und der Symbole (Material Symbols, Apache 2.0)
 
 Alle Dateien müssen zusammen im selben Ordner liegen. Keine Unterordner anlegen.
 
@@ -33,42 +35,41 @@ seinem Handy.
 
 Auf dem Handy installieren
 --------------------------
-Android (Chrome): Link öffnen, dann den Hinweis "Installieren" in der App
-antippen oder im Menü (drei Punkte) "App installieren" wählen.
+Android (Chrome): Link öffnen, dann unter der Glocke auf der Startseite
+"Installieren" antippen oder im Menü (drei Punkte) "App installieren" wählen.
 
 iPhone (Safari): Link öffnen, unten auf das Teilen-Symbol tippen und
 "Zum Home-Bildschirm" wählen. Auf dem iPhone unbedingt so installieren,
 sonst kann Safari die Daten nach einiger Zeit ohne Nutzung löschen.
 
 Nach dem Installieren startet die App vom Startbildschirm und läuft auch
-ohne Netz.
+ohne Netz. Wer die App schon als „Schichtbuch“ installiert hat, bekommt
+Namen und Symbol mit dem Update von selbst. Die Daten bleiben erhalten.
 
 
 Wichtig zu den Daten
 --------------------
 Alle Einträge liegen nur auf dem jeweiligen Handy. Deshalb regelmäßig unter
-"Export" > "Sicherung speichern" eine Sicherung anlegen und in die Cloud
-legen oder per Mail verschicken. Die App erinnert jede Woche daran.
+"Mehr" > "Datensicherung" eine Sicherung anlegen und in die Cloud legen oder
+per Mail verschicken. Die App erinnert auf der Startseite jede Woche daran.
 Belegfotos kommen mit in die Sicherung (Häkchen "Belegfotos mitsichern").
-Auf einem neuen Handy: App öffnen, "Sicherung laden".
-
-Daten aus der Claude-Version übernehmen: dort unter "Export" eine Sicherung
-speichern, hier mit "Sicherung laden" einlesen.
+Auf einem neuen Handy: App öffnen, auf dem Willkommensbildschirm
+"Sicherung laden" wählen.
 
 
 Einstellungen
 -------------
-Oben rechts das Zahnrad: Unter "Deine Arbeit" einmal einstellen, wie die
-Firma es regelt (Fahrzeug, fester Sammelpunkt oder Betrieb laut Vertrag,
-Auslöse, Unterkunft, Kilometergeld, Fahrzeit). Die App füllt neue Tage
-damit vor und rechnet danach.
+Unter "Mehr" > "Einstellungen öffnen": Hell oder Dunkel, und unter
+"Deine Arbeit" einmal einstellen, wie die Firma es regelt (Fahrzeug, fester
+Sammelpunkt oder Betrieb laut Vertrag, Auslöse, Unterkunft, Kilometergeld,
+Fahrzeit). Die App füllt neue Tage damit vor und rechnet danach.
 
 
 Jahresbericht
 -------------
-Unter "Export" > "Jahresbericht ansehen": alle Zahlen des Jahres mit
-Ausfüllhilfe für die Anlage N (Zeile für Zeile). "Als PDF speichern oder
-drucken" öffnet das Druckmenü, dort "Als PDF speichern" wählen.
+Unter "Mehr" > "Jahresbericht ansehen" oder in der Auswertung: alle Zahlen
+des Jahres mit Ausfüllhilfe für die Anlage N (Zeile für Zeile). "Als PDF
+speichern oder drucken" öffnet das Druckmenü, dort "Als PDF speichern" wählen.
 
 
 Neue Version veröffentlichen
@@ -76,6 +77,6 @@ Neue Version veröffentlichen
 Vorher die Prüftests laufen lassen: npm install, dann npm test.
 Bei jedem Hochladen prüft GitHub die App automatisch noch einmal
 (Reiter "Actions"). Geänderte Dateien hochladen und in sw.js die Zeile
-const VERSION = '1.4.0';
-hochzählen (z. B. auf '1.4.1'), in index.html APP_VERSION genauso. Beim nächsten Start zeigt die App
+const VERSION = '2.0.0';
+hochzählen (z. B. auf '2.0.1'), in index.html APP_VERSION genauso. Beim nächsten Start zeigt die App
 "Neue Version verfügbar" an.

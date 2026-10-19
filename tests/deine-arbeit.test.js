@@ -38,8 +38,8 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   const openId = id => { const b = d.createElement('button'); b.dataset.id = id; $('#v-list').appendChild(b); b.click(); b.remove(); };
   const save = async () => { $('#f-save').click(); await wait(20); };
   const pressed = g => [...d.querySelectorAll(g + ' [aria-pressed="true"]')].map(b => b.dataset.v).join(',');
-  check('Neuer Nutzer: Hinweis zum Einrichten', T($('#v-list').textContent).includes('Stell einmal ein, wie deine Firma es regelt'));
-  $('#v-list [data-go="settings"]').click(); await wait(10);
+  check('Neuer Nutzer: Willkommen und Hinweis zum Einrichten unter der Glocke', !$('#v-welcome').hidden && T($('#bell-list').textContent).includes('Stell einmal ein, wie deine Firma es regelt') && $('[data-bell] .badge').textContent === '1');
+  $('#bell-list [data-go="settings"]').click(); await wait(10);
   check('Einrichten öffnet Einstellungen', !$('#v-settings').hidden && $('#nav-settings').getAttribute('aria-current') === 'page');
   check('Neuer Nutzer: Auslöse aus, Beträge leer', pressed('[data-pset="ausOn"]') === '0' && $('#p-aus-w').hidden && $('#s-aus-full').value === '', pressed('[data-pset="ausOn"]'));
   $('[data-pset="veh"] [data-v="mit"]').click();
@@ -51,7 +51,7 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   const st = data().settings;
   check('Einstellungen sofort gespeichert', st.veh === 'mit' && st.fixed === 'sammel' && st.fixedName === 'Bf Soest' && st.fixedKm === 24 && st.lodgingBy === 'firma' && st.travelPaid === false && st.profSeen === true, JSON.stringify({v: st.veh, f: st.fixed, n: st.fixedName, k: st.fixedKm, l: st.lodgingBy, t: st.travelPaid, p: st.profSeen}));
   $('[data-view="list"]').click(); await wait(10);
-  check('Hinweis zum Einrichten verschwindet', !T($('#v-list').textContent).includes('Stell einmal ein'));
+  check('Hinweis zum Einrichten verschwindet', !T($('#bell-list').textContent).includes('Stell einmal ein') && $('[data-bell] .badge').hidden);
   // Neuer Tag: vorausgefüllt als Mitfahrer zum Sammelpunkt
   openNew('2026-10-05');
   check('Neuer Tag: Mitfahrer + Sammelpunkt vorausgefüllt', pressed('#g-vehicle') === 'mit' && pressed('#g-trip') === 'sammel' && $('#f-meet').value === 'Bf Soest' && $('#f-km').value === '24', pressed('#g-vehicle') + '/' + pressed('#g-trip') + '/' + $('#f-meet').value + '/' + $('#f-km').value);
@@ -165,7 +165,7 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   check('Defekte Daten: Hinweis', T($('#v-list').textContent).includes('ließen sich nicht lesen') && T($('#v-list').textContent).includes('Eine Kopie davon ist aufgehoben'));
   check('Defekte Daten: Kopie aufgehoben', store[KEY + '-defekt'] === '{"entries": {kaputt');
   $('[data-broken="dl"]').click(); await wait(10);
-  check('Defekte Daten herunterladen', saved.some(s => s.name === 'Schichtbuch_defekte_Daten.txt'));
+  check('Defekte Daten herunterladen', saved.some(s => s.name === 'MontageBuch_defekte_Daten.txt'));
   openNew('2026-10-07'); $('#g-shift [data-v="frueh"]').click(); await save();
   check('Nach defekten Daten: neu speichern geht, Kopie bleibt', ents().length === 1 && store[KEY + '-defekt'] === '{"entries": {kaputt');
 

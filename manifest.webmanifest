@@ -1,7 +1,7 @@
 {
-  "name": "SAKRA Schichtbuch",
-  "short_name": "Schichtbuch",
-  "description": "Arbeitszeiten, Montage, Fahrten und Kosten erfassen und als Excel-Datei für die Steuererklärung exportieren.",
+  "name": "MontageBuch",
+  "short_name": "MontageBuch",
+  "description": "Schichten, Fahrten, Montage und Ausgaben erfassen und als Excel-Datei für die Steuererklärung exportieren.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -9,8 +9,8 @@
   "orientation": "portrait",
   "lang": "de",
   "dir": "ltr",
-  "background_color": "#E8EBED",
-  "theme_color": "#E8EBED",
+  "background_color": "#10181C",
+  "theme_color": "#10181C",
   "categories": ["productivity", "business", "finance"],
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
