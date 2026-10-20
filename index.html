@@ -5,7 +5,7 @@
 <!-- Sicherheitsregeln für den Browser (Content-Security-Policy): Skripte, Bilder, Schriften und Verbindungen nur von dieser Seite, keine fremden Server.
      Die sha256-Werte sind Prüfsummen der beiden Skripte in dieser Datei. Nach jeder Änderung an einem Skript „npm run csp“ ausführen (ein Test prüft das).
      'unsafe-inline' gilt nur für Stile: Die App setzt Farben und Breiten direkt am Element. CSS startet kein Skript, und Bilder dürfen nur von hier kommen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-PbZyyupX1uv4tVMSSZAk3cQXcBpbLZdDpQEs9isgrfg='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-ca01BErSZV1M9XiqF6OzaV+MuHzQyCjGLMGnQq9tFjQ='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MontageBuch</title>
 <meta name="description" content="Schichten, Fahrten, Montage und Ausgaben erfassen und als Excel-Datei für die Steuererklärung exportieren.">
@@ -275,33 +275,49 @@ button.row:hover{background:var(--surface-2)}
 .wk-miss{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:8px 0 2px;font-size:14px}
 .wk-miss .lamp{width:10px;height:10px}
 /* Jahresbetrag: grau bis zum Pauschbetrag, grün, was darüber hinaus zählt */
-.yr{display:grid;gap:4px;width:100%;margin-top:12px;padding:16px;border:0;border-radius:var(--r-l);background:var(--surface);color:var(--ink);text-align:left;font-size:15px}
-.yr-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.yr-h>span{font:700 17px/1.2 var(--f-body)}
-.yr-h small{display:inline-flex;align-items:center;color:var(--muted);font:600 14px var(--f-body)}
-.yr-h small .ic{width:20px;height:20px}
-.yr-n{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 10px;font:700 44px/1.05 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:.005em}
-.yr-d{font:600 16px var(--f-body);color:var(--good);opacity:0;transition:opacity .3s}
-.yr-d.on{opacity:1}
-.yr-d.neg{color:var(--muted)}
-.yr-bar{position:relative;height:10px;margin:10px 0 6px;border-radius:5px;background:var(--surface-3)}
-.yr-bar i{position:absolute;top:0;bottom:0;left:0;width:100%;border-radius:5px;transform-origin:0 50%}
-.yr-bar .a{background:var(--line-2)}
-.yr-bar .b{background:var(--good)}
-.yr-bar b{position:absolute;top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink)}
-.yr-t{color:var(--muted);font-size:14px}
-/* Aktueller Einsatz als ruhige Zeile (am PC als Karte mit Foto, siehe unten) */
-.job{background:var(--surface);color:var(--ink);border-radius:var(--r-l);overflow:hidden}
-.job-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;width:100%;text-align:left;border:0;background:none;color:inherit;padding:14px 16px;font-size:15px}
-.job .mast{width:40px;height:40px;color:var(--muted)}
-.job .jt{display:grid;gap:2px;min-width:0}
-.job .jt b{font-size:17px}
-.job .jl{color:var(--muted);font-size:14px;display:grid;gap:1px}
-.job .chev{color:var(--muted)}
-.job .jd{grid-column:1/-1;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
-.job .jd .ic{width:18px;height:18px}
-.recent .rows{margin-top:0}
-.recent .sect .linkbtn{color:var(--ink);font-weight:500;font-size:14px}
+/* Startseite „Dieser Monat“: Tage, Stunden, Auslöse */
+.mo{display:grid;gap:10px;width:100%;margin-top:12px;padding:16px;border:0;border-radius:var(--r-l);background:var(--surface);color:var(--ink);text-align:left;font-size:15px}
+.mo-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mo-h>span{font:700 17px/1.2 var(--f-body)}
+.mo-h small{display:inline-flex;align-items:center;color:var(--muted);font:600 14px var(--f-body)}
+.mo-h small .ic{width:20px;height:20px}
+.mo-n{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mo-n>span{display:grid;gap:2px;min-width:0}
+.mo-n b{font:700 27px/1.05 var(--f-display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mo-n small{font-size:13px;color:var(--muted)}
+.mo-d{margin-left:6px;font:600 13px var(--f-body);font-style:normal;color:var(--good);opacity:0;transition:opacity .3s}
+.mo-d.on{opacity:1}
+.mo-d.neg{color:var(--muted)}
+/* Auswertung „Arbeit“: ein Monat zum Vergleich mit der Lohnabrechnung */
+.wm{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;margin-top:2px}
+.wm h3{margin:0;text-align:center;font:700 20px/1.2 var(--f-body)}
+.wm-hint{text-align:center;margin:-6px 0 0}
+.wbig{display:flex;flex-wrap:wrap;gap:6px 30px;margin:2px 0 2px}
+.wbig b{display:block;font:700 30px/1.05 var(--f-display);font-variant-numeric:tabular-nums}
+.wbig span{font-size:13px;color:var(--muted)}
+.wl{display:grid}
+.wr{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:15px}
+.wr:first-child{border-top:0}
+.wr span{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.wr b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.wr.sum{border-top:2px solid var(--line-2);margin-top:2px}
+.wr.sum span,.wr.sum b{font-weight:700;font-size:16px}
+.wr .lamp{width:10px;height:10px}
+.chk{color:var(--amber-ink);font-weight:600}
+/* Auswertung „Steuer“: zuerst die Antwort, dann die Rechnung in einfachen Worten */
+.tq{gap:8px}
+.tq small{color:var(--muted);font-size:14px}
+.tq h3{font:700 24px/1.2 var(--f-body)}
+.tq p{margin:2px 0 0;font-size:15px;line-height:1.45}
+.tq-bar{position:relative;display:block;height:10px;margin:6px 0 0;border-radius:5px;background:var(--surface-3)}
+.tq-bar i{position:absolute;top:0;bottom:0;left:0;width:100%;border-radius:5px;transform-origin:0 50%}
+.tq-bar .a{background:var(--line-2)}
+.tq-bar .b{background:var(--good)}
+.tq-bar b{position:absolute;top:-5px;bottom:-5px;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink)}
+.tq-lb{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sumtable tr.sub td{color:var(--muted);font-size:14px;padding-block:7px}
+.sumtable tr.sub td:first-child{padding-left:14px}
+.sumtable tr.tot td{font-weight:700;font-size:17px;border-top:2px solid var(--line-2);border-bottom:0;padding-top:12px}
 @media (max-width:839px){.d-only{display:none!important}}
 
 /* Kalender */
@@ -563,7 +579,7 @@ body[data-screen="setup"] .app{padding-bottom:0}
 .beleg img{max-width:100%;max-height:70vh;display:block;border:1px solid var(--line)}
 .beleg p{font-size:12px;color:var(--muted)}
 
-@media (max-width:370px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.td-time{font-size:29px}.yr-n{font-size:40px}.td-head h2{font-size:21px}}
+@media (max-width:370px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.td-time{font-size:29px}.mo-n b{font-size:24px}.td-head h2{font-size:21px}}
 @media (min-width:600px){
   :root{--app-w:720px}
   .app{padding-inline:24px}
@@ -600,7 +616,8 @@ body[data-screen="setup"] .app{padding-bottom:0}
   .home>*{grid-column:1/-1;margin:0}
   .home>.hello{padding-top:22px}
   .home>.kc{grid-column:span 1}
-  .home>.today,.home>.wk,.home>.job,.home>.wkc{grid-column:span 2}
+  .home>.today,.home>.wk,.home>.job,.home>.mo{grid-column:span 2}
+  .home>.mo{align-content:space-between}
   .home>.wk{display:flex;flex-direction:column}
   .home>.wk .wk-days{margin-top:auto}
   .hello{grid-template-columns:minmax(0,1fr) auto}
@@ -620,16 +637,6 @@ body[data-screen="setup"] .app{padding-bottom:0}
   .home .job .jl,.home .job .jd{color:#D5DADD;border-top:0;padding-top:0;margin-top:4px}
   .home .job .btn{justify-self:start;border-color:rgba(255,255,255,.7);color:#fff}
   .home .job .btn:hover{background:rgba(255,255,255,.12)}
-  .wkc{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px}
-  .wkc h3{font-size:17px}
-  .wkc .amount{font:700 30px/1.1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums;margin-top:4px}
-  .donut{width:150px;height:150px}
-  .donut text{fill:var(--ink);font-family:var(--f-body)}
-  .lg{display:grid;gap:6px;font-size:14px;margin-top:10px}
-  .lg div{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center}
-  .lg i{width:10px;height:10px;border-radius:50%}
-  .lg span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
-  .wkc .linkbtn{grid-column:1/-1;justify-self:end;text-decoration:none}
   .recent{background:var(--surface);border-radius:var(--r-m);padding:6px 20px 14px}
   .recent .sect{margin:12px 0 6px}
   .dtab{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
@@ -646,7 +653,7 @@ body[data-screen="setup"] .app{padding-bottom:0}
 }
 /* Bewegung und Rückmeldung: Knöpfe geben beim Drücken nach, Ansichten gleiten herein, Meldungen und Blätter kommen von unten.
    Alles kurz (0,15 bis 0,35 s). Bei „Bewegung reduzieren“ am Handy bleibt es bei Farbwechseln ohne Bewegung. */
-.btn,.iconbtn,.ib,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.yr,.wd,.td-plan,.su-opt{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
+.btn,.iconbtn,.ib,.textbtn,.seg button,.cday,.stepper button,.daterow button,.row,.item,.subc,.job-main,.mo,.wd,.td-plan,.su-opt{transition:transform .14s var(--ease-out),background-color .15s,border-color .15s,color .15s}
 button.row:active,button.item:active,button.td-plan:active,.job-main:active{background:var(--surface-2)}
 .toast.out{opacity:0;transform:translateY(10px);transition:opacity .16s,transform .16s}
 @media (prefers-reduced-motion:no-preference){
@@ -654,7 +661,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
   .iconbtn:active,.cday:active,.ib:active{transform:scale(.9)}
   .tabs button .ic,.sidebar button .ic{transition:transform .14s var(--ease-out)}
   .tabs button:active .ic,.sidebar button:active .ic{transform:scale(.84)}
-  button.row:active,button.item:active,button.subc:active,.job-main:active,.yr:active,button.td-plan:active,.su-opt:active{transform:scale(.98)}
+  button.row:active,button.item:active,button.subc:active,.job-main:active,.mo:active,button.td-plan:active,.su-opt:active{transform:scale(.98)}
   .wd:active .lamp{transform:scale(1.35)}
   .v-in{animation:v-in .26s var(--ease-out) both}
   .v-in.fwd{animation-name:v-fwd}
@@ -671,7 +678,6 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
   .wk-track i.pop{animation:sleeper .6s var(--ease-out)}
   .today.just .td-head h2{animation:v-in .4s var(--ease-out)}
   .row.just{animation:flash 1.8s ease-out}
-  .yr-bar i{transition:transform .8s var(--ease-out)}
   .tip.on{animation:tip-in .22s var(--ease-out)}
   .seg.open .rare{animation:fade-in .2s ease-out}
 }
@@ -791,11 +797,10 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
     <section id="v-stats" class="view" aria-label="Auswertung" hidden>
       <div class="statsbar">
         <div class="tabsw" role="tablist" aria-label="Auswertung">
-          <button type="button" role="tab" data-stab="over" aria-selected="true">Übersicht</button>
-          <button type="button" role="tab" data-stab="anl" aria-selected="false">Anlage N</button>
-          <button type="button" role="tab" data-stab="std" aria-selected="false">Stunden</button>
+          <button type="button" role="tab" data-stab="work" aria-selected="true">Arbeit</button>
+          <button type="button" role="tab" data-stab="tax" aria-selected="false">Steuer</button>
         </div>
-        <label class="yearsel"><span class="sr">Steuerjahr</span><select id="year" class="ysel" data-label="Steuerjahr {y}"></select></label>
+        <label class="yearsel"><span class="sr">Jahr</span><select id="year" class="ysel" data-label="Jahr {y}"></select></label>
       </div>
       <div id="stats-body"></div>
     </section>
@@ -1128,14 +1133,14 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
     <section id="v-report" class="view" aria-label="Jahresbericht" hidden>
       <div class="formbar noprint">
         <button class="iconbtn" id="r-back" type="button" aria-label="Zurück"><svg class="ic" aria-hidden="true"><use href="#i-arrow-back"/></svg></button>
-        <h2>Jahresbericht</h2>
+        <h2 id="r-title">Jahresbericht</h2>
         <span class="spacer"></span>
       </div>
       <div class="rtools noprint">
-        <label class="check"><input type="checkbox" id="r-days" checked> Alle Tage einzeln auflisten</label>
+        <label class="check" id="r-days-w"><input type="checkbox" id="r-days" checked> Alle Tage einzeln auflisten</label>
         <label class="check" id="r-photos-w"><input type="checkbox" id="r-photos"> <span id="r-photos-l">Belegfotos anhängen</span></label>
         <button class="btn primary block" id="r-print" type="button"><svg class="ic" aria-hidden="true"><use href="#i-description"/></svg>Als PDF speichern oder drucken</button>
-        <p class="hint"><span id="r-hint"></span> Den Bericht kannst du ausdrucken, dem Steuerberater geben oder beim Ausfüllen von ELSTER danebenlegen.</p>
+        <p class="hint"><span id="r-hint"></span> <span id="r-use"></span></p>
       </div>
       <article class="paper" id="r-paper"></article>
     </section>
@@ -1181,9 +1186,13 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.3.1';
+const APP_VERSION = '2.4.0';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.4.0', ['Auswertung neu: Unter „Arbeit“ siehst du einen Monat so, wie er auf der Lohnabrechnung steht: Tage, Stunden, Nacht- und Sonntagsstunden und die Auslöse. Als Monatsnachweis kannst du ihn ausdrucken oder als PDF speichern.',
+    'Unter „Steuer“ steht zuerst, ob dir die Steuererklärung für deine Arbeitskosten etwas bringt. Darunter die Rechnung in einfachen Worten, die Ausfüllhilfe für die Anlage N und Zeile 20.',
+    'Startseite: „Dieser Monat“ mit Tagen, Stunden und Auslöse statt der Werbungskosten.',
+    'In der Liste, im Kalender und im Tagesdetail steht jetzt deine Auslöse statt der Verpflegungspauschale fürs Finanzamt.']],
   ['2.3.0', ['Neu anfangen geht schneller: drei kurze Fragen zum Weg zur Arbeit, zum festen Sammelpunkt und zur Auslöse. Alles andere stellst du wie bisher unter Mehr > Einstellungen ein.',
     'Solange noch nichts eingetragen ist, führt die Startseite direkt zum ersten Arbeitstag.']],
   ['2.2.0', ['Aufgeräumt: Erklärungen stehen jetzt hinter dem kleinen i neben der Überschrift. Tipp darauf, wenn du sie lesen willst. Warnungen siehst du weiter sofort.',
@@ -1328,12 +1337,12 @@ function enter(el, dir) {
 }
 document.addEventListener('animationend', ev => { const c = ev.target.classList; if (c && /^v-/.test(ev.animationName)) c.remove('v-in', 'fwd', 'back', 'up', 's-fwd', 's-back'); });
 let countRaf = 0;
-function countUp(el, from, to, ms) {
+function countUp(el, from, to, ms, fmt = eur, end = fmt) {
   cancelAnimationFrame(countRaf);
-  if (reduceMotion() || from === to) { el.textContent = eur(to); return; }
+  if (reduceMotion() || from === to) { el.textContent = end(to); return; }
   const t0 = performance.now();
-  const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = eur(from + (to - from) * k); if (p < 1) countRaf = requestAnimationFrame(step); };
-  el.textContent = eur(from); countRaf = requestAnimationFrame(step);
+  const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = p < 1 ? fmt(from + (to - from) * k) : end(to); if (p < 1) countRaf = requestAnimationFrame(step); };
+  el.textContent = fmt(from); countRaf = requestAnimationFrame(step);
 }
 
 /* ---------- Erklärungen auf Abruf (ⓘ) ---------- */
@@ -1396,7 +1405,7 @@ let year = new Date().getFullYear();
 let view = 'list', listMode = 'days';
 let F = null; // offenes Formular
 // Anzeige: gewählter Monat und Tag im Kalender, Tag in der Tagesansicht, Reiter der Auswertung
-let calM = today().slice(0, 7), calSel = today(), dayDate = today(), statsTab = 'over';
+let calM = today().slice(0, 7), calSel = today(), dayDate = today(), statsTab = 'work', workM = today().slice(0, 7);
 let navStack = [], reportFrom = 'more', welcomeSkip = false;
 // navDir: Richtung, aus der die nächste Ansicht hereingleitet; justSaved: gerade gespeicherter Tag, den die Startseite kurz hervorhebt
 let navDir = '', booted = false, justSaved = null;
@@ -2008,7 +2017,7 @@ function dateHTML(d, withMonth) {
   return `<span class="dt${we ? ' we' : ''}" aria-hidden="true"><span class="dw">${DOW[dowOf(d)]}</span><span class="dd">${withMonth ? dDM(d) : d.slice(8, 10)}</span></span>`;
 }
 function rowHTML(e, R, withMonth) {
-  const d = e.date, work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, vma = R && R.vmaOf[e.id];
+  const d = e.date, work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr;
   let l1 = '';
   if (work) {
     const label = e.type === 'schulung' ? 'Schulung' : (SHIFT_L[e.shift] || 'Arbeit');
@@ -2023,7 +2032,7 @@ function rowHTML(e, R, withMonth) {
   const l2parts = OFF.has(e.type) ? [hol, e.note] : [hol, e.place, e.project || e.line, e.lodgingName && (e.away === 'an' || e.away === 'voll') ? e.lodgingName : ''];
   const l2 = l2parts.filter(Boolean).join(' · ');
   const money = [];
-  if (vma) money.push(eurS(vma));
+  if (e.allowance && !OFF.has(e.type)) money.push(eurS(e.allowance) + ' Auslöse');
   if (e.vehicle === 'pkw' && e.km && !OFF.has(e.type)) money.push(nf(e.km, 1) + (e.trip === 'sammel' ? ' km einf.' : ' km'));
   if (e.photos.length) money.push(e.photos.length === 1 ? '1 Beleg' : e.photos.length + ' Belege');
   return `<button class="row" type="button" data-day="${esc(d)}">
@@ -2050,15 +2059,15 @@ function entryTitle(e) {
 }
 const entryIcon = e => WORK.has(e.type) ? 'work-history' : TRAVEL.has(e.type) ? 'luggage' : 'calendar-month';
 // Einträge eines Tages als Liste wie im Kalender: der Tag selbst, dazu Fahrt, Übernachtung und Ausgaben als eigene Zeilen
-function dayItemsHTML(list, exps, vmaOf) {
+function dayItemsHTML(list, exps) {
   let h = '';
   list.forEach(e => {
-    const work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, v = vmaOf && vmaOf[e.id];
+    const work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr, al = OFF.has(e.type) ? 0 : e.allowance;
     const sub = [e.place, e.project || e.line].filter(Boolean).join(' · ') || (isAway(e) ? AWAY_X[e.away] : '');
     const time = work && e.start && e.end ? e.start + '–' + e.end : '';
     h += `<button class="item" type="button" data-day="${esc(e.date)}"><span class="ii${work ? '' : TRAVEL.has(e.type) ? ' trip' : ' off'}">${ic(entryIcon(e))}</span>
       <span><b>${esc(entryTitle(e))}</b>${time || sub ? `<small>${esc([time, sub].filter(Boolean).join(' · '))}</small>` : ''}</span>
-      <span class="v">${wm ? nf(wm / 60, 2) + ' h' : ''}${v ? `<small>${eurS(v)} Verpfl.</small>` : ''}</span></button>`;
+      <span class="v">${wm ? nf(wm / 60, 2) + ' h' : ''}${al ? `<small>${eurS(al)} Auslöse</small>` : ''}</span></button>`;
     if (!OFF.has(e.type) && e.vehicle && (e.km || e.meet)) h += `<button class="item" type="button" data-day="${esc(e.date)}"><span class="ii trip">${ic('directions-car')}</span>
       <span><b>Fahrt</b><small>${esc([VEH_L[e.vehicle], e.meet].filter(Boolean).join(' · '))}</small></span><span class="v">${e.km ? nf(e.km, 1) + (e.trip === 'sammel' ? ' km einf.' : ' km') : ''}</span></button>`;
     if (isAway(e) && (e.away === 'an' || e.away === 'voll') && (e.lodging || e.lodgingName)) h += `<button class="item" type="button" data-day="${esc(e.date)}"><span class="ii">${ic('bed')}</span>
@@ -2072,13 +2081,6 @@ function dayItemsHTML(list, exps, vmaOf) {
   });
   return h;
 }
-// VMA-Beträge je Eintrag für mehrere Jahre (die Berechnung arbeitet immer mit dem gewählten Jahr)
-function vmaFor(years) {
-  const out = {}, keep = year;
-  [...new Set(years)].forEach(y => { year = y; try { Object.assign(out, computeYear(yearList(y)).vmaOf); } finally { year = keep; } });
-  return {vmaOf: out};
-}
-
 function missingWorkdays() {
   const t = today(); if (String(year) !== t.slice(0, 4)) return [];
   const dates = Object.values(S.entries).map(e => e.date).filter(d => d < t).sort();
@@ -2188,27 +2190,6 @@ function jobHTML(j, t) {
       <span class="jd">${ic('calendar-month')}${range}</span></button>
       <button class="btn d-only" type="button" data-new="${t}">Weiteren Arbeitstag erfassen</button></div>`;
 }
-// Werbungskosten nach Abzug der Erstattungen, aufgeteilt wie im Ring (Summe = Werbungskosten gesamt)
-function netParts(T) {
-  return [
-    ['trip', 'Fahrten', r2(T.kmCost - T.kmOff + T.commuteCost)],
-    ['lodge', 'Übernachtung', r2(T.lodging - T.offL)],
-    ['other', 'Weitere Ausgaben', r2(T.other + T.exp)],
-    ['meal', 'Verpflegung', r2(T.vma - T.offV)]
-  ];
-}
-function donutSVG(parts, total) {
-  const r = 54, C = 2 * Math.PI * r, gap = parts.filter(p => p[2] > 0).length > 1 ? 2 : 0;
-  let off = 0, segs = '';
-  parts.forEach(([k, l, v]) => {
-    if (!(v > 0) || !(total > 0)) return;
-    const len = C * v / total;
-    segs += `<circle cx="70" cy="70" r="${r}" stroke="var(--c-${k})" stroke-width="16" fill="none" stroke-dasharray="${Math.max(0.5, len - gap).toFixed(2)} ${(C - Math.max(0.5, len - gap)).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 70 70)"><title>${esc(l)}: ${eur(v)}</title></circle>`;
-    off += len;
-  });
-  return `<svg class="donut" viewBox="0 0 140 140" role="img" aria-label="Werbungskosten ${eur(total)}"><circle cx="70" cy="70" r="${r}" stroke="var(--surface-3)" stroke-width="16" fill="none"/>${segs}
-    <text x="70" y="68" text-anchor="middle" font-size="15" font-weight="700">${esc(eurS(total))}</text><text x="70" y="86" text-anchor="middle" font-size="11" fill="currentColor" opacity=".7">gesamt</text></svg>`;
-}
 // Gerade gespeichert (in den letzten Sekunden): Startseite hebt den Tag kurz hervor
 const freshSave = () => justSaved && Date.now() - justSaved.at < 8000 ? justSaved : null;
 // Ein Tipp für den häufigsten Fall: heute wie den letzten Arbeitstag. Gleiche Vorbelegung wie im Formular (prefill).
@@ -2247,9 +2228,9 @@ function todayHTML(t) {
   const more = `<div class="td-more"><button class="btn" type="button" data-trip="1">${ic('directions-car')}Fahrt</button><button class="btn" type="button" data-newexp="1" data-date="${t}">${ic('receipt-long')}Ausgabe</button></div>`;
   const edit = `<span class="td-edit">${ic('edit')}Ändern</span>`;
   if (list.length) {
-    const e = list[0], v = vmaFor([e.year]).vmaOf[e.id];
+    const e = list[0];
     return `<section class="today${fresh ? ' just' : ''}" aria-labelledby="td-h"><div class="td-head"><i class="lamp ok${fresh ? ' pop' : ''}" aria-hidden="true"></i><h2 id="td-h">Heute erfasst</h2></div>
-      <button class="td-plan" type="button" ${list.length > 1 ? `data-day="${t}"` : `data-id="${esc(e.id)}"`}><small><span>${list.length > 1 ? list.length + ' Einträge für heute' : 'Dein Eintrag'}</span>${edit}</small>${planHTML(e, v ? eurS(v) + ' Verpflegung' : '')}</button>${more}</section>`;
+      <button class="td-plan" type="button" ${list.length > 1 ? `data-day="${t}"` : `data-id="${esc(e.id)}"`}><small><span>${list.length > 1 ? list.length + ' Einträge für heute' : 'Dein Eintrag'}</span>${edit}</small>${planHTML(e, e.allowance && !OFF.has(e.type) ? eurS(e.allowance) + ' Auslöse' : '')}</button>${more}</section>`;
   }
   const free = isWeekend(t) || !!holiday(t), p = quickPlan(t);
   const head = `<div class="td-head"><i class="lamp ${free ? 'idle' : 'open pulse'}" aria-hidden="true"></i><h2 id="td-h">${free ? 'Heute nichts erfasst' : 'Heute noch offen'}</h2></div>`;
@@ -2281,35 +2262,26 @@ function weekHTML(t) {
   return `<section class="wk" aria-labelledby="wk-h"><div class="wk-h"><h2 id="wk-h">Diese Woche</h2>${sum}</div>
     <div class="wk-days">${days}<div class="wk-track" aria-hidden="true">${sl}</div></div>${mh}</section>`;
 }
-// Jahresbetrag am Handy: grauer Teil bis zum Arbeitnehmer-Pauschbetrag, grüner Teil = was darüber hinaus die Steuer senkt.
-// Hat sich der Betrag seit dem letzten Blick auf die Startseite geändert, zählt er hoch und der Balken wächst.
-const shownYr = {};
-function yrBar(base, wkp, max) {
-  const a = Math.min(base, wkp) / max, b = base > wkp ? (base - wkp) / (max - wkp) : 0;
-  return {a: `scaleX(${a.toFixed(4)})`, b: `scaleX(${b.toFixed(4)})`};
+// „Dieser Monat“ auf der Startseite: Tage, Stunden und Auslöse, wie auf der Lohnabrechnung. Tipp führt zur Auswertung „Arbeit“.
+// Hat sich die Auslöse seit dem letzten Blick geändert, zählt sie hoch.
+const shownMo = {};
+function monthHTML(t, R) {
+  const ym = t.slice(0, 7), y = +t.slice(0, 4), mi = +t.slice(5, 7) - 1, m = (y === year ? R : yearCalc(y)).M[mi];
+  const days = m.workDays + m.trainDays, all = r2(m.allowance), showA = all > 0 || S.settings.ausOn;
+  const prev = shownMo[ym], anim = showA && view === 'list' && prev != null && prev !== all && !reduceMotion();
+  if (view === 'list') shownMo[ym] = all;
+  return `<button class="mo" type="button" data-work="1"><span class="mo-h"><span>Dieser Monat · ${MONTHS[mi]}</span><small>Auswertung${ic('chevron-right')}</small></span>
+    <span class="mo-n"><span><b>${days}</b><small>${days === 1 ? 'Arbeitstag' : 'Arbeitstage'}</small></span><span><b>${nf(m.tot / 60, 1)} h</b><small>Stunden</small></span>
+    ${showA ? `<span><b data-count="${all}"${anim ? ` data-from="${prev}"` : ''}>${eurS(anim ? prev : all)}</b><small>Auslöse<i class="mo-d" aria-hidden="true"></i></small></span>`
+      : `<span><b>${m.awayDays}</b><small>Tage auswärts</small></span>`}</span></button>`;
 }
-function yearHTML(T) {
-  const L = law(year), tot = r2(Math.max(0, T.total)), base = Math.max(0, T.totalNoGew), gew = L.gewExtra ? T.cat.gew || 0 : 0;
-  const max = Math.max(base, L.wkp) * 1.15, now = yrBar(base, L.wkp, max), prev = shownYr[year];
-  const anim = view === 'list' && !!prev && prev.tot !== tot && !reduceMotion(), was = anim ? yrBar(prev.base, L.wkp, max) : now;
-  if (view === 'list') shownYr[year] = {tot, base};
-  const over = r2(base - L.wkp), mk = (L.wkp / max * 100).toFixed(2) + '%';
-  const say = !base ? 'Sobald du Tage einträgst, siehst du hier, was du von der Steuer absetzen kannst.'
-    : over > 0 ? `${eur(over)} mehr als der Pauschbetrag von ${eurS(L.wkp)}${gew ? ' (ohne Gewerkschaft)' : ''}`
-    : `Noch ${eur(-over)} bis zum Pauschbetrag von ${eurS(L.wkp)}, den es ohnehin gibt`;
-  return `<button class="yr m-only" type="button" data-view="stats"><span class="yr-h"><span>Werbungskosten ${year}</span><small>Auswertung${ic('chevron-right')}</small></span>
-    <span class="yr-n"><span data-count="${tot}"${anim ? ` data-from="${prev.tot}"` : ''}>${eur(anim ? prev.tot : tot)}</span><span class="yr-d" aria-hidden="true"></span></span>
-    <span class="yr-bar" aria-hidden="true"><i class="a" style="transform:${was.a}" data-to="${now.a}"></i><i class="b" style="left:${mk};width:calc(100% - ${mk});transform:${was.b}" data-to="${now.b}"></i><b style="left:${mk}"></b></span>
-    <span class="yr-t">${say}</span></button>`;
-}
-// nach dem Zeichnen der Startseite: Betrag hochzählen, Balken wachsen lassen
+// nach dem Zeichnen der Startseite: Auslöse hochzählen
 function homeMotion() {
   const n = $('#v-list [data-from]');
   if (!n) return;
-  const from = +n.dataset.from, to = +n.dataset.count, d = $('#v-list .yr-d');
-  countUp(n, from, to, 800);
-  if (d) { d.textContent = (to > from ? '+' : '−') + eur(Math.abs(to - from)); d.classList.toggle('neg', to < from); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 2400); }
-  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('#v-list .yr-bar i[data-to]').forEach(i => { i.style.transform = i.dataset.to; })));
+  const from = +n.dataset.from, to = +n.dataset.count, d = n.parentElement.querySelector('.mo-d');
+  countUp(n, from, to, 800, eurS);
+  if (d) { d.textContent = (to > from ? '+' : '−') + eurS(Math.abs(to - from)); d.classList.toggle('neg', to < from); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 2400); }
 }
 function renderHome() {
   const el = $('#v-list'), t = today(), name = (S.settings.name || '').trim().split(/\s+/)[0];
@@ -2325,7 +2297,7 @@ function renderHome() {
       <p>So sieht ein Tag später in der Liste aus. Ab dem zweiten Eintrag füllt MontageBuch die Felder wie am letzten Arbeitstag vor.</p>
       <div class="row example" aria-hidden="true"><span class="dt"><span class="dw">Di</span><span class="dd">13.10.</span></span>
         <span class="main"><span class="l1"><span class="chip nacht">Nacht</span><span>22:00–06:00</span><span class="chip away">Auswärts</span></span><span class="l2">Hamm (Westf) · Gleiserneuerung</span></span>
-        <span class="side"><span class="hrs">7,5 h</span><span class="money">28 €</span></span></div></div></div>`;
+        <span class="side"><span class="hrs">7,5 h</span><span class="money">42 € Auslöse</span></span></div></div></div>`;
     el.innerHTML = h; return;
   }
   // Kennzahlen des gewählten Jahres (am PC oben wie im Leitstand)
@@ -2335,21 +2307,15 @@ function renderHome() {
     + kc('directions-car', 'Gefahrene Kilometer', nf(T.km, 0) + ' km', T.commuteDays ? `dazu ${T.commuteDays} × Sammelpunkt` : 'Dienstfahrten, eigenes Auto')
     + kc('bed', 'Übernachtungen', T.nights, T.lodging ? eur(T.lodging) + ' selbst bezahlt' : 'auswärts')
     + kc('receipt-long', 'Ausgaben', eur(T.exp + T.other), 'Arbeitsmittel, Tickets, Parken');
-  // Hauptsache oben: heute, dann die Woche, dann der Jahresbetrag
-  h += todayHTML(t) + weekHTML(t) + backupCard() + yearHTML(T);
+  // Hauptsache oben: heute, dann die Woche, dann der Monat
+  h += todayHTML(t) + weekHTML(t) + backupCard() + monthHTML(t, R);
   const job = currentJob();
   if (job) h += jobHTML(job, t);
-  // Werbungskosten als Ring (am PC)
-  const parts = netParts(T);
-  h += `<div class="card wkc d-only"><div><h3>Werbungskosten ${year}</h3><div class="amount">${eur(T.total)}</div>
-      <div class="lg">${parts.map(([k, l, v]) => `<div><i style="background:var(--c-${k})"></i><span>${l}</span><span>${eur(v)}</span></div>`).join('')}</div></div>
-    ${donutSVG(parts, T.total)}<button class="linkbtn" type="button" data-view="stats">Zur Auswertung →</button></div>`;
   // Letzte Einträge
   const items = ents.map(e => ({d: e.date, u: e.updated || '', e})).concat(exps.map(x => ({d: x.date, u: x.updated || '', x})))
     .sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : a.u < b.u ? 1 : a.u > b.u ? -1 : 0).slice(0, 5);
-  const VR = vmaFor(items.filter(i => i.e).map(i => i.e.year));
   h += `<div class="recent"><div class="sect"><h2>Letzte Einträge</h2><button class="linkbtn" type="button" data-view="all" data-listmode="days">Alle Einträge anzeigen</button></div>
-    <div class="rows m-only">${items.map(i => i.e ? rowHTML(i.e, VR, true) : expRowHTML(i.x, true)).join('')}</div>
+    <div class="rows m-only">${items.map(i => i.e ? rowHTML(i.e, null, true) : expRowHTML(i.x, true)).join('')}</div>
     <table class="dtab d-only"><thead><tr><th>Datum</th><th>Art</th><th>Beschreibung</th><th>Ort</th><th class="n">Stunden / Betrag</th></tr></thead><tbody>${items.map(i => {
       if (i.x) return `<tr data-exp="${esc(i.x.id)}"><td><button class="linkbtn" type="button" data-exp="${esc(i.x.id)}">${dDot(i.x.date)}</button></td><td>Ausgabe</td><td>${esc(CAT_L[i.x.cat] + (i.x.text ? ': ' + i.x.text : ''))}</td><td></td><td class="n">${eur(i.x.amount)}</td></tr>`;
       const e = i.e, tr = OFF.has(e.type) ? 0 : travelOf(e), wm = workMin(e) + tr;
@@ -2383,7 +2349,7 @@ function dayListHTML() {
   let h = '';
   Object.keys(groups).sort().reverse().forEach(mm => {
     const m = M[+mm - 1], nd = m.workDays + m.trainDays;
-    h += `<div class="mhead"><h2>${MONTHS[+mm - 1]}</h2><span>${nd} ${nd === 1 ? 'Tag' : 'Tage'} · ${nf(m.tot / 60, 1)} h · ${eurS(m.vma)}</span></div>
+    h += `<div class="mhead"><h2>${MONTHS[+mm - 1]}</h2><span>${nd} ${nd === 1 ? 'Tag' : 'Tage'} · ${nf(m.tot / 60, 1)} h${m.allowance ? ' · ' + eurS(m.allowance) + ' Auslöse' : ''}</span></div>
       <div class="rows">${groups[mm].map(e => rowHTML(e, R)).join('')}</div>`;
   });
   return h;
@@ -2436,9 +2402,8 @@ function renderCal() {
     g += `<button type="button" class="${cls}" data-cal-day="${d}" aria-label="${esc(lbl)}" aria-pressed="${d === calSel}"><span class="n">${i}</span><span class="dots">${ks.map(k => `<i class="k-${k}"></i>`).join('')}</span></button>`;
   }
   const sd = calSel, list = Object.values(S.entries).filter(e => e.date === sd).sort(sortAsc), xs = Object.values(S.expenses).filter(x => x.date === sd);
-  const VR = list.length ? vmaFor([+sd.slice(0, 4)]) : {vmaOf: {}};
   const sel = `<div class="sect"><h2>${DOW[dowOf(sd)]}, ${+sd.slice(8, 10)}. ${MONTHS[+sd.slice(5, 7) - 1]} ${sd.slice(0, 4)}</h2>${holiday(sd) ? `<span class="hint">${esc(holiday(sd))}</span>` : ''}</div>
-    ${list.length || xs.length ? `<div class="daylist">${dayItemsHTML(list, xs, VR.vmaOf)}</div>` : '<p class="hint">Für diesen Tag ist nichts eingetragen.</p>'}
+    ${list.length || xs.length ? `<div class="daylist">${dayItemsHTML(list, xs)}</div>` : '<p class="hint">Für diesen Tag ist nichts eingetragen.</p>'}
     <div class="stack"><button class="btn primary block" type="button" data-new="${sd}">${ic('add')}Neuer Eintrag</button></div>`;
   el.innerHTML = `<div class="calwrap"><div><div class="calhead"><button class="iconbtn" type="button" data-cal-m="-1" aria-label="Voriger Monat">${ic('chevron-left')}</button><h2>${MONTHS[m - 1]} ${y}</h2><button class="iconbtn" type="button" data-cal-m="1" aria-label="Nächster Monat">${ic('chevron-right')}</button></div>
     <div class="calgrid">${g}</div>
@@ -2472,19 +2437,17 @@ function renderDay() {
   h += `<div class="stack">`;
   if (!list.length && !xs.length) h += `<div class="empty"><h2>Nichts eingetragen</h2><p>Für diesen Tag gibt es noch keinen Eintrag.</p></div>`;
   list.forEach(e => { h += dayCardHTML(e); });
-  // Fahrt, Übernachtung, Verpflegung und Ausgaben als eigene Karten
+  // Fahrt, Übernachtung und Ausgaben als eigene Karten (Steuerbeträge stehen nur unter Auswertung > Steuer)
   list.forEach(e => {
     if (OFF.has(e.type)) return;
     if (e.vehicle) {
-      const cost = kmCost(e) || commuteCost(e);
+      const kg = kmRefund(e);
       const how = e.trip === 'sammel' ? `${nf(e.km, 1)} km einfach zum ${S.settings.fixed === 'betrieb' ? 'Betrieb' : 'Sammelpunkt'}` : e.km ? `${nf(e.km, 1)} km gefahren` : '';
-      h += `<button class="subc" type="button" data-id="${esc(e.id)}" data-fstep="3">${ic('directions-car')}<span><b>Fahrt</b><span>${esc([VEH_L[e.vehicle], e.meet].filter(Boolean).join(' · '))}</span>${how ? `<span>${how}</span>` : ''}</span><span class="v">${cost ? eur(cost) : ''}</span></button>`;
+      h += `<button class="subc" type="button" data-id="${esc(e.id)}" data-fstep="3">${ic('directions-car')}<span><b>Fahrt</b><span>${esc([VEH_L[e.vehicle], e.meet].filter(Boolean).join(' · '))}</span>${how ? `<span>${how}</span>` : ''}${kg ? `<span>Kilometergeld ${eur(kg)}</span>` : ''}</span><span class="v"></span></button>`;
     }
     if (isAway(e) && (e.away === 'an' || e.away === 'voll') && (e.lodging || e.lodgingName)) h += `<button class="subc" type="button" data-id="${esc(e.id)}" data-fstep="2">${ic('bed')}<span><b>Übernachtung</b><span>${esc(e.lodgingName || (S.settings.lodgingBy === 'firma' ? 'zahlt die Firma' : 'Unterkunft'))}</span></span><span class="v">${e.lodging ? eur(e.lodging) : ''}</span></button>`;
     if (e.otherCost) h += `<button class="subc" type="button" data-id="${esc(e.id)}" data-fstep="3">${ic('receipt-long')}<span><b>Ausgabe</b><span>${esc(e.otherNote || 'Sonstige Ausgaben')}</span></span><span class="v">${eur(e.otherCost)}</span></button>`;
   });
-  const grp = Object.values(S.entries).filter(e => vmaDate(e) === d), dv = dayVma(grp, d);
-  if (dv.base > 0) h += `<div class="subc">${ic('restaurant')}<span><b>Verpflegungspauschale</b><span>${dv.cut ? `${eur(dv.base)} minus ${eur(dv.cut)} für gestellte Mahlzeiten` : 'nach den gesetzlichen Pauschalen'}${dv.offV ? `, davon ${eur(dv.offV)} mit der Auslöse verrechnet` : ''}</span></span><span class="v">${eur(dv.val)}</span></div>`;
   xs.forEach(x => { h += `<button class="subc" type="button" data-exp="${esc(x.id)}">${ic('receipt-long')}<span><b>${esc(CAT_L[x.cat])}</b><span>${esc(x.text || x.note || 'Ausgabe')}</span></span><span class="v">${eur(x.amount)}</span></button>`; });
   h += `</div><div class="stack" style="margin-top:16px">`;
   if (list.length === 1) h += `<button class="btn block" type="button" data-id="${esc(list[0].id)}">${ic('edit')}Eintrag bearbeiten</button>`;
@@ -2498,18 +2461,138 @@ function renderDay() {
 function showStatsTab() {
   document.querySelectorAll('[data-stab]').forEach(b => b.setAttribute('aria-selected', b.dataset.stab === statsTab ? 'true' : 'false'));
   document.querySelectorAll('#stats-body [data-panel]').forEach(p => { p.hidden = p.dataset.panel !== statsTab; });
+  // unter „Arbeit“ wählt man den Monat mit den Pfeilen, das Jahr gibt es nur unter „Steuer“
+  $('#year').closest('.yearsel').hidden = statsTab === 'work';
 }
-function renderStats() {
-  const el = $('#stats-body'), list = yearList(year), exps = expList(year), st = S.settings, L = law(year);
-  const wasOpen = !!(el.querySelector('details') && el.querySelector('details').open);
-  if (!list.length && !exps.length) {
-    el.innerHTML = `<div class="empty"><h2>Auswertung ${year}</h2><p>Sobald du Tage oder Ausgaben einträgst, siehst du hier Stunden, Montage-Tage und die Beträge für die Steuererklärung.</p></div>`;
-    showStatsTab();
-    return;
+// Ein Jahr durchrechnen, auch wenn gerade ein anderes Jahr gewählt ist (computeYear rechnet mit „year“)
+function yearCalc(y) { const keep = year; year = y; try { return computeYear(yearList(y), expList(y)); } finally { year = keep; } }
+// Montagetage nach Art und Auslöse zusammengefasst. „prüfen“ heißt: keine Auslöse eingetragen, obwohl die Firma laut
+// „Deine Arbeit“ dafür zahlt oder an anderen Tagen derselben Art etwas eingetragen ist.
+const AWK = {voll: '24 Std. auswärts', anab: 'An- und Abreise', tag: 'Tagestour'};
+const awKind = e => e.away === 'voll' ? 'voll' : e.away === 'an' || e.away === 'ab' ? 'anab' : e.away === 'tag' ? 'tag' : '';
+function awayGroups(list) {
+  const away = list.filter(e => isAway(e) && awKind(e)), paidDay = new Set(away.filter(e => e.allowance > 0).map(e => e.date));
+  const g = {}, paid = {};
+  away.forEach(e => {
+    if (!(e.allowance > 0) && paidDay.has(e.date)) return; // zweiter Eintrag am selben Tag, die Auslöse steht schon beim ersten
+    const k = awKind(e), a = r2(e.allowance), key = k + '|' + a;
+    (g[key] = g[key] || {k, a, n: 0}).n++;
+    if (a > 0) paid[k] = true;
+  });
+  const order = {voll: 0, anab: 1, tag: 2}, auto = {voll: autoAllow('voll', 'arbeit'), anab: autoAllow('an', 'arbeit'), tag: autoAllow('tag', 'arbeit')};
+  return Object.values(g).sort((x, y) => order[x.k] - order[y.k] || y.a - x.a).map(x => Object.assign(x, {check: !x.a && (!!paid[x.k] || auto[x.k] > 0)}));
+}
+const hrsOf = min => nf(min / 60, 2) + ' h';
+const nDays = n => n + (n === 1 ? ' Tag' : ' Tage');
+const wrow = (l, v, cls = '') => `<div class="wr${cls ? ' ' + cls : ''}"><span>${l}</span><b>${v}</b></div>`;
+
+/* Reiter „Arbeit“: ein Monat, so wie er auf der Lohnabrechnung steht (Tage, Stunden, Zuschlagsstunden, Auslöse, Fahrten),
+   darunter das ganze Jahr. Keine Steuerwörter: Pauschalen und Werbungskosten stehen nur unter „Steuer“. */
+function workHTML() {
+  const [wy, wm] = workM.split('-').map(Number), R = yearCalc(wy), M = R.M[wm - 1], T = R.T, st = S.settings;
+  const yl = yearList(wy), list = yl.filter(e => e.date.slice(0, 7) === workM).sort(sortAsc), name = MONTHS[wm - 1] + ' ' + wy;
+  let h = `<div class="wm"><button class="iconbtn" type="button" data-wm="-1" aria-label="Voriger Monat">${ic('chevron-left')}</button><h3>${name}</h3><button class="iconbtn" type="button" data-wm="1" aria-label="Nächster Monat">${ic('chevron-right')}</button></div>`;
+  if (!list.length) h += `<div class="empty"><h2>Nichts eingetragen</h2><p>Für ${name} gibt es noch keine Einträge.</p></div>`;
+  else {
+    const days = M.workDays + M.trainDays, night = M.z25 + M.z40, hol = M.z125 + M.z150;
+    h += `<p class="hint wm-hint">Leg deine Lohnabrechnung daneben und vergleiche.</p>
+      <div class="card wcard"><h3>Arbeitszeit</h3>
+      <div class="wbig"><div><b>${days}</b><span>${days === 1 ? 'Arbeitstag' : 'Arbeitstage'}</span></div><div><b>${hrsOf(M.tot)}</b><span>Stunden</span></div></div>
+      <div class="wl">${night ? wrow('davon nachts (20 bis 6 Uhr)', hrsOf(night)) : ''}${M.z50 ? wrow('davon sonntags', hrsOf(M.z50)) : ''}${hol ? wrow('davon feiertags', hrsOf(hol)) : ''}${M.travelMin ? wrow('davon Fahrzeit, angerechnet', hrsOf(M.travelMin)) : ''}${M.ausfall ? wrow(M.ausfall === 1 ? 'Ausfallschicht' : 'Ausfallschichten', M.ausfall + (M.ausfallMin ? ', ' + hrsOf(M.ausfallMin) + ' bezahlt' : '')) : ''}</div></div>`;
+    // zahlt die Firma keine Auslöse, nur die Montagetage zählen
+    const gr = awayGroups(list), aus = st.ausOn || M.allowance > 0;
+    if (gr.length && !aus) h += `<div class="card wcard"><h3>Montage</h3><div class="wl">${gr.map(x => wrow(AWK[x.k], nDays(x.n))).join('')}</div></div>`;
+    else if (gr.length) h += `<div class="card wcard"><h3>Montage und Auslöse</h3><div class="wl">${gr.map(x => x.a
+        ? wrow(`${x.n} × ${AWK[x.k]} à ${eurS(x.a)}`, eurS(r2(x.n * x.a)))
+        : wrow(`${x.check ? '<i class="lamp open" aria-hidden="true"></i>' : ''}${x.n} × ${AWK[x.k]} ohne Auslöse`, x.check ? '<span class="chk">prüfen</span>' : '–')).join('')}
+      ${wrow('Auslöse laut deinen Einträgen', eurS(M.allowance), 'sum')}</div>
+      ${gr.some(x => x.check) ? '<p class="hint">„prüfen“: Hier fehlt die Auslöse, obwohl deine Firma laut „Deine Arbeit“ dafür zahlt oder an anderen Tagen etwas eingetragen ist.</p>' : ''}</div>`;
+    const km = r2(M.km + M.kmOther);
+    if (km || M.commuteDays) h += `<div class="card wcard"><h3>Fahrten</h3><div class="wl">${km ? wrow('Gefahren mit eigenem Auto', nf(km, 1) + ' km') : ''}${M.kmOff ? wrow('Kilometergeld laut „Deine Arbeit“', eur(M.kmOff)) : ''}${M.commuteDays ? wrow(st.fixed === 'betrieb' ? 'Fahrten zum Betrieb' : 'Fahrten zum Sammelpunkt', nDays(M.commuteDays)) : ''}</div></div>`;
+    const more = (M.nights ? wrow('Übernachtungen', M.nights + (M.lodging ? ', ' + eur(M.lodging) + ' selbst bezahlt' : st.lodgingBy === 'firma' ? ', zahlt die Firma' : '')) : '')
+      + (M.vacDays ? wrow('Urlaub', nDays(M.vacDays)) : '') + (M.sickDays ? wrow('Krank', nDays(M.sickDays)) : '') + (M.freeDays ? wrow('Frei', nDays(M.freeDays)) : '');
+    if (more) h += `<div class="card wcard"><h3>Sonst im Monat</h3><div class="wl">${more}</div></div>`;
+    h += `<button class="btn block" type="button" data-report="month">${ic('description')}Monatsnachweis als PDF</button>`;
   }
-  const R = computeYear(list, exps), {T, M} = R;
-  const maxH = Math.max(1, ...M.map(m => m.tot));
-  const pl = placeStats(list).slice(0, 12);
+  if (!yl.length) return h;
+  // das ganze Jahr: Kennzahlen, Monate, Zuschlagsstunden, Einsatzorte
+  const maxH = Math.max(1, ...R.M.map(m => m.tot));
+  const row = (l, v) => `<tr><td>${l}</td><td class="n">${v}</td></tr>`;
+  const months = R.M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.allowance ? eurS(m.allowance) : '–'}</span></div>`).join('');
+  const zSum = ZK.reduce((n, [k]) => n + T[k], 0);
+  const pl = placeStats(yl).slice(0, 12);
+  const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
+    <span class="d">${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}${p.alias.length ? ' · auch als ' + esc(p.alias.join(', ')) : ''}</span></div>`).join('');
+  h += `<div class="sect"><h2>Das ganze Jahr ${wy}</h2></div>
+    <div class="kpis">
+      <div class="kpi"><b>${T.workDays + T.trainDays}</b><span>Arbeitstage</span></div>
+      <div class="kpi"><b>${nf(T.tot / 60, 1)}</b><span>Stunden</span></div>
+      <div class="kpi"><b>${T.nightShifts}</b><span>Nachtschichten</span></div>
+      <div class="kpi"><b>${T.awayDays}</b><span>Tage auswärts</span></div>
+      <div class="kpi"><b>${T.nights}</b><span>Übernachtungen</span></div>
+      <div class="kpi"><b>${nf(T.km, 0)}</b><span>km Dienstfahrten</span></div>
+      ${T.travelMin ? `<div class="kpi wide"><b>${nf(T.travelMin / 60, 1)}</b><span>Std. Fahrzeit bei An- und Abreise (in den Stunden enthalten)</span></div>` : ''}
+      ${T.ausfall ? `<div class="kpi wide"><b>${T.ausfall}</b><span>${T.ausfall === 1 ? 'Ausfallschicht' : 'Ausfallschichten'}${T.ausfallMin ? `, davon ${nf(T.ausfallMin / 60, 2)} Std. bezahlt (in den Stunden enthalten)` : ', ohne Stunden'}</span></div>` : ''}
+    </div>
+    <div class="card"><h3>Monate</h3>
+      <div class="mtab"><div class="mrow h"><span></span><span>Stunden mit Fahrzeit</span><span class="n">Std.</span><span class="n">Auslöse</span></div>${months}</div>
+      <p class="hint">Urlaub ${T.vacDays} · krank ${T.sickDays} · Schulung ${T.trainDays} · An-/Abreisetage ${T.travelDays} · Ausfallschichten ${T.ausfall} · Arbeitszeit ${nf(T.min / 60, 1)} h · Fahrzeit ${nf(T.travelMin / 60, 1)} h</p>
+    </div>
+    ${zSum ? `<div class="card"><h3>${withTip('Zuschlagsstunden', 't-zuschlag')}</h3>
+      <table class="ttable">${ZK.filter(([k]) => T[k]).map(([k, l, p]) => row(`${l} <span class="unit">bis ${p}</span>`, nf(T[k] / 60, 2) + ' h')).join('')}</table>
+      <p class="hint tip" id="t-zuschlag">So viele Stunden darf die Firma mit diesen Zuschlägen steuerfrei bezahlen (§ 3b EStG, Grundlohn bis 50 € je Stunde). Vergleiche mit deiner Lohnabrechnung. Feiertage nach dem Bundesland in den Einstellungen, Pause anteilig abgezogen, Ausfallschichten zählen nicht.</p>
+    </div>` : ''}
+    ${places ? `<div class="card"><h3>Einsatzorte</h3><div class="places">${places}</div></div>` : ''}`;
+  return h;
+}
+
+/* Reiter „Steuer“: zuerst die Antwort, ob die Steuererklärung für die Arbeitskosten etwas bringt,
+   dann die Rechnung in einfachen Worten. Ausfüllhilfe, Nr. 20 und alle Einzelbeträge sind eingeklappt. */
+function taxHTML(R, list, exps) {
+  const {T} = R, st = S.settings, L = law(year);
+  const base = Math.max(0, T.totalNoGew), over = r2(base - L.wkp), gew = L.gewExtra ? T.cat.gew || 0 : 0;
+  const max = Math.max(base, L.wkp) * 1.15, ba = Math.min(base, L.wkp) / max, bb = base > L.wkp ? (base - L.wkp) / (max - L.wkp) : 0, mk = (L.wkp / max * 100).toFixed(2) + '%';
+  const verdict = over > 0 ? `Ja, ${eur(over)} mehr als ohnehin` : gew ? 'Nur die Gewerkschaftsbeiträge' : 'Bisher nichts extra';
+  let say = over > 0
+    ? `Deine Kosten für die Arbeit (${eur(base)}) liegen über ${eurS(L.wkp)}. So viel zieht das Finanzamt ohnehin ab. Die ${eur(over)} darüber senken deine Steuer zusätzlich.`
+    : `Deine Kosten für die Arbeit (${eur(base)}) liegen unter ${eurS(L.wkp)}. So viel zieht das Finanzamt ohnehin ab, auch ohne Nachweise. Deshalb bringen sie dir in der Steuererklärung bisher nichts extra.`;
+  if (gew) say += ` Gewerkschaftsbeiträge (${eur(gew)}) zählen in ${year} zusätzlich.`;
+  else if (T.cat.gew) say += ` Gewerkschaftsbeiträge zählen in ${year} noch zu den ${eurS(L.wkp)}.`;
+  let h = `<div class="card tq"><small>Bringt dir die Steuer etwas?</small><h3>${verdict}</h3>
+    <span class="tq-bar" aria-hidden="true"><i class="a" style="transform:scaleX(${ba.toFixed(4)})"></i><i class="b" style="left:${mk};width:calc(100% - ${mk});transform:scaleX(${bb.toFixed(4)})"></i><b style="left:${mk}"></b></span>
+    <span class="tq-lb" aria-hidden="true"><span>${eurS(base)}</span><span>Pauschbetrag ${eurS(L.wkp)}</span></span>
+    <p>${say}</p></div>`;
+
+  // Hinweise, die man prüfen sollte
+  const miss = awayGroups(list).filter(x => x.check);
+  if (miss.length) {
+    const n = miss.reduce((s, x) => s + x.n, 0);
+    h += `<div class="snote"><i class="lamp open" aria-hidden="true"></i><span>Bei ${n} ${n === 1 ? 'Tag' : 'Tagen'} fehlt die Auslöse (${[...new Set(miss.map(x => AWK[x.k]))].join(', ')}). Zahlt deine Firma dafür etwas? Dann trag sie nach, sonst rechnet die App zu viel Verpflegung.</span><span class="nb"><button class="linkbtn" type="button" data-go="settings">Zu „Deine Arbeit“</button></span></div>`;
+  }
+  const pl = placeStats(list);
+  h += pl.filter(p => p.warnFrom).map(p => `<p class="warn">Dreimonatsfrist prüfen: ${esc(p.name)}, regelmäßig seit ${dDot(p.warnFrom)}. Ab ${dDot(p.warnAt)} gibt es dort meist keine Verpflegungspauschale mehr.</p>`).join('');
+  if (!lawKnown(year)) h += `<p class="warn">Für ${year} sind noch keine gesetzlichen Werte hinterlegt. Gerechnet wird mit den Werten von ${lawYear(year)}, bis ein Update kommt.</p>`;
+  if (T.kmOther) h += `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>`;
+
+  // So rechnet das Finanzamt, in einfachen Worten
+  const tr = (l, v, cls = '') => `<tr class="${cls}"><td>${l}</td><td class="n">${v}</td></tr>`;
+  const vNet = r2(T.vma - T.offV), trip = r2(T.kmCost - T.kmOff + T.commuteCost), lodge = r2(T.lodging - T.offL), other = r2(T.other + T.exp);
+  const pay = [];
+  if (st.ausOn) {
+    if (st.ausFull > L.rateFull) pay.push(`${eurS(st.ausFull)} statt ${eurS(L.rateFull)}`);
+    [...new Set([st.ausHalf, st.ausDay].filter(v => v > L.rateSmall))].forEach(v => pay.push(`${eurS(v)} statt ${eurS(L.rateSmall)}`));
+  }
+  h += `<div class="card bigsum"><h3>${withTip('So rechnet das Finanzamt', 't-sum', 'der Rechnung')}</h3>
+    <p class="hint tip" id="t-sum">Die App rechnet die Beträge aus deinen Einträgen nach den gesetzlichen Pauschalen ${year}. Erstattungen der Firma sind schon abgezogen. Das ersetzt keine Steuerberatung.</p>
+    <table class="sumtable">
+      ${T.vma || T.offV ? tr('Verpflegung, die erlaubt ist', eur(T.vma)) + (T.offV ? tr(T.nr20 != null ? 'davon steuerfrei laut Zeile 20' : 'davon hat die Firma steuerfrei gezahlt', '− ' + eur(T.offV), 'sub') : '') + tr('bleibt', eur(vNet), 'sub') : ''}
+      ${tr('Fahrten', eur(trip))}${tr(st.lodgingBy === 'firma' && !T.lodging ? 'Übernachtung, zahlt die Firma' : 'Übernachtung, selbst bezahlt', eur(lodge))}
+      ${tr('Arbeitskleidung, Werkzeug und weitere Ausgaben', eur(other))}${tr('Werbungskosten ' + year, eur(T.total), 'tot')}
+    </table>
+    ${pay.length ? `<p class="hint">Deine Firma zahlt mehr, als steuerfrei erlaubt ist: ${pay.join(', ')}. Den Teil darüber versteuert sie meist mit deinem Lohn.</p>` : ''}
+  </div>`;
+
+  // alle Einzelbeträge wie bisher (für den Steuerberater und zum Nachrechnen)
   const row = (l, v, cls = '') => `<tr class="${cls}"><td>${l}</td><td class="n">${v}</td></tr>`;
   const sec = l => `<tr class="sec"><td colspan="2">${l}</td></tr>`;
   let tax = sec('Reisekosten bei Auswärtstätigkeit');
@@ -2528,7 +2611,7 @@ function renderStats() {
   tax += row('Reisenebenkosten (Parken, Tickets)', eur(T.other));
   tax += row('Reisekosten nach Erstattungen', eur(T.travelNet), 'sum');
   if (T.commuteDays) {
-    tax += sec(S.settings.fixed === 'betrieb' ? 'Fester Betrieb' : 'Fester Sammelpunkt');
+    tax += sec(st.fixed === 'betrieb' ? 'Fester Betrieb' : 'Fester Sammelpunkt');
     tax += row(`${T.commuteDays} ${T.commuteDays === 1 ? 'Tag' : 'Tage'}, zusammen ${nf(T.commuteKm, 1)} km einfach ${L.farFrom <= 1 ? '× ' + nf2(L.commuteRate) + ' €' : '(' + commuteDesc(year) + ')'}`, eur(T.commuteCost), 'sum');
     if (T.commuteCapped) tax += row(`ohne eigenes Auto höchstens ${eurS(L.cap)} im Jahr`, '', 'sub');
   }
@@ -2538,13 +2621,11 @@ function renderStats() {
     tax += row('Ausgaben', eur(T.exp), 'sum');
   }
   tax += row('Werbungskosten gesamt', eur(T.total), 'big');
-  const over = r2(T.totalNoGew - L.wkp), gew = L.gewExtra ? T.cat.gew || 0 : 0;
   let pb = over > 0
     ? `Das sind ${eur(over)} mehr als der Arbeitnehmer-Pauschbetrag von ${eurS(L.wkp)}, den das Finanzamt ohnehin abzieht${gew ? ' (Gewerkschaft nicht mitgerechnet)' : ''}. Die Angaben lohnen sich also.`
     : `Deine Werbungskosten${gew ? ' ohne Gewerkschaft' : ''} liegen bisher unter dem Arbeitnehmer-Pauschbetrag von ${eurS(L.wkp)}, den das Finanzamt ohnehin abzieht.`;
   if (gew) pb += ` Gewerkschaftsbeiträge (${eur(gew)}) zählen zusätzlich zum Pauschbetrag.`;
   else if (T.cat.gew) pb += ` Gewerkschaftsbeiträge zählen in ${year} noch zum Pauschbetrag.`;
-
   // Nr. 20 der Lohnsteuerbescheinigung: kommt Anfang des Folgejahres, ersetzt dann die Schätzung
   let lstb = '';
   if (T.vma || T.allowance || T.nr20 != null) {
@@ -2557,42 +2638,22 @@ function renderStats() {
       ${diff ? `<p class="warn">Die Lohnsteuerbescheinigung weicht um ${eur(Math.abs(T.nr20 - T.offVCalc))} von deinen Einträgen ab. Prüfe, ob alle Montagetage und die Auslöse stimmen.${T.nr20 > T.vma ? ' Nr. 20 ist sogar höher als deine Verpflegungspauschalen.' : ''}</p>` : ''}
     </div>`;
   }
-  const zSum = ZK.reduce((n, [k]) => n + T[k], 0);
-  const zCard = zSum ? `<div class="card"><h3>${withTip('Zuschlagsstunden', 't-zuschlag')}</h3>
-      <table class="ttable">${ZK.filter(([k]) => T[k]).map(([k, l, p]) => row(`${l} <span class="unit">bis ${p}</span>`, nf(T[k] / 60, 2) + ' h')).join('')}</table>
-      <p class="hint tip" id="t-zuschlag">So viele Stunden darf die Firma mit diesen Zuschlägen steuerfrei bezahlen (§ 3b EStG, Grundlohn bis 50 € je Stunde). Vergleiche mit deiner Lohnabrechnung. Feiertage nach dem Bundesland in den Einstellungen, Pause anteilig abgezogen, Ausfallschichten zählen nicht.</p>
-    </div>` : '';
-  const months = M.map((m, i) => `<div class="mrow"><span>${MON3[i]}</span><span class="bar"><i style="width:${(m.tot / maxH * 100).toFixed(1)}%"></i></span><span class="n">${m.tot ? nf(m.tot / 60, 1) + ' h' : '–'}</span><span class="n">${m.vma ? eurS(m.vma) : '–'}</span></div>`).join('');
-  const places = pl.map(p => `<div class="place"><b>${esc(p.name)}</b><span class="n">${p.days} ${p.days === 1 ? 'Tag' : 'Tage'}</span>
-    <span class="d">${p.first === p.last ? dDot(p.first) : dDot(p.first) + ' bis ' + dDot(p.last)}${p.alias.length ? ' · auch als ' + esc(p.alias.join(', ')) : ''}</span>
-    ${p.warnFrom ? `<span class="warn">Seit ${dDot(p.warnFrom)} regelmäßig an mindestens 3 Tagen pro Woche an diesem Ort. Ab ${dDot(p.warnAt)} gibt es hier meist keine Verpflegungspauschale mehr (Dreimonatsfrist). Bitte prüfen.</span>` : ''}</div>`).join('');
-  // Dreimonatsfrist zusätzlich gleich in der Übersicht zeigen
-  const frist = pl.filter(p => p.warnFrom).map(p => `<p class="warn">Dreimonatsfrist prüfen: ${esc(p.name)}, regelmäßig seit ${dDot(p.warnFrom)}. Ab ${dDot(p.warnAt)} gibt es dort meist keine Verpflegungspauschale mehr. Mehr dazu unter Stunden &gt; Einsatzorte.</p>`).join('');
-  const parts = netParts(T);
   const an = anlageN(R, list, exps);
   const anRows = an.map(r => r.sec ? `<h4>${esc(r.sec)}</h4>`
     : `<div class="anl-row"><span class="z">${r.z ? 'Zeile ' + esc(r.z) : ''}</span><span>${esc(r.l)}${r.note ? `<small>${esc(r.note)}</small>` : ''}</span><span class="v">${r.x != null ? (r.xz === Z.i ? nf(r.x, 0) : eur(r.x)) : esc(r.v)}</span></div>`).join('');
-
-  el.innerHTML = `<div data-panel="over" class="stack">
-    <div class="card bigsum"><h3>${withTip('Voraussichtliche Werbungskosten ' + year, 't-sum', 'Werbungskosten')}</h3>
-      <p class="hint tip" id="t-sum">Die App rechnet die Beträge aus deinen Einträgen nach den gesetzlichen Pauschalen ${year}. Erstattungen der Firma sind schon abgezogen. Das ersetzt keine Steuerberatung.</p>
-      <b class="amount">${eur(T.total)}</b>
-      <table class="sumtable">${parts.map(([k, l, v]) => `<tr><td><span class="sw" style="background:var(--c-${k})"></span>${l}</td><td class="n">${eur(v)}</td></tr>`).join('')}</table>
-    </div>
-    ${frist}
-    <div class="card"><h3>${withTip('Für die Steuererklärung ' + year, 't-tax', 'Steuererklärung')}</h3>
-      <p class="hint tip" id="t-tax">Werbungskosten für die Anlage N, geschätzt nach den gesetzlichen Pauschalen ${year}. Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
-      ${lawKnown(year) ? '' : `<p class="warn">Für ${year} sind noch keine gesetzlichen Werte hinterlegt. Gerechnet wird mit den Werten von ${lawYear(year)}, bis ein Update kommt.</p>`}
-      <table class="ttable">${tax}</table>
-      <p class="hint">${pb}</p>
-      ${lstb}
-      ${T.allowance ? `<p class="hint">Auslöse und Spesen erhalten: ${eur(T.allowance)}. Davon mit Kosten verrechnet: ${eur(T.offV + T.offL)}. ${T.allowance - T.offV - T.offL > 0.004 ? `Der Rest (${eur(T.allowance - T.offV - T.offL)}) liegt über den steuerlichen Pauschalen und mindert hier nichts.` : ''}</p>` : ''}
-      ${T.kmOther ? `<p class="warn">${nf(T.kmOther, 1)} km mit eigenem Auto an Tagen ohne Auswärts-Angabe sind nicht eingerechnet. Prüfe, ob diese Tage auswärts waren.</p>` : ''}
-    </div>
-    <div class="card"><h3>${withTip('Jahresbericht', 't-report')}</h3><p class="hint tip" id="t-report">Alle Zahlen mit Ausfüllhilfe für die Anlage N als PDF.</p><button class="btn block" type="button" data-report="1">${ic('description')}Jahresbericht ansehen</button></div>
-    <details class="card"><summary>So rechnet MontageBuch</summary>
+  const keep = (id, title, body, open) => `<details class="card" data-keep="${id}"${open ? ' open' : ''}><summary>${title}</summary>${body}</details>`;
+  h += keep('anl', `Ausfüllhilfe Anlage N ${year}`, `<p class="hint">Die Zeilen gelten für das Formular Anlage N 2025. In neueren Formularen können sich die Nummern verschieben, die Bezeichnungen helfen beim Finden. In ELSTER heißen die Felder genauso. Rechne nichts selbst zusammen: Das Finanzamt zieht die Erstattungen der Firma selbst ab.</p>
+    <div class="anl">${anRows || '<p class="hint">Für dieses Jahr gibt es noch nichts einzutragen.</p>'}</div>
+    <div class="btnrow"><button class="btn" type="button" data-report="1">${ic('description')}Jahresbericht</button><button class="btn" type="button" data-view="more">${ic('table-view')}Excel-Datei</button></div>`);
+  if (lstb) h += keep('nr20', 'Zeile 20 der Lohnsteuerbescheinigung', lstb, T.nr20 != null);
+  h += keep('detail', 'Alle Beträge im Detail', `<p class="hint">Gerechnet mit deinen Angaben: ${esc(profileLines().map(([l, v]) => l + ': ' + v).join(' · '))}. <button class="linkbtn" type="button" data-go="settings">Ändern</button></p>
+    <table class="ttable">${tax}</table>
+    <p class="hint">${pb}</p>
+    ${T.allowance ? `<p class="hint">Auslöse und Spesen erhalten: ${eur(T.allowance)}. Davon mit Kosten verrechnet: ${eur(T.offV + T.offL)}. ${T.allowance - T.offV - T.offL > 0.004 ? `Der Rest (${eur(T.allowance - T.offV - T.offL)}) liegt über den steuerlichen Pauschalen und mindert hier nichts.` : ''}</p>` : ''}`);
+  h += `<div class="card"><h3>Jahresbericht</h3><p class="hint">Alle Zahlen mit Ausfüllhilfe für die Anlage N, zum Drucken oder als PDF für den Steuerberater.</p><button class="btn block" type="button" data-report="1">${ic('description')}Jahresbericht ansehen</button></div>`;
+  h += keep('how', 'So rechnet MontageBuch', `
       <p><b>Verpflegung.</b> Ohne Übernachtung zählt die Zeit von der Abfahrt bis zur Rückkehr. Wer mehr als 8 Stunden weg ist, bekommt ${eurS(L.rateSmall)}. Hast du an einem Tag zwei Einsätze ohne Übernachtung, werden die Zeiten zusammengerechnet. Auf Montage gibt es am An- und Abreisetag je ${eurS(L.rateSmall)} und für jeden Tag dazwischen, an dem du 24 Stunden weg bist, ${eurS(L.rateFull)}, auch am Wochenende, wenn du auswärts bleibst. Bezahlt der Arbeitgeber eine Mahlzeit, werden ${eur(L.rateFull * 0.2)} (Frühstück) bzw. ${eur(L.rateFull * 0.4)} (Mittag, Abendessen) abgezogen.</p>
-      <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie sind für deine eigene Übersicht und zum Vergleich mit der Lohnabrechnung.</p>
+      <p><b>Stunden.</b> Die Stunden sind Arbeitszeit plus die Fahrzeit, die dir für An- und Abreise angerechnet wird. Für die Steuer spielen die Stunden keine Rolle, sie stehen unter „Arbeit“ zum Vergleich mit der Lohnabrechnung.</p>
       <p><b>Nachtschicht.</b> Eine Nachtschicht ohne Übernachtung trägst du an dem Tag ein, an dem du losfährst. Die Zeit über Mitternacht wird zusammengerechnet und gibt einmal die Pauschale. Sie zählt für den Kalendertag, an dem du länger unterwegs warst (Mitternachtsregel). Gleicher Beginn und gleiches Ende gilt als 24-Stunden-Schicht.</p>
       <p><b>Fahrten.</b> Fährst du mit dem eigenen Auto direkt zur Baustelle oder zu wechselnden Treffpunkten, ist das eine Dienstfahrt: Jeder gefahrene Kilometer zählt mit ${nf2(L.kmRate)} €, auch Heimfahrten am Wochenende. Als Mitfahrer oder mit Bahn und Bus gibt es dafür keine Kilometer, Tickets trägst du als Ausgabe ein. Steht im Vertrag ein fester Sammelpunkt oder ein fester Betrieb, zu dem du jeden Tag fährst, zählt dafür nur die einfache Entfernung mit ${commuteDesc(year)} (Entfernungspauschale). Die gibt es auch als Mitfahrer und mit Bahn oder Bus, dann höchstens ${eurS(L.cap)} im Jahr. Bringt dich die Firma mit ihrem Bus hin (Sammelbeförderung), gibt es dafür nichts. Ab dem Sammelpunkt bist du trotzdem auswärts tätig.</p>
       <p><b>Übernachtung.</b> Nur selbst bezahlte Kosten eintragen. Ist das Frühstück im Zimmerpreis enthalten und nicht extra ausgewiesen, zieh ${eur(L.rateFull * 0.2)} pro Nacht ab.</p>
@@ -2600,35 +2661,17 @@ function renderStats() {
       <p><b>Drei Monate.</b> Wer länger als drei Monate regelmäßig, also an mindestens drei Tagen pro Woche, an derselben Stelle arbeitet, bekommt dort danach keine Verpflegungspauschale mehr. Eine Unterbrechung von mindestens vier Wochen startet die Frist neu. Orte wie „Hamm“ und „Hamm (Westf)“ werden dabei zusammengefasst. Die App rechnet die Pauschale trotzdem weiter und zeigt nur einen Hinweis, prüfe den Fall selbst.</p>
       <p><b>Pauschbetrag.</b> Das Finanzamt zieht ohnehin ${eurS(L.wkp)} Werbungskosten ab. Erst was darüber liegt, senkt deine Steuer zusätzlich. Gewerkschaftsbeiträge zählen ${L.gewExtra ? 'zusätzlich' : 'erst ab dem Steuerjahr 2026 zusätzlich'}.</p>
       <p><b>Gesetzliche Werte.</b> Alle Pauschalen sind die gesetzlichen Werte für ${year} und in der App nicht änderbar. Neue Werte kommen mit Updates.</p>
-      <p class="hint">Alle Beträge sind Schätzungen und ersetzen keine Steuerberatung.</p>
-    </details>
-  </div>
-  <div data-panel="anl" class="stack">
-    <div class="card"><h3>Ausfüllhilfe Anlage N ${year}</h3>
-      <p class="hint">Die Zeilen gelten für das Formular Anlage N 2025. In neueren Formularen können sich die Nummern verschieben, die Bezeichnungen helfen beim Finden. In ELSTER heißen die Felder genauso. Rechne nichts selbst zusammen: Das Finanzamt zieht die Erstattungen der Firma selbst ab.</p>
-      <div class="anl">${anRows || '<p class="hint">Für dieses Jahr gibt es noch nichts einzutragen.</p>'}</div>
-      <div class="btnrow"><button class="btn" type="button" data-report="1">${ic('description')}Jahresbericht</button><button class="btn" type="button" data-view="more">${ic('table-view')}Excel-Datei</button></div>
-    </div>
-  </div>
-  <div data-panel="std" class="stack">
-    <div class="kpis">
-      <div class="kpi"><b>${T.workDays + T.trainDays}</b><span>Arbeitstage</span></div>
-      <div class="kpi"><b>${nf(T.tot / 60, 1)}</b><span>Stunden</span></div>
-      <div class="kpi"><b>${T.nightShifts}</b><span>Nachtschichten</span></div>
-      <div class="kpi"><b>${T.awayDays}</b><span>Tage auswärts</span></div>
-      <div class="kpi"><b>${T.nights}</b><span>Übernachtungen</span></div>
-      <div class="kpi"><b>${nf(T.km, 0)}</b><span>km Dienstfahrten</span></div>
-      ${T.travelMin ? `<div class="kpi wide"><b>${nf(T.travelMin / 60, 1)}</b><span>Std. Fahrzeit bei An- und Abreise (in den Stunden enthalten)</span></div>` : ''}
-      ${T.ausfall ? `<div class="kpi wide"><b>${T.ausfall}</b><span>${T.ausfall === 1 ? 'Ausfallschicht' : 'Ausfallschichten'}${T.ausfallMin ? `, davon ${nf(T.ausfallMin / 60, 2)} Std. bezahlt (in den Stunden enthalten)` : ', ohne Stunden'}</span></div>` : ''}
-    </div>
-    <div class="card"><h3>Monate</h3>
-      <div class="mtab"><div class="mrow h"><span></span><span>Stunden mit Fahrzeit</span><span class="n">Std.</span><span class="n">Verpfl.</span></div>${months}</div>
-      <p class="hint">Urlaub ${T.vacDays} · krank ${T.sickDays} · Schulung ${T.trainDays} · An-/Abreisetage ${T.travelDays} · Ausfallschichten ${T.ausfall} · Arbeitszeit ${nf(T.min / 60, 1)} h · Fahrzeit ${nf(T.travelMin / 60, 1)} h</p>
-    </div>
-    ${zCard}
-    ${places ? `<div class="card"><h3>Einsatzorte</h3><div class="places">${places}</div></div>` : ''}
-  </div>`;
-  if (wasOpen) el.querySelector('details').open = true;
+      <p class="hint">Alle Beträge sind Schätzungen und ersetzen keine Steuerberatung.</p>`);
+  return h;
+}
+function renderStats() {
+  const el = $('#stats-body'), list = yearList(year), exps = expList(year);
+  // aufgeklappte Abschnitte bleiben nach dem neuen Zeichnen offen
+  const open = new Set([...el.querySelectorAll('details[data-keep][open]')].map(x => x.dataset.keep));
+  el.innerHTML = `<div data-panel="tax" class="stack">${list.length || exps.length ? taxHTML(computeYear(list, exps), list, exps)
+      : `<div class="empty"><h2>Steuer ${year}</h2><p>Sobald du Tage oder Ausgaben einträgst, siehst du hier, ob dir die Steuererklärung für deine Arbeitskosten etwas bringt.</p></div>`}</div>
+    <div data-panel="work" class="stack">${workHTML()}</div>`;
+  el.querySelectorAll('details[data-keep]').forEach(x => { if (open.has(x.dataset.keep)) x.open = true; });
   showStatsTab(); syncTips();
 }
 
@@ -2925,7 +2968,7 @@ function closeBell(then) {
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#bell').hidden) closeBell(); });
 
 /* ---------- Klicks auf Knöpfe mit data-Angaben (überall in der App) ---------- */
-const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add],[data-quick]';
+const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add],[data-quick],[data-wm],[data-work]';
 document.addEventListener('click', ev => {
   const a = ev.target.closest(ACT); if (!a) return;
   const d = a.dataset, inBell = !!a.closest('#bell');
@@ -2947,6 +2990,8 @@ document.addEventListener('click', ev => {
   if (d.go) { ev.preventDefault(); leave(() => go(d.go)); return; }
   if (d.view) { if (d.listmode) listMode = d.listmode; go(d.view); return; }
   if (d.sbAdd) { openForm(null, defaultNewDate()); return; }
+  if (d.wm) { const [y, m] = workM.split('-').map(Number), nd = new Date(y, m - 1 + +d.wm, 1); workM = nd.getFullYear() + '-' + pad(nd.getMonth() + 1); renderStats(); enter($('#stats-body [data-panel="work"]'), +d.wm > 0 ? 'fwd' : 'back'); return; }
+  if (d.work) { statsTab = 'work'; workM = today().slice(0, 7); go('stats'); return; }
   if (d.stab) { const ch = statsTab !== d.stab; statsTab = d.stab; showStatsTab(); if (ch) enter($(`#stats-body [data-panel="${statsTab}"]`)); return; }
   if (d.mode) { listMode = d.mode; renderList(); if (view === 'all') document.querySelectorAll('#side [data-view="all"]').forEach(b => setCur(b, b.dataset.listmode === listMode)); return; }
   if (d.calDay) { calSel = d.calDay; renderCal(); return; }
@@ -2964,7 +3009,7 @@ document.addEventListener('click', ev => {
     else { storeBlocked = false; loadError = false; persist(); renderList(); }
     return;
   }
-  if (d.report) { openReport(view); return; }
+  if (d.report) { openReport(view, d.report === 'month' ? workM : ''); return; }
   if (d.quick) { quickSave(); return; }
   if (d.copy) { copyNext(d.copy); return; }
   if (d.trip) { openTrip(); return; }
@@ -2977,7 +3022,7 @@ document.addEventListener('click', ev => {
 $('#nav-add').addEventListener('click', () => { if (view === 'all' && listMode === 'exp') openExp(null); else openForm(null, defaultNewDate()); });
 $('#nav-settings').addEventListener('click', () => go('settings'));
 // Jahr wählen: feste Auswahlfelder direkt, Felder in Listen und auf der Startseite über das Dokument
-function setYear(y) { if (!(+y > 2000)) return; year = +y; renderYears(); renderAll(); if (view === 'settings') renderLaw(); }
+function setYear(y) { if (!(+y > 2000)) return; year = +y; if (+workM.slice(0, 4) !== year) workM = year + '-' + (String(year) === today().slice(0, 4) ? today().slice(5, 7) : '12'); renderYears(); renderAll(); if (view === 'settings') renderLaw(); }
 ['#year', '#year-x'].forEach(s => $(s).addEventListener('change', ev => setYear(ev.target.value)));
 document.addEventListener('change', ev => { const s = ev.target.closest('select.ysel'); if (s && s.id !== 'year' && s.id !== 'year-x') setYear(s.value); });
 function defaultNewDate() {
@@ -3804,9 +3849,14 @@ function anlageN(R, list, exps) {
 }
 
 /* ---------- Jahresbericht (drucken oder als PDF speichern) ---------- */
-let reportUrls = [], reportTok = 0, reportReady = Promise.resolve();
-function openReport(from) {
+let reportUrls = [], reportTok = 0, reportReady = Promise.resolve(), reportMonth = '';
+// month: „JJJJ-MM“ für den Monatsnachweis, sonst Jahresbericht
+function openReport(from, month) {
   reportFrom = from && from !== 'report' ? from : 'more';
+  reportMonth = month || '';
+  $('#r-title').textContent = reportMonth ? 'Monatsnachweis' : 'Jahresbericht';
+  $('#r-days-w').hidden = !!reportMonth;
+  $('#r-use').textContent = reportMonth ? 'Leg den Nachweis neben deine Lohnabrechnung oder heb ihn als Beleg auf.' : 'Den Bericht kannst du ausdrucken, dem Steuerberater geben oder beim Ausfüllen von ELSTER danebenlegen.';
   show('report');
   $('#r-hint').textContent = isIOS() ? 'Auf dem iPhone im Druckmenü oben auf das Teilen-Symbol tippen und „In Dateien sichern“ wählen.' : 'Im Druckmenü als Drucker „Als PDF speichern“ wählen.';
   if (!(history.state && history.state.r)) history.pushState({r: 1}, '');
@@ -3861,8 +3911,45 @@ function reportHTML(R, list, exps, withDays) {
   }
   return h;
 }
+// Monatsnachweis: alle Tage eines Monats mit Zeiten, Ort und Auslöse, dazu die Summen. Zum Vergleich mit der Lohnabrechnung und als Nachweis.
+function monthReportHTML(ym) {
+  const [y, m] = ym.split('-').map(Number), R = yearCalc(y), M = R.M[m - 1], st = S.settings, name = MONTHS[m - 1] + ' ' + y;
+  const list = yearList(y).filter(e => e.date.slice(0, 7) === ym).sort(sortAsc);
+  const tbl = (head, rows, cls = '') => `<table class="rt ${cls}"><thead><tr>${head.map(([h, n]) => `<th${n ? ' class="n"' : ''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+  const kv = (l, v, cls = '') => `<tr class="${cls}"><td>${l}</td><td class="n">${v}</td></tr>`;
+  let h = `<div class="rlogo"><svg viewBox="0 0 144 86" aria-hidden="true"><use href="#logo-l"/></svg><span>MontageBuch</span></div><h1>Arbeitsnachweis ${name}</h1>
+    <p><b>${esc(st.name || 'Arbeitsnachweis')}</b>${st.employer ? ' · ' + esc(st.employer) : ''}</p>
+    <p class="hint">Aus den eigenen Einträgen in MontageBuch, erstellt am ${dDot(today())}. Zum Vergleich mit der Lohnabrechnung.</p>`;
+  if (!list.length) return h + `<p>Für ${name} gibt es keine Einträge.</p>`;
+  const km = r2(M.km + M.kmOther);
+  h += `<h2>Tage</h2>` + tbl([['Datum'], ['Was'], ['Ort'], ['Std.', 1], ['Auslöse', 1], ['km', 1]], list.map(e => {
+    const work = WORK.has(e.type), tr = OFF.has(e.type) ? 0 : travelOf(e), wmin = workMin(e) + tr;
+    const dup = (e.type === 'anreise' && e.away === 'an') || (e.type === 'abreise' && e.away === 'ab');
+    const what = [entryTitle(e), work && e.start && e.end ? e.start + '–' + e.end + (e.pause ? ', Pause ' + e.pause + ' Min.' : '') : '',
+      isAway(e) && !dup ? AWAY_CHIP[e.away] : '', tr ? 'Fahrzeit ' + nf(tr / 60, 2) + ' h' : ''].filter(Boolean).join(' · ');
+    const k = e.vehicle === 'pkw' && e.km && !OFF.has(e.type) ? nf(e.km, 0) + (e.trip === 'sammel' ? ' einf.' : '') : '';
+    return `<tr><td class="d">${dShort(e.date)}</td><td>${esc(what)}</td><td>${esc(e.place)}</td><td class="n">${wmin ? nf(wmin / 60, 2) : ''}</td><td class="n">${e.allowance && !OFF.has(e.type) ? eurS(e.allowance) : ''}</td><td class="n">${k}</td></tr>`;
+  }).concat(`<tr class="sum"><td colspan="3">Summe</td><td class="n">${nf(M.tot / 60, 2)}</td><td class="n">${eurS(M.allowance)}</td><td class="n">${km ? nf(km, 0) : ''}</td></tr>`), 'days');
+  const night = M.z25 + M.z40, hol = M.z125 + M.z150;
+  h += `<h2>Summen</h2><table class="rt"><tbody>
+    ${kv('Arbeitstage', M.workDays + M.trainDays)}${kv('Stunden mit Fahrzeit', nf(M.tot / 60, 2) + ' h')}
+    ${M.travelMin ? kv('davon Fahrzeit bei An- und Abreise', nf(M.travelMin / 60, 2) + ' h') : ''}
+    ${night ? kv('davon nachts (20 bis 6 Uhr)', nf(night / 60, 2) + ' h') : ''}${M.z50 ? kv('davon sonntags', nf(M.z50 / 60, 2) + ' h') : ''}${hol ? kv('davon feiertags', nf(hol / 60, 2) + ' h') : ''}
+    ${M.ausfall ? kv('Ausfallschichten', M.ausfall) : ''}
+    ${st.ausOn || M.allowance > 0 ? awayGroups(list).map(x => kv(`${x.n} × ${AWK[x.k]}${x.a ? ' à ' + eurS(x.a) : ' ohne Auslöse'}`, x.a ? eurS(r2(x.n * x.a)) : '')).join('') + kv('Auslöse laut Einträgen', eurS(M.allowance), 'sum')
+      : awayGroups(list).map(x => kv(AWK[x.k], nDays(x.n))).join('')}
+    ${km ? kv('Gefahren mit eigenem Auto', nf(km, 0) + ' km') : ''}${M.nights ? kv('Übernachtungen auswärts', M.nights) : ''}
+    ${M.vacDays ? kv('Urlaub', nDays(M.vacDays)) : ''}${M.sickDays ? kv('Krank', nDays(M.sickDays)) : ''}
+    </tbody></table>`;
+  return h;
+}
 async function renderReport() {
   const el = $('#r-paper'), tok = ++reportTok;
+  if (reportMonth) {
+    $('#r-photos-w').hidden = true; reportUrls.forEach(u => URL.revokeObjectURL(u)); reportUrls = [];
+    el.innerHTML = monthReportHTML(reportMonth) + '<p class="hint" style="margin-top:18px">Erstellt mit MontageBuch aus deinen eigenen Einträgen.</p>';
+    reportReady = Promise.resolve(); return;
+  }
   const list = yearList(year).sort(sortAsc), exps = expList(year).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
   const R = computeYear(list, exps);
   const withPhotos = list.concat(exps).filter(x => x.photos.length);

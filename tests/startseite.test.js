@@ -1,4 +1,4 @@
-// Test Version 2.1.0: Startseite mit „Heute“ (ein Tipp wie gestern, Rückgängig), Woche als Gleis mit Signalen,
+// Test Version 2.1.0 (angepasst an 2.4.0): Startseite mit „Heute“ (ein Tipp wie gestern, Rückgängig), Woche als Gleis mit Signalen,
 // Jahresbetrag mit Pauschbetrag, Rückgängig nach dem Löschen (mit Belegfoto), Bewegung und Rücksicht auf „Bewegung reduzieren“
 const {JSDOM} = require('jsdom'); const fs = require('fs');
 const {IDBFactory} = require('fake-indexeddb');
@@ -23,6 +23,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 const T = s => (s || '').replace(/\s+/g, ' ').trim();
 const data = () => JSON.parse(store[KEY]);
 const eur = n => new Intl.NumberFormat('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(n) + ' €';
+// wie eurS in der App: ganze Euro ohne Nachkommastellen
+const eurS = n => Math.abs(n - Math.round(n)) < 0.005 ? new Intl.NumberFormat('de-DE', {maximumFractionDigits: 0}).format(n) + ' €' : eur(n);
 let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; console.log((ok ? 'OK   ' : 'FEHL ') + name + (info !== '' && info != null ? ' | ' + info : '')); };
 const E = (id, date, o) => Object.assign({id, date, year: +date.slice(0, 4), type: 'arbeit', shift: '', start: '', end: '', pause: 0, travelMin: 0, place: '', line: '', project: '', away: 'none',
   depart: '', ret: '', meals: {}, lodging: 0, lodgingName: '', vehicle: '', trip: 'dienst', meet: '', km: 0, allowance: 0, otherCost: 0, otherNote: '', note: '', photos: [], updated: '2026-01-01T00:00:00Z'}, o);
@@ -38,9 +40,10 @@ const idbDo = (mode, fn) => new Promise((res, rej) => {
   rq.onsuccess = () => { const db = rq.result, tx = db.transaction('files', mode), r = fn(tx.objectStore('files')); tx.oncomplete = () => { db.close(); res(r && r.result); }; tx.onerror = rej; };
   rq.onerror = rej;
 });
-// Nachtschicht mit Tagestour und eigenem Auto (wie ein typischer Einsatz)
+// Nachtschicht mit Tagestour und eigenem Auto (wie ein typischer Einsatz). AUS: Firma zahlt 21 € Auslöse für Tagestouren
 const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: 'Hamm (Westf)', project: 'Gleiserneuerung', line: '2650',
   away: 'tag', depart: '21:00', ret: '07:00', vehicle: 'pkw', km: 96};
+const AUS = {ausOn: true, ausDay: 21};
 
 (async () => {
   let dom, w, d, $;
@@ -51,7 +54,7 @@ const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: '
   const strip = e => { const c = Object.assign({}, e); delete c.id; delete c.updated; return JSON.stringify(c); };
 
   // ---------- A: Heute mit einem Tipp ----------
-  seed([E('f1', '2026-10-09', NIGHT), E('m1', '2026-10-12', NIGHT)]);
+  seed([E('f1', '2026-10-09', NIGHT), E('m1', '2026-10-12', NIGHT)], [], AUS);
   await start();
   const hero = () => T($('.today').textContent);
   check('Heute noch offen, Vorschlag wie gestern', hero().startsWith('Heute noch offen') && hero().includes('Vorschlag wie gestern') && hero().includes('22:00 – 06:00') && hero().includes('Nachtschicht · 7,5 h · Tagestour') && hero().includes('Hamm (Westf) · Gleiserneuerung'), hero());
@@ -66,9 +69,9 @@ const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: '
   check('Meldung mit „Rückgängig“', T($('#toast').textContent).startsWith('Heute gespeichert') && T($('#toast button').textContent) === 'Rückgängig');
   check('Handy vibriert kurz', buzzes.length === 1, JSON.stringify(buzzes));
   const cnt = $('#v-list [data-count]'), after = +cnt.dataset.count;
-  check('Betrag zählt vom alten zum neuen Wert', cnt.dataset.from === String(before) && after > before && T($('#v-list .yr-d').textContent) === '+' + eur(after - before), `${before} → ${after}, ${T($('#v-list .yr-d').textContent)}`);
+  check('Auslöse in „Dieser Monat“ zählt vom alten zum neuen Wert', q[0].allowance === 21 && cnt.dataset.from === String(before) && after === before + 21 && T($('#v-list .mo-d').textContent) === '+21 €', `${before} → ${after}, ${T($('#v-list .mo-d').textContent)}`);
   await wait(900);
-  check('Am Ende steht der neue Betrag', T(cnt.textContent) === eur(after), T(cnt.textContent));
+  check('Am Ende steht der neue Betrag', T(cnt.textContent) === eurS(after), T(cnt.textContent));
   const quick = q[0];
   $('#toast button').click(); await wait(20);
   check('Rückgängig: Eintrag wieder weg', today().length === 0 && hero().startsWith('Heute noch offen') && T($('#toast').textContent) === 'Rückgängig gemacht');
@@ -77,7 +80,7 @@ const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: '
   check('Tipp auf den Vorschlag öffnet das Formular für heute', visible('form') && $('#f-date').value === '2026-10-13' && $('#f-place').value === 'Hamm (Westf)');
   $('#f-save').click(); await wait(20);
   check('Ein Tipp speichert dasselbe wie das Formular', today().length === 1 && strip(today()[0]) === strip(quick), strip(today()[0]) + '\n' + strip(quick));
-  check('Mit Eintrag: Karte öffnet ihn zum Ändern', !!$(`.today .td-plan[data-id="${today()[0].id}"]`) && T($('.today').textContent).includes('14 € Verpflegung'), T($('.today').textContent));
+  check('Mit Eintrag: Karte öffnet ihn zum Ändern', !!$(`.today .td-plan[data-id="${today()[0].id}"]`) && T($('.today').textContent).includes('21 € Auslöse') && !T($('.today').textContent).includes('Verpflegung'), T($('.today').textContent));
 
   // ---------- B: Woche als Gleis ----------
   seed([E('a1', '2026-10-07', NIGHT), E('a2', '2026-10-08', NIGHT)]);
@@ -102,19 +105,21 @@ const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: '
   await start();
   check('Ohne Arbeitstag als Vorlage: „Arbeitstag erfassen“', !$('.today [data-quick]') && T($('.today [data-new]').textContent) === 'Arbeitstag erfassen');
 
-  // ---------- C: Jahresbetrag mit Pauschbetrag ----------
-  seed([E('y1', '2026-10-12', {shift: 'tag', start: '07:00', end: '15:30'})], [X('x1', '2026-03-02', {amount: 1500, cat: 'mittel'})]);
-  await start();
-  check('Über dem Pauschbetrag', T($('.yr-t').textContent) === '270,00 € mehr als der Pauschbetrag von 1.230 €' && $('#v-list [data-count]').dataset.count === '1500', T($('.yr-t').textContent));
-  check('Grüner Teil nur über dem Pauschbetrag', $('.yr-bar .b').dataset.to !== 'scaleX(0.0000)' && /left:\s*71\.30%/.test($('.yr-bar b').getAttribute('style')), $('.yr-bar b').getAttribute('style'));
-  seed([E('y1', '2026-10-12', {shift: 'tag', start: '07:00', end: '15:30'})], [X('x1', '2026-03-02', {amount: 1000, cat: 'mittel'})]);
-  await start();
-  check('Unter dem Pauschbetrag', T($('.yr-t').textContent) === 'Noch 230,00 € bis zum Pauschbetrag von 1.230 €, den es ohnehin gibt' && $('.yr-bar .b').dataset.to === 'scaleX(0.0000)', T($('.yr-t').textContent));
-  seed([E('y1', '2026-10-12', {shift: 'tag', start: '07:00', end: '15:30'})], [X('x1', '2026-03-02', {amount: 1500, cat: 'mittel'}), X('x2', '2026-04-01', {amount: 300, cat: 'gew'})]);
-  await start();
-  check('Gewerkschaft zählt 2026 zusätzlich', T($('.yr-t').textContent) === '270,00 € mehr als der Pauschbetrag von 1.230 € (ohne Gewerkschaft)' && $('#v-list [data-count]').dataset.count === '1800', T($('.yr-t').textContent));
-  $('.yr').click(); await wait(10);
-  check('Tipp auf den Betrag: Auswertung', visible('stats'));
+  // ---------- C: Pauschbetrag steht nur noch unter Auswertung > Steuer ----------
+  const taxOf = async (exps, st) => { seed([E('y1', '2026-10-12', {shift: 'tag', start: '07:00', end: '15:30'})], exps, st); await start(); $('[data-view="stats"]').click(); $('[data-stab="tax"]').click(); await wait(10); return {h: T($('.tq h3').textContent), t: T($('.tq').textContent)}; };
+  let tq = await taxOf([X('x1', '2026-03-02', {amount: 1500, cat: 'mittel'})]);
+  check('Startseite ohne Werbungskosten', !T($('#v-list').textContent).includes('Werbungskosten') && !T($('#v-list').textContent).includes('Pauschbetrag'));
+  check('Über dem Pauschbetrag: klare Antwort', tq.h === 'Ja, 270,00 € mehr als ohnehin' && tq.t.includes('Deine Kosten für die Arbeit (1.500,00 €) liegen über 1.230 €'), tq.h);
+  check('Grüner Teil nur über dem Pauschbetrag', $('.tq-bar .b').getAttribute('style').includes('scaleX(0.5455)') && /left:\s*71\.30%/.test($('.tq-bar b').getAttribute('style')), $('.tq-bar b').getAttribute('style'));
+  tq = await taxOf([X('x1', '2026-03-02', {amount: 1000, cat: 'mittel'})]);
+  check('Unter dem Pauschbetrag: bisher nichts extra', tq.h === 'Bisher nichts extra' && tq.t.includes('(1.000,00 €) liegen unter 1.230 €') && $('.tq-bar .b').getAttribute('style').includes('scaleX(0.0000)'), tq.h);
+  tq = await taxOf([X('x1', '2026-03-02', {amount: 1500, cat: 'mittel'}), X('x2', '2026-04-01', {amount: 300, cat: 'gew'})]);
+  check('Gewerkschaft zählt 2026 zusätzlich', tq.h === 'Ja, 270,00 € mehr als ohnehin' && tq.t.includes('Gewerkschaftsbeiträge (300,00 €) zählen in 2026 zusätzlich.'), tq.t.slice(-120));
+  tq = await taxOf([X('x1', '2026-03-02', {amount: 500, cat: 'mittel'}), X('x2', '2026-04-01', {amount: 300, cat: 'gew'})]);
+  check('Unter dem Pauschbetrag mit Gewerkschaft: nur die zählt extra', tq.h === 'Nur die Gewerkschaftsbeiträge', tq.h);
+  $('[data-view="list"]').click(); await wait(10);
+  $('#v-list .mo').click(); await wait(10);
+  check('Tipp auf „Dieser Monat“: Auswertung „Arbeit“ für Oktober', visible('stats') && !$('#stats-body [data-panel="work"]').hidden && T($('#stats-body .wm h3').textContent) === 'Oktober 2026');
 
   // ---------- D: Rückgängig nach dem Löschen, mit Belegfoto ----------
   idb = new IDBFactory();
@@ -146,13 +151,13 @@ const NIGHT = {shift: 'nacht', start: '22:00', end: '06:00', pause: 30, place: '
   check('App-Verhalten: kein Markieren, kein Neuladen durch Ziehen', /button,[^{]*\{-webkit-user-select:none;user-select:none/.test(html) && html.includes('overscroll-behavior-y:contain'));
   check('Animationen nur ohne „Bewegung reduzieren“', html.includes('@media (prefers-reduced-motion:no-preference){\r\n  .btn:not(:disabled):active') || html.includes('@media (prefers-reduced-motion:no-preference){\n  .btn:not(:disabled):active'));
   // Bewegung reduzieren
-  seed([E('m1', '2026-10-12', NIGHT)]);
+  seed([E('m1', '2026-10-12', NIGHT)], [], AUS);
   await start({reduce: true});
   $('#tabs [data-view="cal"]').click(); await wait(10);
   check('Bewegung reduziert: nichts gleitet', !$('#v-cal').classList.contains('v-in'));
   $('#tabs [data-view="list"]').click(); await wait(10);
   $('.today [data-quick]').click(); await wait(10);
-  check('Bewegung reduziert: Betrag sofort fertig', !$('#v-list [data-from]') && T($('#v-list [data-count]').textContent) === eur(+$('#v-list [data-count]').dataset.count));
+  check('Bewegung reduziert: Betrag sofort fertig', !$('#v-list [data-from]') && T($('#v-list [data-count]').textContent) === eurS(+$('#v-list [data-count]').dataset.count), T($('#v-list [data-count]').textContent));
 
   console.log(fails ? fails + ' Fehler' : 'Alles bestanden');
   process.exit(fails ? 1 : 0);

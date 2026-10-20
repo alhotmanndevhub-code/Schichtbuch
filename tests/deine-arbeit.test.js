@@ -115,8 +115,11 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   ], {profSeen: true});
   dom.window.close(); dom = boot(); w = dom.window; d = w.document; await wait(50); $ = s => d.querySelector(s);
   $('[data-view="stats"]').click(); await wait(10);
-  const mrows = [...d.querySelectorAll('.mrow')].map(r => T(r.textContent));
-  check('Mitternachtsregel: Oktober 14 €, November 14 €, Januar 14 € aus 31.12.2025', mrows.some(r => r.startsWith('Okt') && r.endsWith('14 €')) && mrows.some(r => r.startsWith('Nov') && r.endsWith('14 €')) && mrows.some(r => r.startsWith('Jan') && r.endsWith('14 €')), mrows.filter(r => !r.endsWith('–')).join(' | '));
+  $('[data-report="1"]').click(); await wait(20);
+  const mrows = [...d.querySelectorAll('#r-paper table.rt tbody tr')].map(r => [...r.querySelectorAll('td')].map(c => T(c.textContent)));
+  const vm = name => (mrows.find(r => r[0] === name) || [])[4];
+  check('Mitternachtsregel: Oktober 14 €, November 14 €, Januar 14 € aus 31.12.2025', vm('Oktober') === '14,00 €' && vm('November') === '14,00 €' && vm('Januar') === '14,00 €', [vm('Januar'), vm('Oktober'), vm('November')].join(' | '));
+  w.dispatchEvent(new w.PopStateEvent('popstate', {state: null})); await wait(10);
   $('[data-view="list"]').click(); await wait(10);
   openId('n1');
   check('Formular: zählt für So 01.11.', T($('#c-away').textContent).includes('zählt für So 01.11., dort warst du länger unterwegs'), T($('#c-away').textContent));
@@ -127,10 +130,10 @@ const seed = (entries, settings, extra) => { store = {}; const m = {}; entries.f
   seed(mk('z', [1, 2], 'Zweitage-Ort').concat(mk('d', [3, 4, 5], 'Dreitage-Ort')), {profSeen: true});
   dom.window.close(); dom = boot(); w = dom.window; d = w.document; await wait(50); $ = s => d.querySelector(s);
   $('[data-view="stats"]').click(); await wait(10);
-  const places = [...d.querySelectorAll('.place')].map(p => T(p.textContent));
-  const p2 = places.find(p => p.startsWith('Zweitage')), p3 = places.find(p => p.startsWith('Dreitage'));
-  check('Dreimonatsfrist: 2 Tage/Woche ohne Warnung', p2 && !p2.includes('Dreimonatsfrist'), p2);
-  check('Dreimonatsfrist: 3 Tage/Woche mit Warnung ab 07.04.2026', p3 && p3.includes('Seit 07.01.2026 regelmäßig') && p3.includes('Ab 07.04.2026'), p3 && p3.slice(-160));
+  const fw = [...d.querySelectorAll('#stats-body [data-panel="tax"] .warn')].map(p => T(p.textContent)).filter(t => t.startsWith('Dreimonatsfrist'));
+  check('Dreimonatsfrist: 2 Tage/Woche ohne Warnung', !fw.some(t => t.includes('Zweitage')), fw.join(' | '));
+  check('Dreimonatsfrist: 3 Tage/Woche mit Warnung ab 07.04.2026 unter „Steuer“', fw.length === 1 && fw[0].includes('Dreitage-Ort, regelmäßig seit 07.01.2026') && fw[0].includes('Ab 07.04.2026'), fw.join(' | '));
+  check('Einsatzorte unter „Arbeit“ ohne Steuerhinweis', [...d.querySelectorAll('.place')].some(p => T(p.textContent).startsWith('Dreitage')) && ![...d.querySelectorAll('.place')].some(p => /Dreimonatsfrist|Pauschale/.test(p.textContent)));
 
   // ---------- E: 4.500-€-Grenze ohne eigenes Auto ----------
   const many = []; for (let i = 0; i < 300; i++) { const dt = new Date(2026, 0, 1 + i); const iso = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0'); many.push(E('m' + i, iso, {vehicle: 'mit', trip: 'sammel', km: 50})); }

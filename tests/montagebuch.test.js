@@ -74,7 +74,7 @@ const seed = (entries, settings, extra) => {
   check('Fehlende Tage nachtragen', home.includes('2 Werktage ohne Eintrag (Fr 09.10. bis Mo 12.10.)') && !!$('.wk [data-new="2026-10-09"]'));
   check('Aktueller Einsatz: Ort, Strecke, Zeitraum', T($('.job').textContent).includes('Hamm (Westf)') && T($('.job').textContent).includes('2650, km 112,4') && T($('.job').textContent).includes('Mi 07.10. – Do 08.10.'), T($('.job').textContent));
   check('Letzte Einträge mit Datum und Wochentag', T($('#v-list .rows').textContent).startsWith('Do08.10.'), T($('#v-list .rows').textContent).slice(0, 40));
-  check('PC-Kacheln und Werbungskosten-Ring vorhanden', d.querySelectorAll('#v-list .kc').length === 4 && !!$('#v-list .donut circle[stroke-dasharray]'));
+  check('PC-Kacheln und „Dieser Monat“ statt Werbungskosten', d.querySelectorAll('#v-list .kc').length === 4 && !!$('#v-list .mo') && !$('#v-list .donut') && !T($('#v-list').textContent).includes('Werbungskosten'));
   $('[data-view="all"]').click(); await wait(10);
   check('Alle Einträge: eigene Seite mit Monaten', visible('all') && !!$('#v-all .mhead') && !$('#top-back').hidden && $('#top-title').textContent === 'Alle Einträge');
   $('#top-back').click(); await wait(20);
@@ -112,7 +112,7 @@ const seed = (entries, settings, extra) => {
   $('[data-cal-day="2026-10-08"]').click();
   $('#v-cal .item[data-day="2026-10-08"]').click(); await wait(10);
   const day = T($('#v-day').textContent);
-  check('Tagesdetail: Datum, auswärts, Zeit, Fahrt, Verpflegung', visible('day') && day.includes('Donnerstag, 8. Oktober 2026') && day.includes('Auswärtiger Einsatz') && day.includes('05:00 – 13:30 (8 h)') && day.includes('96 km gefahren') && /Verpflegungspauschale[^€]*14,00 €/.test(day), day.slice(0, 200));
+  check('Tagesdetail: Datum, auswärts, Zeit, Fahrt, keine Steuerpauschale', visible('day') && day.includes('Donnerstag, 8. Oktober 2026') && day.includes('Auswärtiger Einsatz') && day.includes('05:00 – 13:30 (8 h)') && day.includes('96 km gefahren') && !day.includes('Verpflegungspauschale'), day.slice(0, 200));
   check('Tagesdetail: Unterseite mit Zurück, Kalender markiert', $('#top-title').textContent === 'Tagesdetail' && !$('#top-back').hidden && $('#tabs [data-view="cal"]').getAttribute('aria-current') === 'page');
   $('[data-day-step="1"]').click();
   check('Pfeil: nächster Tag', T($('#v-day .dhead').textContent).startsWith('Freitag, 9. Oktober 2026') && T($('#v-day').textContent).includes('Nichts eingetragen'));
@@ -132,7 +132,7 @@ const seed = (entries, settings, extra) => {
   await start();
   check('Glocke zählt Neuigkeiten und Einrichten', $('[data-bell] .badge').textContent === '2' && !$('[data-bell] .badge').hidden);
   $('[data-bell]').click();
-  check('Glocke offen, Neuigkeiten 2.3.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.3.0');
+  check('Glocke offen, Neuigkeiten 2.4.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.4.0');
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Neuigkeit weg, Glocke bleibt offen für den Rest', !$('#bell-list .news') && !$('#bell').hidden && $('[data-bell] .badge').textContent === '1');
   $('#bell [data-bell-close].iconbtn').click(); await wait(20);
@@ -145,14 +145,17 @@ const seed = (entries, settings, extra) => {
   await start();
   $('[data-view="stats"]').click(); await wait(10);
   const panel = p => $('#stats-body [data-panel="' + p + '"]');
-  check('Übersicht zuerst: Werbungskosten 56,00 €', !panel('over').hidden && panel('anl').hidden && panel('std').hidden && T($('.bigsum .amount').textContent) === '56,00 €');
-  check('Aufteilung ergibt die Summe', T($('.sumtable').textContent).includes('Verpflegung56,00 €') && T($('.sumtable').textContent).includes('Fahrten0,00 €'));
-  $('[data-stab="anl"]').click();
-  check('Reiter Anlage N: Zeilen 73 und 74', !panel('anl').hidden && panel('over').hidden && T(panel('anl').textContent).includes('Zeile 73') && T(panel('anl').textContent).includes('Zeile 74'));
-  $('[data-stab="std"]').click();
-  check('Reiter Stunden: Kennzahlen und Monate', !panel('std').hidden && d.querySelectorAll('#stats-body .kpi').length >= 6 && !!$('#stats-body .mtab'));
+  check('Arbeit zuerst: Oktober ohne Einträge', !panel('work').hidden && panel('tax').hidden && T($('#stats-body .wm h3').textContent) === 'Oktober 2026' && T(panel('work').textContent).includes('Nichts eingetragen'));
+  $('[data-wm="-1"]').click(); await wait(10);
+  check('Monat zurück: September mit Montage, ohne Steuerwörter', T($('#stats-body .wm h3').textContent) === 'September 2026' && T(panel('work').textContent).includes('Montage24 Std. auswärts1 TagAn- und Abreise2 Tage') && !T(panel('work').textContent).includes('ohne Auslöse')
+    && ![...d.querySelectorAll('#stats-body .wcard')].some(c => /Pauschale|Werbungskosten|Verpflegung/.test(c.textContent)), T(panel('work').textContent).slice(0, 200));
+  check('Arbeit: das ganze Jahr mit Kennzahlen und Monaten', d.querySelectorAll('#stats-body .kpi').length >= 6 && !!$('#stats-body [data-panel="work"] .mtab'));
+  $('[data-stab="tax"]').click();
+  check('Steuer: zuerst die Antwort', !panel('tax').hidden && panel('work').hidden && T($('#stats-body .tq h3').textContent) === 'Bisher nichts extra' && T($('#stats-body .tq').textContent).includes('Deine Kosten für die Arbeit (56,00 €) liegen unter 1.230 €'));
+  check('Steuer: Rechnung in einfachen Worten', T($('.sumtable').textContent).includes('Verpflegung, die erlaubt ist56,00 €') && T($('.sumtable').textContent).includes('Fahrten0,00 €') && T($('.sumtable').textContent).includes('Werbungskosten 202656,00 €'));
+  check('Steuer: Anlage N mit Zeilen 73 und 74 eingeklappt', !$('[data-keep="anl"]').open && T($('[data-keep="anl"]').textContent).includes('Zeile 73') && T($('[data-keep="anl"]').textContent).includes('Zeile 74'));
   $('[data-view="list"]').click(); $('[data-view="stats"]').click(); await wait(10);
-  check('Gewählter Reiter bleibt', !panel('std').hidden);
+  check('Gewählter Reiter bleibt', !panel('tax').hidden);
   $('#year').value = '2025'; $('#year').dispatchEvent(new w.Event('change')); await wait(10);
   check('Steuerjahr wechseln', T($('#stats-body').textContent).includes('Werbungskosten 2025') && $('#year-x').value === '2025' && $('#year').value === '2025');
   $('[data-view="more"]').click();

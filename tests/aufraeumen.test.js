@@ -87,7 +87,7 @@ const rule = start => { const i = css.indexOf(start); return i < 0 ? '' : css.sl
   // Auswertung: Erklärungen auf Abruf, Zahlen und Warnungen sichtbar
   $('#tabs [data-view="stats"]').click(); await wait(10);
   check('Auswertung: Hinweis zur Schätzung hinter dem Zeichen', $('#t-sum').classList.contains('tip') && !!ibOf('t-sum') && !$('#stats-body .info'));
-  check('Auswertung: Titel statt Überzeile', T($('.bigsum h3').textContent) === 'Voraussichtliche Werbungskosten 2026' && !$('.bigsum .eyebrow'));
+  check('Auswertung: Titel statt Überzeile', T($('.bigsum h3').textContent) === 'So rechnet das Finanzamt' && !$('.bigsum .eyebrow'));
   check('Nr. 20: Erklärung auf Abruf, Schätzung sichtbar', $('#t-nr20').classList.contains('tip') && T($('#st-lstb').textContent).includes('Solange das Feld leer ist, schätzt die App den Betrag aus deinen Einträgen'), T($('#st-lstb').textContent));
   ibOf('t-nr20').click();
   const nr = $('#st-nr20'); nr.value = '10'; nr.dispatchEvent(new w.Event('change', {bubbles: true})); await wait(10);
@@ -139,7 +139,7 @@ const rule = start => { const i = css.indexOf(start); return i < 0 ? '' : css.sl
   store[KEY] = JSON.stringify(Object.assign(data(), {seenVersion: '2.1.0'}));
   await start();
   $('[data-bell]').click();
-  check('Glocke: Neuigkeiten mit grüner Lampe', !!$('#bell-list .news .lamp.ok') && T($('#bell-list .news b').textContent) === 'Neu in Version 2.3.0' && T($('#bell-list .news').textContent).includes('kleinen i'));
+  check('Glocke: Neuigkeiten mit grüner Lampe', !!$('#bell-list .news .lamp.ok') && T($('#bell-list .news b').textContent) === 'Neu in Version 2.4.0' && T($('#bell-list .news').textContent).includes('kleinen i'));
   check('Glocke: Einrichten mit gelber Lampe', !!$('#bell-list .snote:not(.news) .lamp.open') && T($('#bell-list').textContent).includes('Jetzt einrichten'));
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Glocke bleibt für den Rest offen', !$('#bell').hidden && !$('#bell-list .news') && !!$('#bell-list .snote'));

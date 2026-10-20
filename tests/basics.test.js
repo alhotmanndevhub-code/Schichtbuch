@@ -49,7 +49,7 @@ let fails = 0; const check = (name, ok, info = '') => { if (!ok) fails++; consol
   // Neustart
   dom.window.close(); dom = boot(); w = dom.window; d = w.document; await wait(50);
   const row = T(d.querySelector('#v-list .rows').textContent);
-  check('Nach Neustart noch da', row.includes('Nacht22:00–06:00TagestourHamm (Westf) 7,5 h14 € · 96 km'), row.slice(0, 90));
+  check('Nach Neustart noch da', row.includes('Nacht22:00–06:00TagestourHamm (Westf) 7,5 h96 km') && !row.includes('14 €'), row.slice(0, 90));
   // Excel
   d.querySelector('[data-view="more"]').click();
   check('Version angezeigt', /^Version \d+\.\d+\.\d+/.test(d.querySelector('#about-ver').textContent), d.querySelector('#about-ver').textContent);

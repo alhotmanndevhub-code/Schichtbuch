@@ -68,7 +68,7 @@ const idbPut = rec => new Promise((res, rej) => {
   seed([E('a1', '2026-10-12', {shift: 'frueh', start: '05:00', end: '13:30', pause: 30})], {}, {top: {seenVersion: undefined}});
   await start();
   const news = $('.news');
-  check('Nach Update: Hinweis „Neu in Version 2.3.0“ mit 2.2.0, 2.1.0, 2.0.0 und 1.4.0', news && T(news.querySelector('b').textContent) === 'Neu in Version 2.3.0' && T(news.textContent).includes('Gleis') && T(news.textContent).includes('MontageBuch') && T(news.textContent).includes('Belegfotos') && !T(news.textContent).includes('„Deine Arbeit“'), news && T(news.textContent).slice(0, 80));
+  check('Nach Update: Hinweis „Neu in Version 2.4.0“ mit 2.3.0 bis 1.4.0', news && T(news.querySelector('b').textContent) === 'Neu in Version 2.4.0' && T(news.textContent).includes('Gleis') && T(news.textContent).includes('MontageBuch') && T(news.textContent).includes('Belegfotos') && !T(news.textContent).includes('„Deine Arbeit“'), news && T(news.textContent).slice(0, 80));
   news.querySelector('[data-news]').click(); await wait(10);
   check('Verstanden: weg und gemerkt (aktuelle Version)', !$('.news') && data().seenVersion === html.match(/APP_VERSION = '([^']+)'/)[1], data().seenVersion);
   await start();
