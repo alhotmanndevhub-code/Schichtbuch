@@ -3,6 +3,7 @@ const {JSDOM} = require('jsdom'); const fs = require('fs');
 const H = require('./helpers');
 const DIR = H.ROOT + '/';
 const html = fs.readFileSync(DIR + 'index.html', 'utf8');
+const VER = html.match(/APP_VERSION = '([^']+)'/)[1];
 const KEY = 'sakra-schichtbuch-v1';
 let store = {};
 function boot() {
@@ -132,7 +133,7 @@ const seed = (entries, settings, extra) => {
   await start();
   check('Glocke zählt Neuigkeiten und Einrichten', $('[data-bell] .badge').textContent === '2' && !$('[data-bell] .badge').hidden);
   $('[data-bell]').click();
-  check('Glocke offen, Neuigkeiten 2.4.0', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version 2.4.0');
+  check('Glocke offen, Neuigkeiten der aktuellen Version', !$('#bell').hidden && T($('#bell-list .news b').textContent) === 'Neu in Version ' + VER);
   $('#bell-list [data-news]').click(); await wait(10);
   check('Verstanden: Neuigkeit weg, Glocke bleibt offen für den Rest', !$('#bell-list .news') && !$('#bell').hidden && $('[data-bell] .badge').textContent === '1');
   $('#bell [data-bell-close].iconbtn').click(); await wait(20);
@@ -147,7 +148,7 @@ const seed = (entries, settings, extra) => {
   const panel = p => $('#stats-body [data-panel="' + p + '"]');
   check('Arbeit zuerst: Oktober ohne Einträge', !panel('work').hidden && panel('tax').hidden && T($('#stats-body .wm h3').textContent) === 'Oktober 2026' && T(panel('work').textContent).includes('Nichts eingetragen'));
   $('[data-wm="-1"]').click(); await wait(10);
-  check('Monat zurück: September mit Montage, ohne Steuerwörter', T($('#stats-body .wm h3').textContent) === 'September 2026' && T(panel('work').textContent).includes('Montage24 Std. auswärts1 TagAn- und Abreise2 Tage') && !T(panel('work').textContent).includes('ohne Auslöse')
+  check('Monat zurück: September mit Montage, ohne Steuerwörter', T($('#stats-body .wm h3').textContent) === 'September 2026' && [...panel('work').querySelectorAll('.wcard')].some(c => T(c.querySelector('h3').textContent) === 'Montage' && !!c.querySelector('.mt-bar') && T(c.querySelector('.wl').textContent) === '24 Std. auswärts1 TagAn- und Abreise2 Tage') && !T(panel('work').textContent).includes('ohne Auslöse')
     && ![...d.querySelectorAll('#stats-body .wcard')].some(c => /Pauschale|Werbungskosten|Verpflegung/.test(c.textContent)), T(panel('work').textContent).slice(0, 200));
   check('Arbeit: das ganze Jahr mit Kennzahlen und Monaten', d.querySelectorAll('#stats-body .kpi').length >= 6 && !!$('#stats-body [data-panel="work"] .mtab'));
   $('[data-stab="tax"]').click();

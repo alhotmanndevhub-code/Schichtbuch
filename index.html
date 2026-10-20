@@ -5,7 +5,7 @@
 <!-- Sicherheitsregeln für den Browser (Content-Security-Policy): Skripte, Bilder, Schriften und Verbindungen nur von dieser Seite, keine fremden Server.
      Die sha256-Werte sind Prüfsummen der beiden Skripte in dieser Datei. Nach jeder Änderung an einem Skript „npm run csp“ ausführen (ein Test prüft das).
      'unsafe-inline' gilt nur für Stile: Die App setzt Farben und Breiten direkt am Element. CSS startet kein Skript, und Bilder dürfen nur von hier kommen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-ca01BErSZV1M9XiqF6OzaV+MuHzQyCjGLMGnQq9tFjQ='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-6aboP06K86Jhuwe7n/JjpYgvjGdPMeXsBMJtRgCMni4='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MontageBuch</title>
 <meta name="description" content="Schichten, Fahrten, Montage und Ausgaben erfassen und als Excel-Datei für die Steuererklärung exportieren.">
@@ -50,7 +50,7 @@
   --bg:#10181C; --surface:#1C2529; --surface-2:#253034; --surface-3:#2F3B40; --line:#334047; --line-2:#435159;
   --ink:#F6F6F4; --muted:#A3AAB0; --faint:#7A868D;
   --accent:#D32F2F; --accent-hi:#E53935; --on-accent:#FFFFFF; --accent-soft:rgba(211,47,47,.18);
-  --on-amber:#1E1E1E; --amber-soft:rgba(245,158,11,.15);
+  --on-amber:#1E1E1E; --amber-soft:rgba(245,158,11,.15); --amber-ink:#F59E0B;
   --info-ink:#8CC4F5; --info-soft:rgba(100,181,246,.13); --night-ink:#AEB8F0; --night-soft:rgba(121,134,203,.22);
   --good:#4CC38A; --danger:#FF7A72;
   --nav:#0B1114; --nav-line:#1F2A30; --nav-ink:#F6F6F4; --nav-muted:#8D979E; --nav-active:#F6F6F4;
@@ -68,7 +68,7 @@
   --bg:#F6F6F4; --surface:#FFFFFF; --surface-2:#F0F1EF; --surface-3:#E5E7E5; --line:#DCDFE1; --line-2:#C5CBCF;
   --ink:#171C1F; --muted:#5F6368; --faint:#80868B;
   --accent-soft:#FBE4E4;
-  --amber-soft:#FEF3D7;
+  --amber-soft:#FEF3D7; --amber-ink:#8A5A00;
   --info-ink:#1D5FA0; --info-soft:#E6F0FA; --night-ink:#3949AB; --night-soft:#E6E9F8;
   --good:#1D7A4C; --danger:#C62828;
   --nav:#1E1E1E; --nav-line:#2E2E2E; --nav-ink:#F6F6F4; --nav-muted:#A5ABB0;
@@ -272,6 +272,10 @@ button.row:hover{background:var(--surface-2)}
 .wk-track::before{top:11px} .wk-track::after{bottom:11px}
 .wk-track i{margin:0 18%;border-radius:3px;background:var(--sleeper);transition:background-color .35s}
 .wk-track i.ok{background:var(--sleeper-ok)}
+.wk-track i.ok.arrive{background:var(--sleeper)}
+.wd .lamp.arrive{background:var(--lamp-off);box-shadow:none;transform:scale(.7)}
+/* Lichtpunkt: fährt beim Speichern vom letzten erfassten Tag der Woche bis zum neuen, dort geht die Lampe an */
+.wk-light{position:absolute;left:0;top:0;z-index:2;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--good-soft);pointer-events:none}
 .wk-miss{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:8px 0 2px;font-size:14px}
 .wk-miss .lamp{width:10px;height:10px}
 /* Jahresbetrag: grau bis zum Pauschbetrag, grün, was darüber hinaus zählt */
@@ -288,6 +292,48 @@ button.row:hover{background:var(--surface-2)}
 .mo-d{margin-left:6px;font:600 13px var(--f-body);font-style:normal;color:var(--good);opacity:0;transition:opacity .3s}
 .mo-d.on{opacity:1}
 .mo-d.neg{color:var(--muted)}
+/* Aktueller Einsatz als ruhige Karte (am PC mit Foto, siehe unten), darin die Montage als Leiste */
+.job{background:var(--surface);color:var(--ink);border-radius:var(--r-l);overflow:hidden}
+.job-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:center;width:100%;text-align:left;border:0;background:none;color:inherit;padding:14px 16px 12px;font-size:15px}
+.job .mast{width:40px;height:40px;color:var(--muted)}
+.job .jt{display:grid;gap:2px;min-width:0}
+.job .jt b{font-size:17px}
+.job .jl{color:var(--muted);font-size:14px;display:grid;gap:1px}
+.job .chev{color:var(--muted)}
+.job>.mt{padding:0 16px 12px}
+.job .jd{display:flex;align-items:center;gap:6px;margin:0 16px;padding:10px 0 14px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;border-top:1px solid var(--line)}
+.job .jd .ic{width:18px;height:18px}
+.job .jsum{margin-left:auto;white-space:nowrap}
+.job .jsum b{color:var(--ink);font-weight:600}
+.recent .rows{margin-top:0}
+.recent .sect .linkbtn{color:var(--ink);font-weight:500;font-size:14px}
+/* Montage als Leiste: ein Feld pro Tag, vorne die Anreise (wie eine Lok), hinten die Abreise mit Schlusslicht.
+   Gelb: Auslöse fehlt. Gestrichelt: an dem Tag fehlt der Eintrag. */
+.mts{display:grid;gap:18px}
+.mt{display:grid;gap:8px}
+.mt-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px}
+.mt-h b{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-h span{color:var(--muted);white-space:nowrap}
+.mt-bar{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:3px;max-width:var(--w,100%)}
+.mt-car{position:relative;min-width:0;height:56px;display:grid;justify-items:center;align-content:center;gap:5px;padding:0;border:0;border-radius:6px;background:var(--surface-2);color:var(--muted);font:500 13px/1 var(--f-body);font-variant-numeric:tabular-nums;white-space:nowrap;transition:transform .14s var(--ease-out),background-color .25s,box-shadow .15s}
+.mt-car b{font:700 19px/1 var(--f-display);color:var(--ink)}
+.mt-car b.z{color:var(--faint)}
+.mt-car.an{border-radius:22px 6px 6px 22px}
+.mt-car.ab::after{content:"";position:absolute;right:6px;top:7px;width:6px;height:6px;border-radius:50%;background:var(--danger)}
+.mt-car.chk{background:var(--amber-soft);color:var(--amber-ink);font-weight:500}
+.mt-car.gap{background:transparent;border:1.5px dashed var(--line-2)}
+.mt-car .lamp{width:10px;height:10px;margin:3px 0 4px}
+.mt-car.out{opacity:.45}
+.mt-car[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+@media (hover:hover){.mt-car:not(.chk):not(.gap):hover{background:var(--surface-3)}}
+.mt-l{display:flex;justify-content:space-between;gap:4px 12px;margin-top:-2px;font-size:13px;color:var(--muted)}
+.mt.few .mt-l{justify-content:flex-start;flex-wrap:wrap}
+.mt-dw:empty{display:none}
+.mt-det{display:grid;gap:3px;padding:12px 14px 14px;border-radius:var(--r-m);background:var(--surface-2);font-size:15px;line-height:1.35}
+.mt-det small{color:var(--muted);font-size:13px}
+.mt-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;margin-top:6px}
+.mt-row b{font-weight:600;font-variant-numeric:tabular-nums}
+.mt-row .btn{min-height:40px;padding:0 14px;font-size:15px;border-width:1px}
 /* Auswertung „Arbeit“: ein Monat zum Vergleich mit der Lohnabrechnung */
 .wm{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;margin-top:2px}
 .wm h3{margin:0;text-align:center;font:700 20px/1.2 var(--f-body)}
@@ -637,6 +683,17 @@ body[data-screen="setup"] .app{padding-bottom:0}
   .home .job .jl,.home .job .jd{color:#D5DADD;border-top:0;padding-top:0;margin-top:4px}
   .home .job .btn{justify-self:start;border-color:rgba(255,255,255,.7);color:#fff}
   .home .job .btn:hover{background:rgba(255,255,255,.12)}
+  .home .job>.mt,.home .job>.jd{margin:0;padding:0}
+  .home .job .jsum b,.home .job .mt-car b,.home .job .linkbtn{color:#fff}
+  .home .job.mtj::before{background:linear-gradient(0deg,rgba(11,17,20,.9) 0%,rgba(11,17,20,.4) 55%,rgba(11,17,20,0) 78%),linear-gradient(90deg,rgba(11,17,20,.9) 0%,rgba(11,17,20,.62) 55%,rgba(11,17,20,.18) 100%)}
+  .home .job .mt-car{background:rgba(11,17,20,.62);color:#D5DADD}
+  .home .job .mt-car:not(.chk):not(.gap):hover{background:rgba(11,17,20,.8)}
+  .home .job .mt-car.chk{background:rgba(74,48,6,.82);color:#F5B43C}
+  .home .job .mt-car.gap{background:transparent;border-color:rgba(255,255,255,.45)}
+  .home .job .mt-car[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff}
+  .home .job .mt-l,.home .job .mt-det small,.home .job .mt-det .td-where{color:#D5DADD}
+  .home .job .mt-det{background:rgba(11,17,20,.8);color:#fff}
+  .home .job .chk{color:#F5B43C}
   .recent{background:var(--surface);border-radius:var(--r-m);padding:6px 20px 14px}
   .recent .sect{margin:12px 0 6px}
   .dtab{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
@@ -676,6 +733,12 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
   .lamp.pulse{animation:lamp 1.6s ease-in-out 4}
   .lamp.pop{animation:pop .6s var(--ease-out)}
   .wk-track i.pop{animation:sleeper .6s var(--ease-out)}
+  .mt-car:active{transform:scale(.95)}
+  .wk.test .wd .lamp{animation:lamp-on .32s var(--ease-out) both;animation-delay:calc(var(--i) * 55ms + 150ms)}
+  .wk.test .wk-track i{animation:sl-on .32s ease-out both;animation-delay:calc(var(--i) * 55ms + 150ms)}
+  .mt.in .mt-car{animation:couple .36s var(--ease-out) both;animation-delay:calc(var(--i) * 60ms + 250ms)}
+  .mt-car.new{animation:couple .36s var(--ease-out) .35s both}
+  .mt-car.just b{animation:v-in .3s var(--ease-out)}
   .today.just .td-head h2{animation:v-in .4s var(--ease-out)}
   .row.just{animation:flash 1.8s ease-out}
   .tip.on{animation:tip-in .22s var(--ease-out)}
@@ -695,6 +758,9 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 @keyframes pop{0%{transform:scale(.3)}55%{transform:scale(1.45)}100%{transform:none}}
 @keyframes sleeper{0%{transform:scaleY(.3)}60%{transform:scaleY(1.15)}100%{transform:none}}
 @keyframes flash{0%,35%{background:var(--good-soft)}100%{background:var(--surface)}}
+@keyframes lamp-on{from{background-color:var(--lamp-off);box-shadow:0 0 0 0 transparent;transform:scale(.5)}}
+@keyframes sl-on{from{background-color:var(--sleeper)}}
+@keyframes couple{from{opacity:0;transform:translateX(40px)}}
 @media print{
   @page{size:A4;margin:14mm 12mm}
   :root,:root[data-theme="light"]{--bg:#fff;--surface:#fff;--surface-2:#f2f2f2;--ink:#000;--muted:#444;--line:#bbb;color-scheme:light}
@@ -1186,9 +1252,13 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.5.0';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.5.0', ['Wochengleis: Wenn du einen Tag speicherst, fährt ein grüner Lichtpunkt über das Gleis bis zu diesem Tag, dann geht die Lampe an. Ist die Woche komplett, hüpfen die grünen Schwellen einmal. Beim Öffnen gehen die Lampen kurz nacheinander an.',
+    'Montage als Leiste: Unter „Aktueller Einsatz“ und unter Auswertung > Arbeit ist jeder Tag auswärts ein Feld mit deiner Auslöse. Vorne die Anreise, hinten die Abreise mit rotem Schlusslicht.',
+    'Fehlt an einem Tag die Auslöse, ist das Feld gelb. Tipp darauf, dann kannst du sie mit einem Tipp eintragen oder den Tag öffnen. Fehlt der ganze Tag, ist das Feld gestrichelt.',
+    'Repariert: Die Karte „Aktueller Einsatz“ sah am Handy seit Version 2.4.0 falsch aus, und „prüfen“ ist wieder gelb.']],
   ['2.4.0', ['Auswertung neu: Unter „Arbeit“ siehst du einen Monat so, wie er auf der Lohnabrechnung steht: Tage, Stunden, Nacht- und Sonntagsstunden und die Auslöse. Als Monatsnachweis kannst du ihn ausdrucken oder als PDF speichern.',
     'Unter „Steuer“ steht zuerst, ob dir die Steuererklärung für deine Arbeitskosten etwas bringt. Darunter die Rechnung in einfachen Worten, die Ausfüllhilfe für die Anlage N und Zeile 20.',
     'Startseite: „Dieser Monat“ mit Tagen, Stunden und Auslöse statt der Werbungskosten.',
@@ -1336,13 +1406,13 @@ function enter(el, dir) {
   el.classList.add('v-in'); if (dir) el.classList.add(dir);
 }
 document.addEventListener('animationend', ev => { const c = ev.target.classList; if (c && /^v-/.test(ev.animationName)) c.remove('v-in', 'fwd', 'back', 'up', 's-fwd', 's-back'); });
-let countRaf = 0;
+// Zahl hochzählen, jedes Feld für sich (Monat und Montage können gleichzeitig zählen)
 function countUp(el, from, to, ms, fmt = eur, end = fmt) {
-  cancelAnimationFrame(countRaf);
+  cancelAnimationFrame(el._cu);
   if (reduceMotion() || from === to) { el.textContent = end(to); return; }
   const t0 = performance.now();
-  const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = p < 1 ? fmt(from + (to - from) * k) : end(to); if (p < 1) countRaf = requestAnimationFrame(step); };
-  el.textContent = fmt(from); countRaf = requestAnimationFrame(step);
+  const step = now => { const p = Math.min(1, (now - t0) / ms), k = 1 - Math.pow(1 - p, 3); el.textContent = p < 1 ? fmt(from + (to - from) * k) : end(to); if (p < 1) el._cu = requestAnimationFrame(step); };
+  el.textContent = fmt(from); el._cu = requestAnimationFrame(step);
 }
 
 /* ---------- Erklärungen auf Abruf (ⓘ) ---------- */
@@ -2179,15 +2249,24 @@ function currentJob() {
   }
   return {e: last, first, last: last.date};
 }
-function jobHTML(j, t) {
+function jobHTML(j, t, test) {
   const e = j.e, title = e.place || e.project, lines = [e.line, e.place ? e.project : ''].filter(Boolean);
-  const range = j.first === j.last ? dShort(j.last) : `${dShort(j.first)} – ${dShort(j.last)}`;
+  // Montage dazu als Leiste (dann gilt deren Zeitraum); ihre Auslöse zählt hoch, wenn sie sich seit dem letzten Blick geändert hat
+  const b = jobMontage(j, t), js = freshSave(), from = b ? b.key : j.first, to = b ? b.items[b.items.length - 1].date : j.last;
+  const range = from === to ? dShort(to) : `${dShort(from)} – ${dShort(to)}`;
+  let sum = '';
+  if (b && b.money) {
+    const prev = shownMt[b.key], anim = view === 'list' && prev != null && prev !== b.sum && !reduceMotion();
+    if (view === 'list') shownMt[b.key] = b.sum;
+    sum = `<span class="jsum"><b data-count="${b.sum}"${anim ? ` data-from="${prev}"` : ''}>${eurS(anim ? prev : b.sum)}</b> Auslöse</span>`;
+  }
+  const mt = b ? mtHTML(b, {anim: test ? 'in' : '', fresh: js && js.add ? new Set(js.dates || [js.date]) : null}) : '';
   return `<div class="sect m-only"><h2>Aktueller Einsatz</h2></div>
-    <div class="job"><button class="job-main" type="button" data-day="${esc(e.date)}">
+    <div class="job${b ? ' mtj' : ''}"><button class="job-main" type="button" data-day="${esc(e.date)}">
       <svg class="ic mast" aria-hidden="true"><use href="#i-mast"/></svg>
       <span class="jt"><span class="d-only jh">Aktueller Einsatz</span><b>${esc(title)}</b><span class="jl">${lines.map(l => `<span>${esc(l)}</span>`).join('')}</span></span>
-      ${ic('chevron-right', 'chev')}
-      <span class="jd">${ic('calendar-month')}${range}</span></button>
+      ${ic('chevron-right', 'chev')}</button>${mt}
+      <span class="jd">${ic('calendar-month')}${range}${sum}</span>
       <button class="btn d-only" type="button" data-new="${t}">Weiteren Arbeitstag erfassen</button></div>`;
 }
 // Gerade gespeichert (in den letzten Sekunden): Startseite hebt den Tag kurz hervor
@@ -2205,7 +2284,7 @@ function quickSave() {
   const p = quickPlan(t); if (!p) { openForm(null, t); return; }
   const e = tidy(normEntry(Object.assign(p.e, {id: newId(), updated: new Date().toISOString()})));
   S.entries[e.id] = e; listMode = 'days'; persist();
-  justSaved = {date: t, at: Date.now()}; buzz(14);
+  justSaved = {date: t, add: true, at: Date.now()}; buzz(14);
   if (e.year !== year) { year = e.year; renderYears(); }
   renderAll();
   toastAct(storageOk ? 'Heute gespeichert' : saveMsg(), 'Rückgängig', () => {
@@ -2242,16 +2321,22 @@ function todayHTML(t) {
     <button class="btn primary block td-go" type="button" data-quick="1">${ic('content-copy')}Wie ${w} übernehmen</button>${more}</section>`;
 }
 // Diese Woche als Gleis: jede Schwelle ein Tag. Signal grün = erfasst, gelb = heute offen, rot = fehlt, grau = frei oder noch nicht dran.
-function weekHTML(t) {
+// Gerade neu gespeicherte Tage stehen zuerst auf „aus“ (arrive): homeMotion lässt einen Lichtpunkt hinfahren und schaltet sie dann an.
+// test: beim ersten Öffnen der Startseite gehen die Lampen kurz nacheinander an.
+function weekHTML(t, test) {
   const mon = addDays(t, -((dowOf(t) + 6) % 7)), have = new Set(Object.values(S.entries).map(e => e.date));
   const miss = missingWorkdays(), missSet = new Set(miss), w = weekInfo(), js = freshSave();
-  let days = '', sl = '';
+  const add = js && js.add ? new Set(js.dates || [js.date]) : null, move = !!add && !reduceMotion(), lt = [];
+  let days = '', sl = '', lf = -1, fw = 0;
   for (let i = 0; i < 7; i++) {
-    const d = addDays(mon, i), off = isWeekend(d) || !!holiday(d), ok = have.has(d), pop = js && js.date === d && ok ? ' pop' : '';
+    const d = addDays(mon, i), off = isWeekend(d) || !!holiday(d), ok = have.has(d);
+    const fresh = ok && !!js && (add ? add.has(d) : js.date === d), arrive = fresh && move;
+    if (arrive) { lt.push(i); if (!off && d <= t) fw++; } else if (ok && !lt.length) lf = i;
+    const pop = fresh ? (arrive ? ' arrive' : ' pop') : '';
     const st = ok ? 'ok' : d > t ? 'idle' : d === t ? (off ? 'idle' : 'open pulse') : missSet.has(d) ? 'miss' : off ? 'idle' : 'empty';
     const say = ok ? 'erfasst' : d > t ? 'kommt noch' : d === t ? 'heute, noch nichts erfasst' : missSet.has(d) ? 'Eintrag fehlt' : off ? 'frei' : 'nichts erfasst';
-    days += `<button class="wd${d === t ? ' today' : ''}${off ? ' we' : ''}${d > t ? ' fut' : ''}" type="button" data-day="${d}" aria-label="${DOW_L[dowOf(d)]}, ${dDM(d)}: ${say}"><span aria-hidden="true">${DOW[dowOf(d)]}</span><b aria-hidden="true">${+d.slice(8, 10)}</b><i class="lamp ${st}${pop}" aria-hidden="true"></i></button>`;
-    sl += `<i class="${ok ? 'ok' : ''}${pop}"></i>`;
+    days += `<button class="wd${d === t ? ' today' : ''}${off ? ' we' : ''}${d > t ? ' fut' : ''}" type="button" data-day="${d}" aria-label="${DOW_L[dowOf(d)]}, ${dDM(d)}: ${say}"><span aria-hidden="true">${DOW[dowOf(d)]}</span><b aria-hidden="true">${+d.slice(8, 10)}</b><i class="lamp ${st}${pop}" style="--i:${i}" aria-hidden="true"></i></button>`;
+    sl += `<i class="${ok ? 'ok' : ''}${pop}" style="--i:${i}"></i>`;
   }
   const sum = !w.need ? '' : w.got >= w.need ? `<span class="all">${w.need === 1 ? 'Werktag erfasst' : 'Alle ' + w.need + ' Werktage erfasst'}</span>` : `<span>${w.got} von ${w.need} ${w.need === 1 ? 'Werktag' : 'Werktagen'} erfasst</span>`;
   let mh = '';
@@ -2259,12 +2344,18 @@ function weekHTML(t) {
     const rng = miss.length === 1 ? dShort(miss[0]) : dShort(miss[0]) + ' bis ' + dShort(miss[miss.length - 1]);
     mh = `<p class="wk-miss"><i class="lamp miss" aria-hidden="true"></i><span>${miss.length === 1 ? 'Ein Werktag' : miss.length + ' Werktage'} ohne Eintrag (${rng})</span><button class="linkbtn" type="button" data-new="${miss[0]}">${dShort(miss[0])} nachtragen</button></p>`;
   }
-  return `<section class="wk" aria-labelledby="wk-h"><div class="wk-h"><h2 id="wk-h">Diese Woche</h2>${sum}</div>
-    <div class="wk-days">${days}<div class="wk-track" aria-hidden="true">${sl}</div></div>${mh}</section>`;
+  // Woche durch diesen Eintrag komplett: danach hüpfen die grünen Schwellen einmal nacheinander
+  const full = fw > 0 && w.need > 0 && w.got >= w.need;
+  const lit = lt.length ? ` data-lt="${lt.join(',')}" data-lf="${lf}"${full ? ' data-full="1"' : ''}` : '';
+  return `<section class="wk${test && !lt.length ? ' test' : ''}" aria-labelledby="wk-h"><div class="wk-h"><h2 id="wk-h">Diese Woche</h2>${sum}</div>
+    <div class="wk-days"${lit}>${days}<div class="wk-track" aria-hidden="true">${sl}</div>${lt.length ? '<i class="wk-light" hidden></i>' : ''}</div>${mh}</section>`;
 }
 // „Dieser Monat“ auf der Startseite: Tage, Stunden und Auslöse, wie auf der Lohnabrechnung. Tipp führt zur Auswertung „Arbeit“.
 // Hat sich die Auslöse seit dem letzten Blick geändert, zählt sie hoch.
 const shownMo = {};
+// erstes Öffnen der Startseite: Lampentest und die Montage reiht sich ein; Auslöse der Montage beim letzten Blick
+let lampTested = false;
+const shownMt = {};
 function monthHTML(t, R) {
   const ym = t.slice(0, 7), y = +t.slice(0, 4), mi = +t.slice(5, 7) - 1, m = (y === year ? R : yearCalc(y)).M[mi];
   const days = m.workDays + m.trainDays, all = r2(m.allowance), showA = all > 0 || S.settings.ausOn;
@@ -2275,13 +2366,162 @@ function monthHTML(t, R) {
     ${showA ? `<span><b data-count="${all}"${anim ? ` data-from="${prev}"` : ''}>${eurS(anim ? prev : all)}</b><small>Auslöse<i class="mo-d" aria-hidden="true"></i></small></span>`
       : `<span><b>${m.awayDays}</b><small>Tage auswärts</small></span>`}</span></button>`;
 }
-// nach dem Zeichnen der Startseite: Auslöse hochzählen
+// nach dem Zeichnen der Startseite: Auslöse hochzählen, Lichtpunkt fahren lassen, Lampentest beenden
 function homeMotion() {
-  const n = $('#v-list [data-from]');
-  if (!n) return;
-  const from = +n.dataset.from, to = +n.dataset.count, d = n.parentElement.querySelector('.mo-d');
-  countUp(n, from, to, 800, eurS);
-  if (d) { d.textContent = (to > from ? '+' : '−') + eurS(Math.abs(to - from)); d.classList.toggle('neg', to < from); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 2400); }
+  document.querySelectorAll('#v-list [data-from]').forEach(n => {
+    const from = +n.dataset.from, to = +n.dataset.count, d = n.parentElement.querySelector('.mo-d');
+    countUp(n, from, to, 800, eurS);
+    if (d) { d.textContent = (to > from ? '+' : '−') + eurS(Math.abs(to - from)); d.classList.toggle('neg', to < from); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 2400); }
+  });
+  wkMotion();
+}
+// Lichtpunkt auf dem Wochengleis: fährt vom letzten erfassten Tag zu den gerade gespeicherten, dort geht die Lampe an.
+// Kann der Browser keine Animationen (oder ist „Bewegung reduzieren“ an), gehen die Lampen sofort an.
+function wkMotion() {
+  const days = $('#v-list .wk-days'); if (!days) return;
+  const wk = days.closest('.wk');
+  if (wk.classList.contains('test')) setTimeout(() => wk.classList.remove('test'), 1100);
+  if (!days.dataset.lt) return;
+  const idx = days.dataset.lt.split(',').map(Number), lamps = days.querySelectorAll('.wd .lamp'), sl = days.querySelectorAll('.wk-track i'), li = days.querySelector('.wk-light');
+  const on = i => { lamps[i].classList.replace('arrive', 'pop'); sl[i].classList.replace('arrive', 'pop'); };
+  const nod = () => {
+    if (!days.dataset.full || reduceMotion()) return;
+    let k = 0;
+    sl.forEach(s => { if (s.classList.contains('ok')) { const ms = 380 + k++ * 70; setTimeout(() => { s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }, ms); } });
+  };
+  const box = days.getBoundingClientRect();
+  if (!li || !li.animate || reduceMotion() || !box.width) { idx.forEach(on); nod(); return; }
+  const at = i => { const r = sl[i].getBoundingClientRect(); return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top]; };
+  const tf = (p, s = 1) => `translate(${p[0]}px, ${p[1]}px) scale(${s})`;
+  const lf = +days.dataset.lf, n = idx.length;
+  let p = lf >= 0 ? at(lf) : [at(idx[0])[0] - 40, at(idx[0])[1]], prev = lf >= 0 ? lf : idx[0] - 1;
+  li.hidden = false;
+  (async () => {
+    try {
+      await li.animate([{transform: tf(p, .3), opacity: 0}, {transform: tf(p), opacity: 1}], {duration: 150, easing: 'ease-out', fill: 'forwards'}).finished;
+      for (let k = 0; k < n; k++) {
+        const q = at(idx[k]), ease = n === 1 ? 'cubic-bezier(.55,0,.25,1)' : k === 0 ? 'cubic-bezier(.5,0,1,1)' : k === n - 1 ? 'cubic-bezier(0,0,.3,1)' : 'linear';
+        await li.animate([{transform: tf(p)}, {transform: tf(q)}], {duration: Math.min(480, 120 + 110 * (idx[k] - prev)), easing: ease, fill: 'forwards'}).finished;
+        on(idx[k]); p = q; prev = idx[k];
+      }
+      nod();
+      await li.animate([{transform: tf(p), opacity: 1}, {transform: tf(p, 2.6), opacity: 0}], {duration: 320, easing: 'ease-out', fill: 'forwards'}).finished;
+    } catch (e) { idx.forEach(on); }
+    li.hidden = true;
+  })();
+}
+/* ---------- Montage als Leiste ---------- */
+// Ein Block sind zusammenhängende Tage auswärts mit Übernachtung: Anreise, 24 Std. auswärts, Abreise.
+// Eine Abreise beendet den Block, eine Anreise beginnt einen neuen. Pro Tag zählt der Eintrag mit Auslöse (sonst der erste).
+// Fehlen mitten in der Montage bis zu drei Tage ganz (gar kein Eintrag), bleibt der Block zusammen und zeigt dort eine Lücke.
+const MT_K = {an: 'Anreise', voll: '24 Std. auswärts', ab: 'Abreise'};
+let mtOpen = '', mtJust = '';
+function montageBlocks(list) {
+  const by = {}, any = new Set(Object.values(S.entries).map(e => e.date)), out = [];
+  list.filter(e => isAway(e) && has(MT_K, e.away)).sort(sortAsc).forEach(e => { const c = by[e.date]; if (!c || (!(c.allowance > 0) && e.allowance > 0)) by[e.date] = e; });
+  let cur = null;
+  Object.keys(by).sort().forEach(d => {
+    const e = by[d], last = cur && cur[cur.length - 1], gap = last ? dayDiff(last.date, d) - 1 : -1;
+    const hole = gap >= 1 && gap <= 3 && last.away !== 'ab' && e.away !== 'an' && !Array.from({length: gap}, (_, k) => addDays(last.date, k + 1)).some(x => any.has(x));
+    if (!last || e.away === 'an' || last.away === 'ab' || (gap > 0 && !hole)) out.push(cur = []);
+    else if (hole) for (let k = 1; k <= gap; k++) cur.push({gap: true, date: addDays(last.date, k)});
+    cur.push(e);
+  });
+  return out;
+}
+const mostOf = a => { const c = new Map(); a.forEach(x => c.set(x, (c.get(x) || 0) + 1)); return [...c.keys()].sort((x, y) => c.get(y) - c.get(x) || y - x)[0] || 0; };
+// Auslöse je Tag. „prüfen“ wie unter „Arbeit“: keine Auslöse, obwohl die Firma laut „Deine Arbeit“ zahlt oder an einem anderen Tag
+// derselben Art in dieser Montage etwas eingetragen ist. Vorschlag zum Eintragen: Betrag aus „Deine Arbeit“, sonst der übliche im Block.
+function mtInfo(days) {
+  const real = days.filter(x => !x.gap), paid = {}, pl = new Map();
+  real.forEach(e => {
+    const k = awKind(e); if (e.allowance > 0) (paid[k] = paid[k] || []).push(r2(e.allowance));
+    const p = (e.place || e.project || '').trim(); if (p) pl.set(p, (pl.get(p) || 0) + 1);
+  });
+  const items = days.map(x => {
+    if (x.gap) return {gap: true, date: x.date};
+    const auto = autoAllow(x.away, x.type), ps = paid[awKind(x)] || [], chk = !(x.allowance > 0) && (auto > 0 || ps.length > 0);
+    return {e: x, date: x.date, chk, sug: chk ? (auto > 0 ? auto : mostOf(ps)) : 0};
+  });
+  return {items, key: days[0].date, place: [...pl.keys()].sort((a, b) => pl.get(b) - pl.get(a))[0] || 'Montage',
+    money: !!S.settings.ausOn || Object.keys(paid).length > 0, sum: r2(real.reduce((s, e) => s + (e.allowance || 0), 0))};
+}
+function mtRange(b) {
+  const a = b.key, z = b.items[b.items.length - 1].date, d = s => +s.slice(8, 10) + '.', m = s => MONTHS[+s.slice(5, 7) - 1];
+  return a === z ? d(a) + ' ' + m(a) : a.slice(0, 7) === z.slice(0, 7) ? `${d(a)} bis ${d(z)} ${m(z)}` : `${d(a)} ${m(a)} bis ${d(z)} ${m(z)}`;
+}
+// Die Leiste. o.anim: 'in' = alle Wagen reihen sich ein (erstes Öffnen), o.fresh: gerade gespeicherte Tage kommen als neue Wagen dazu,
+// o.ym: Monat unter „Arbeit“ (Tage aus anderen Monaten blass), o.head: Ort und Zeitraum darüber
+function mtHTML(b, o = {}) {
+  const n = b.items.length, t = today(), real = b.items.filter(x => !x.gap), f = real[0].e, l = real[real.length - 1].e;
+  const cars = b.items.map((it, k) => {
+    const d = it.date, wd = DOW[dowOf(d)], dn = +d.slice(8, 10), cls = ['mt-car'], st = `style="--i:${Math.min(k, 8)}"`;
+    if (o.ym && d.slice(0, 7) !== o.ym) cls.push('out');
+    if (!o.anim && o.fresh && o.fresh.has(d)) cls.push('new');
+    if (it.gap) return `<button class="${cls.concat('gap').join(' ')}" type="button" data-new="${d}" aria-label="${DOW_L[dowOf(d)]}, ${dDM(d)}: Eintrag fehlt, nachtragen" ${st}><span aria-hidden="true">${wd} ${dn}.</span><i class="lamp miss" aria-hidden="true"></i></button>`;
+    const e = it.e;
+    if (e.away === 'an') cls.push('an');
+    if (e.away === 'ab') cls.push('ab');
+    if (it.chk) cls.push('chk');
+    if (mtJust === e.id) cls.push('just');
+    const val = !b.money ? `<b>${dn}</b>` : it.chk ? '<i class="lamp open" aria-hidden="true"></i>' : e.allowance > 0 ? `<b>${eurS(e.allowance)}</b>` : '<b class="z">–</b>';
+    const say = `${DOW_L[dowOf(d)]}, ${dDM(d)}: ${MT_K[e.away]}${b.money ? ', ' + (it.chk ? 'Auslöse fehlt' : e.allowance > 0 ? eurS(e.allowance) + ' Auslöse' : 'keine Auslöse') : ''}`;
+    return `<button class="${cls.join(' ')}" type="button" data-mt="${d}" aria-pressed="${mtOpen === d}" aria-label="${say}" ${st}><span aria-hidden="true">${b.money ? wd + ' ' + dn + '.' : wd}</span>${val}</button>`;
+  }).join('');
+  const nv = real.filter(it => it.e.away === 'voll').length;
+  const lab = [f.away === 'an' ? 'Anreise' : '', nv ? nv + ' × 24 Std. auswärts' : '', l.away === 'ab' ? 'Abreise' : l.date >= addDays(t, -1) ? 'läuft noch' : ''].filter(Boolean);
+  const sel = real.find(it => it.date === mtOpen);
+  return `<div class="mt${n < 4 ? ' few' : ''}${o.anim ? ' ' + o.anim : ''}" data-mtb="${b.key}" style="--n:${Math.min(7, n)};--w:${n < 4 ? n * 25 + '%' : '100%'}">${o.head ? `<div class="mt-h"><b>${esc(b.place)}</b><span>${mtRange(b)}</span></div>` : ''}
+    <div class="mt-bar">${cars}</div>${lab.length ? `<div class="mt-l" aria-hidden="true">${lab.map(x => `<span>${x}</span>`).join('')}</div>` : ''}<div class="mt-dw" aria-live="polite">${sel ? mtDetHTML(sel, b) : ''}</div></div>`;
+}
+// Angaben zum gewählten Tag unter der Leiste, bei fehlender Auslöse mit „… eintragen“
+function mtDetHTML(it, b) {
+  const e = it.e, d = it.date, tm = WORK.has(e.type) && e.start && e.end ? e.start + ' – ' + e.end : '';
+  const where = [tm, e.place || e.project].filter(Boolean).join(' · ');
+  const money = !b.money ? '' : it.chk
+    ? `<span class="mt-row"><span class="chk">Keine Auslöse eingetragen</span>${it.sug > 0 ? `<button class="btn" type="button" data-mtfix="${esc(e.id)}" data-amount="${it.sug}">${eurS(it.sug)} eintragen</button>` : ''}</span>`
+    : `<span class="mt-row"><span>Auslöse</span><b>${e.allowance > 0 ? eurS(e.allowance) : '–'}</b></span>`;
+  return `<div class="mt-det"><small>${DOW_L[dowOf(d)]}, ${dDM(d)}</small><span class="td-what">${MT_K[e.away]}</span>${where ? `<span class="td-where">${esc(where)}</span>` : ''}${money}<span class="mt-row"><button class="linkbtn" type="button" data-day="${d}">Tag öffnen</button></span></div>`;
+}
+function mtBlockAt(first) {
+  const ds = montageBlocks(Object.values(S.entries).filter(e => e.date >= first && e.date <= addDays(first, 62))).find(x => x[0].date === first);
+  return ds ? mtInfo(ds) : null;
+}
+// Tipp auf einen Tag der Leiste: Angaben darunter auf- oder zuklappen, ohne neu zu zeichnen (sonst fahren die Wagen neu ein)
+function mtToggle(btn) {
+  const box = btn.closest('.mt'), d = btn.dataset.mt;
+  mtOpen = mtOpen === d ? '' : d;
+  document.querySelectorAll('.mt').forEach(m => {
+    const b = m === box && mtOpen ? mtBlockAt(m.dataset.mtb) : null, it = b && b.items.find(x => !x.gap && x.date === mtOpen), dw = m.querySelector('.mt-dw');
+    m.querySelectorAll('.mt-car[data-mt]').forEach(c => c.setAttribute('aria-pressed', String(!!it && c.dataset.mt === mtOpen)));
+    dw.innerHTML = it ? mtDetHTML(it, b) : '';
+    if (it) enter(dw.firstElementChild);
+  });
+}
+// „42 € eintragen“: fehlende Auslöse mit einem Tipp nachtragen, danach „Rückgängig“
+function mtFix(id, a) {
+  const e = has(S.entries, id) ? S.entries[id] : null;
+  if (!e || !(a > 0) || e.allowance > 0 || allowTaken(e.date, e.id)) return;
+  e.allowance = r2(a); e.updated = new Date().toISOString();
+  persist(); buzz(12); mtOpen = e.date; mtJust = e.id;
+  renderAll(); mtJust = '';
+  toastAct(storageOk ? eurS(a) + ' Auslöse eingetragen' : saveMsg(), 'Rückgängig', () => {
+    const x = has(S.entries, id) ? S.entries[id] : null; if (!x || !sameMoney(x.allowance, a)) return;
+    x.allowance = 0; x.updated = new Date().toISOString(); persist(); renderAll(); toast('Rückgängig gemacht');
+  });
+}
+// Unter „Arbeit“: alle Montagen, die in den Monat fallen, als Leiste (Tage aus anderen Monaten blass)
+function mtMonthHTML(ym) {
+  const [y, m] = ym.split('-').map(Number), a = ym + '-01', z = ym + '-' + pad(new Date(y, m, 0).getDate());
+  const bl = montageBlocks(Object.values(S.entries).filter(e => e.date >= addDays(a, -62) && e.date <= addDays(z, 62))).filter(ds => ds.some(x => x.date.slice(0, 7) === ym));
+  return bl.length ? `<div class="mts">${bl.map(ds => mtHTML(mtInfo(ds), {ym, head: true})).join('')}</div>` : '';
+}
+// Montage zum aktuellen Einsatz: der letzte Block, der in den Zeitraum des Einsatzes fällt und höchstens eine Woche zurückliegt
+function jobMontage(j, t) {
+  const bl = montageBlocks(Object.values(S.entries).filter(e => e.date >= addDays(j.first, -31) && e.date <= t)), ds = bl[bl.length - 1];
+  if (!ds) return null;
+  const first = ds[0].date, last = ds[ds.length - 1].date;
+  return last >= j.first && first <= j.last && last >= addDays(t, -7) ? mtInfo(ds) : null;
 }
 function renderHome() {
   const el = $('#v-list'), t = today(), name = (S.settings.name || '').trim().split(/\s+/)[0];
@@ -2308,9 +2548,10 @@ function renderHome() {
     + kc('bed', 'Übernachtungen', T.nights, T.lodging ? eur(T.lodging) + ' selbst bezahlt' : 'auswärts')
     + kc('receipt-long', 'Ausgaben', eur(T.exp + T.other), 'Arbeitsmittel, Tickets, Parken');
   // Hauptsache oben: heute, dann die Woche, dann der Monat
-  h += todayHTML(t) + weekHTML(t) + backupCard() + monthHTML(t, R);
+  const test = view === 'list' && !lampTested && !reduceMotion();
+  h += todayHTML(t) + weekHTML(t, test) + backupCard() + monthHTML(t, R);
   const job = currentJob();
-  if (job) h += jobHTML(job, t);
+  if (job) h += jobHTML(job, t, test);
   // Letzte Einträge
   const items = ents.map(e => ({d: e.date, u: e.updated || '', e})).concat(exps.map(x => ({d: x.date, u: x.updated || '', x})))
     .sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : a.u < b.u ? 1 : a.u > b.u ? -1 : 0).slice(0, 5);
@@ -2500,9 +2741,9 @@ function workHTML() {
       <div class="wbig"><div><b>${days}</b><span>${days === 1 ? 'Arbeitstag' : 'Arbeitstage'}</span></div><div><b>${hrsOf(M.tot)}</b><span>Stunden</span></div></div>
       <div class="wl">${night ? wrow('davon nachts (20 bis 6 Uhr)', hrsOf(night)) : ''}${M.z50 ? wrow('davon sonntags', hrsOf(M.z50)) : ''}${hol ? wrow('davon feiertags', hrsOf(hol)) : ''}${M.travelMin ? wrow('davon Fahrzeit, angerechnet', hrsOf(M.travelMin)) : ''}${M.ausfall ? wrow(M.ausfall === 1 ? 'Ausfallschicht' : 'Ausfallschichten', M.ausfall + (M.ausfallMin ? ', ' + hrsOf(M.ausfallMin) + ' bezahlt' : '')) : ''}</div></div>`;
     // zahlt die Firma keine Auslöse, nur die Montagetage zählen
-    const gr = awayGroups(list), aus = st.ausOn || M.allowance > 0;
-    if (gr.length && !aus) h += `<div class="card wcard"><h3>Montage</h3><div class="wl">${gr.map(x => wrow(AWK[x.k], nDays(x.n))).join('')}</div></div>`;
-    else if (gr.length) h += `<div class="card wcard"><h3>Montage und Auslöse</h3><div class="wl">${gr.map(x => x.a
+    const gr = awayGroups(list), aus = st.ausOn || M.allowance > 0, bars = gr.length ? mtMonthHTML(workM) : '';
+    if (gr.length && !aus) h += `<div class="card wcard"><h3>Montage</h3>${bars}<div class="wl">${gr.map(x => wrow(AWK[x.k], nDays(x.n))).join('')}</div></div>`;
+    else if (gr.length) h += `<div class="card wcard"><h3>Montage und Auslöse</h3>${bars}<div class="wl">${gr.map(x => x.a
         ? wrow(`${x.n} × ${AWK[x.k]} à ${eurS(x.a)}`, eurS(r2(x.n * x.a)))
         : wrow(`${x.check ? '<i class="lamp open" aria-hidden="true"></i>' : ''}${x.n} × ${AWK[x.k]} ohne Auslöse`, x.check ? '<span class="chk">prüfen</span>' : '–')).join('')}
       ${wrow('Auslöse laut deinen Einträgen', eurS(M.allowance), 'sum')}</div>
@@ -2904,6 +3145,7 @@ function topActions(v) {
 function show(v) {
   const prev = view, dir = navDir; navDir = '';
   view = v;
+  if (prev !== v) mtOpen = ''; // aufgeklappter Tag der Montage-Leiste gilt nur in seiner Ansicht
   VIEWS.forEach(k => $('#v-' + k).hidden = k !== v);
   const form = v === 'form' || v === 'exp', full = form || v === 'report' || v === 'welcome' || v === 'setup';
   document.body.classList.toggle('full', full);
@@ -2968,7 +3210,7 @@ function closeBell(then) {
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#bell').hidden) closeBell(); });
 
 /* ---------- Klicks auf Knöpfe mit data-Angaben (überall in der App) ---------- */
-const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add],[data-quick],[data-wm],[data-work]';
+const ACT = '[data-view],[data-go],[data-new],[data-id],[data-day],[data-exp],[data-newexp],[data-copy],[data-trip],[data-mode],[data-news],[data-draft],[data-install],[data-hint-close],[data-backup],[data-setup],[data-broken],[data-report],[data-bell],[data-bell-close],[data-welcome],[data-cal-day],[data-cal-m],[data-cal-today],[data-day-step],[data-stab],[data-theme-set],[data-sb-add],[data-quick],[data-wm],[data-work],[data-mt],[data-mtfix]';
 document.addEventListener('click', ev => {
   const a = ev.target.closest(ACT); if (!a) return;
   const d = a.dataset, inBell = !!a.closest('#bell');
@@ -3010,6 +3252,8 @@ document.addEventListener('click', ev => {
     return;
   }
   if (d.report) { openReport(view, d.report === 'month' ? workM : ''); return; }
+  if (d.mtfix) { mtFix(d.mtfix, +d.amount); return; }
+  if (d.mt) { mtToggle(a); return; }
   if (d.quick) { quickSave(); return; }
   if (d.copy) { copyNext(d.copy); return; }
   if (d.trip) { openTrip(); return; }
@@ -3472,10 +3716,11 @@ function saveDay() {
   if (!validDate(base.date)) { toast('Bitte ein Datum wählen'); $('#f-date').focus(); return; }
   const now = new Date().toISOString();
   const ds = F.isNew ? multiDates() : null;
-  let savedYear, msg;
+  let savedYear, msg, newDates = null;
   if (ds) {
     const taken = new Set(Object.values(S.entries).map(x => x.date));
     const free = ds.filter(d => !taken.has(d));
+    newDates = free;
     const pattern = $('#m-montage').checked ? montageAway(ds) : null;
     const autoA = !base.allowance || sameMoney(base.allowance, autoAllow(base.away, base.type));
     free.forEach((d, i) => {
@@ -3499,7 +3744,7 @@ function saveDay() {
   }
   listMode = 'days';
   persist(); commitPhotos(F);
-  justSaved = {date: ds ? ds[0] : base.date, at: Date.now()}; buzz(12);
+  justSaved = {date: ds ? ds[0] : base.date, dates: newDates, add: !!F.isNew, at: Date.now()}; buzz(12);
   toast(storageOk ? (msg || 'Gespeichert') : saveMsg());
   if (savedYear && savedYear !== year) year = savedYear;
   // aus der Tagesansicht geöffnet: danach den gespeicherten Tag zeigen
@@ -4053,7 +4298,8 @@ applyTheme();
 renderYears(); fillDatalists(); renderList();
 show(shouldWelcome() ? 'welcome' : 'list');
 syncTips();
-booted = true;
+// Lampentest nur beim Öffnen der App (die Startseite wird dabei zweimal gezeichnet)
+booted = true; lampTested = true;
 registerSW();
 photoGC();
 })();
