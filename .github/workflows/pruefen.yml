@@ -63,7 +63,15 @@ jobs:
         if: steps.mode.outputs.build_type == 'workflow'
         run: |
           mkdir _site
-          cp index.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png *.svg *.webp LICENSE LICENSE-*.txt LIESMICH.txt _site/
+          cp index.html impressum.html datenschutz.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png *.svg *.webp LICENSE LICENSE-*.txt LIESMICH.txt _site/
+      # Name und Adresse stehen nur in geheimen Werten (Settings > Secrets and variables > Actions), nie im Repository
+      - name: Name und Adresse in Impressum und Datenschutzerklärung einsetzen
+        if: steps.mode.outputs.build_type == 'workflow'
+        env:
+          IMPRESSUM_NAME: ${{ secrets.IMPRESSUM_NAME }}
+          IMPRESSUM_STRASSE: ${{ secrets.IMPRESSUM_STRASSE }}
+          IMPRESSUM_ORT: ${{ secrets.IMPRESSUM_ORT }}
+        run: node .github/impressum.js _site
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         if: steps.mode.outputs.build_type == 'workflow'
         with:

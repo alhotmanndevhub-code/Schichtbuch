@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<title>Impressum · MontageBuch</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<!-- Felder mit data-fill setzt .github/impressum.js beim Veröffentlichen aus geheimen GitHub-Werten ein, damit Name und Adresse nicht im Repository stehen -->
+<style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(barlow-400.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(barlow-600.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:700;font-display:swap;src:url(barlow-700.woff2) format("woff2")}
+:root{--bg:#10181C;--line:#334047;--ink:#F6F6F4;--muted:#A3AAB0;--fill:#F59E0B}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--line:#D5DADD;--ink:#1E1E1E;--muted:#5F6368;--fill:#9A5B00}}
+html{background:var(--bg)}
+body{margin:0;padding:32px 16px 64px;background:var(--bg);color:var(--ink);font:400 18px/1.55 "Barlow","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:720px;margin:0 auto}
+h1{margin:0 0 20px;font-size:34px;line-height:1.15;font-weight:700}
+h2{margin:28px 0 8px;font-size:22px;line-height:1.25;font-weight:700}
+p{margin:0 0 12px}
+a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:3px}
+.muted{color:var(--muted)}
+[data-fill]{color:var(--fill);font-weight:600}
+nav{display:flex;flex-wrap:wrap;gap:8px 20px;margin:40px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<main>
+<h1>Impressum</h1>
+<p class="muted">Angaben nach § 5 DDG</p>
+<p><span data-fill="name">[Vor- und Nachname]</span><br>
+<span data-fill="strasse">[Straße und Hausnummer]</span><br>
+<span data-fill="ort">[PLZ und Ort]</span></p>
+
+<h2>Kontakt</h2>
+<p>E-Mail: <a href="mailto:kontakt@montagebuch.de">kontakt@montagebuch.de</a></p>
+
+<h2>Hinweis zur Steuer</h2>
+<p>MontageBuch ersetzt keine Steuerberatung. Alle Steuerbeträge in der App sind Schätzungen nach den gesetzlichen Pauschalen.</p>
+
+<nav aria-label="Weitere Seiten"><a href="./">Zur App</a><a href="datenschutz.html">Datenschutzerklärung</a></nav>
+</main>
+</body>
+</html>

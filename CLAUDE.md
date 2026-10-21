@@ -57,6 +57,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 - Die GitHub Action `.github/workflows/pruefen.yml` lässt bei jedem Push die Tests laufen. Die Actions sind auf feste Commit-Kennungen gepinnt (Version im Kommentar dahinter). Für ein Update die Kennung des neuen Tags eintragen, z. B. mit `git ls-remote --tags https://github.com/actions/checkout`.
 - Veröffentlicht wird nur nach bestandenen Tests, und nur wenn unter Settings > Pages die Quelle „GitHub Actions“ eingestellt ist. Sonst veröffentlicht GitHub Pages direkt aus `main`.
 - Für die Webseite werden nur die App-Dateien veröffentlicht, nicht `tests/` oder diese Datei.
+- Impressum und Datenschutzerklärung (`impressum.html`, `datenschutz.html`, Stand Oktober 2026, noch nicht live und noch nicht in der App verlinkt): Name und Adresse stehen nur in den geheimen Werten `IMPRESSUM_NAME`, `IMPRESSUM_STRASSE` und `IMPRESSUM_ORT` (Settings > Secrets and variables > Actions, vom Inhaber eingetragen). `.github/impressum.js` setzt sie beim Veröffentlichen in `_site` ein und bricht ab, wenn einer fehlt. Im Repository stehen nur Platzhalter in eckigen Klammern, `tests/impressum.test.js` prüft das. Die Datenschutzerklärung beschreibt die App ohne Server; kommen Konto oder Sicherung auf einem Server dazu, vorher anpassen.
 
 ## Steuerregeln (im Code umgesetzt, Stand 2026)
 

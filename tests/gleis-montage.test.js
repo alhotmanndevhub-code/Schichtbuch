@@ -197,7 +197,8 @@ const LEIPZIG = [M('a1', '2026-10-05', 'an', 21), M('a2', '2026-10-06', 'voll', 
   check('Einsatz-Karte hat am Handy wieder ihre Gestaltung', html.includes('.job-main{display:grid;') && html.includes('.job .jt{display:grid') && html.includes('.recent .sect .linkbtn{'));
   check('„prüfen“ wieder gelb: Farbe in Dunkel und Hell festgelegt', (html.match(/--amber-ink:#/g) || []).length === 2 && html.includes('.chk{color:var(--amber-ink)'));
   const ver = html.match(/APP_VERSION = '([^']+)'/)[1];
-  check('Version 2.5.0 in App und Offline-Speicher', ver === '2.5.0' && sw.includes("const VERSION = '2.5.0';"));
+  // seit 2.5.1 prüft impressum.test.js die genaue Version, hier nur: mindestens 2.5.0 und überall gleich
+  check('Version ab 2.5.0 in App und Offline-Speicher', ver.localeCompare('2.5.0', undefined, {numeric: true}) >= 0 && sw.includes(`const VERSION = '${ver}';`), ver);
   check('„Was ist neu“ nennt Lichtpunkt, Leiste und die Reparatur', /\['2\.5\.0', \['Wochengleis: [^']*Lichtpunkt/.test(html) && html.includes('Montage als Leiste') && html.includes('Repariert: Die Karte „Aktueller Einsatz“'));
 
   console.log(fails ? fails + ' Fehler' : 'Alles bestanden');

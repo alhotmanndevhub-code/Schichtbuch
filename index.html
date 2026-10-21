@@ -5,7 +5,7 @@
 <!-- Sicherheitsregeln für den Browser (Content-Security-Policy): Skripte, Bilder, Schriften und Verbindungen nur von dieser Seite, keine fremden Server.
      Die sha256-Werte sind Prüfsummen der beiden Skripte in dieser Datei. Nach jeder Änderung an einem Skript „npm run csp“ ausführen (ein Test prüft das).
      'unsafe-inline' gilt nur für Stile: Die App setzt Farben und Breiten direkt am Element. CSS startet kein Skript, und Bilder dürfen nur von hier kommen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-6aboP06K86Jhuwe7n/JjpYgvjGdPMeXsBMJtRgCMni4='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-7/1ZtTSnmWJ1AV8+02I0bDYjb1QhJADt7UeD9XmrM3E=' 'sha256-9haZJpCEcjWWJg2QRQnKWca61NzJKB7x8N67mchf33s='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MontageBuch</title>
 <meta name="description" content="Schichten, Fahrten, Montage und Ausgaben erfassen und als Excel-Datei für die Steuererklärung exportieren.">
@@ -490,6 +490,9 @@ details.more>div{display:grid;gap:14px}
 .lockup svg{width:58px;height:35px;flex:none}
 .wordmark{margin:0;font:700 26px/1 var(--f-body);letter-spacing:.03em;-webkit-text-stroke:.022em currentColor}
 .claim{margin:4px 0 0;font:400 13px/1.2 var(--f-body);color:var(--muted)}
+/* Impressum und Datenschutzerklärung: eigene Seiten, Links hell auf dunkel wie überall */
+.legal{display:flex;flex-wrap:wrap;gap:0 20px}
+.legal a{display:inline-block;padding:12px 0;color:var(--ink);text-underline-offset:3px}
 
 /* Formular */
 .formbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:6px;min-height:58px;margin:0 -8px;padding:4px 0}
@@ -926,6 +929,7 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
           <p class="hint" id="about-ver"></p>
           <details class="more" id="about-news"><summary>Was ist neu</summary><div class="newslog" id="about-log"></div></details>
           <p class="hint">© 2026 alhotmanndevhub-code. Alle Rechte vorbehalten. Kopieren, Weitergeben oder Veröffentlichen der App nur mit Erlaubnis.</p>
+          <p class="hint legal"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutzerklärung</a></p>
           <button class="btn block" id="install-btn2" type="button" hidden>App auf dem Startbildschirm installieren</button>
         </div>
       </div>
@@ -1252,9 +1256,10 @@ button.row:active,button.item:active,button.td-plan:active,.job-main:active{back
 'use strict';
 
 /* ---------- Konstanten ---------- */
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.5.1';
 // „Was ist neu“: neueste Version zuerst. Nach einem Update sieht man einmal die Punkte, die seit der letzten genutzten Version dazugekommen sind.
 const CHANGELOG = [
+  ['2.5.1', ['Impressum und Datenschutzerklärung findest du jetzt unter „Mehr“ ganz unten.']],
   ['2.5.0', ['Wochengleis: Wenn du einen Tag speicherst, fährt ein grüner Lichtpunkt über das Gleis bis zu diesem Tag, dann geht die Lampe an. Ist die Woche komplett, hüpfen die grünen Schwellen einmal. Beim Öffnen gehen die Lampen kurz nacheinander an.',
     'Montage als Leiste: Unter „Aktueller Einsatz“ und unter Auswertung > Arbeit ist jeder Tag auswärts ein Feld mit deiner Auslöse. Vorne die Anreise, hinten die Abreise mit rotem Schlusslicht.',
     'Fehlt an einem Tag die Auslöse, ist das Feld gelb. Tipp darauf, dann kannst du sie mit einem Tipp eintragen oder den Tag öffnen. Fehlt der ganze Tag, ist das Feld gestrichelt.',
