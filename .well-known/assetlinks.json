@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.montagebuch.app",
+      "sha256_cert_fingerprints": [
+        "27:3F:1C:F5:57:71:24:9F:C7:3E:86:E1:E1:82:73:F4:8F:B4:01:0C:EB:61:6B:E5:14:AF:B1:06:97:F3:D3:45",
+        "91:8E:29:D7:00:24:F0:8B:46:73:C8:F2:FF:0A:88:09:ED:15:CB:DF:FD:7E:AB:38:DB:1F:46:BA:10:C9:DD:92"
+      ]
+    }
+  }
+]

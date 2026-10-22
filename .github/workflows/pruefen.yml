@@ -64,6 +64,9 @@ jobs:
         run: |
           mkdir _site
           cp index.html impressum.html datenschutz.html sw.js manifest.webmanifest exceljs.min.js *.woff2 *.png *.svg *.webp LICENSE LICENSE-*.txt LIESMICH.txt _site/
+          # Verknüpfung mit der Android-App (Trusted Web Activity): ohne sie zeigt die Play-App eine Adressleiste
+          mkdir -p _site/.well-known
+          cp .well-known/assetlinks.json _site/.well-known/
       # Name und Adresse stehen nur in geheimen Werten (Settings > Secrets and variables > Actions), nie im Repository
       - name: Name und Adresse in Impressum und Datenschutzerklärung einsetzen
         if: steps.mode.outputs.build_type == 'workflow'

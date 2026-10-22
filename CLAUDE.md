@@ -4,7 +4,7 @@
 
 MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sicherungsaufsichtskräfte und andere Beschäftigte im Gleisbau, die oft auf Montage sind. Man erfasst Arbeitstage, Schichten, An- und Abreise mit Fahrzeit, Montage, Fahrten, Auslöse und Ausgaben. Die App rechnet die Werbungskosten für die Anlage N aus, exportiert eine Excel-Datei und einen Jahresbericht zum Drucken oder als PDF (mit Ausfüllhilfe für die Anlage N).
 
-- Live: https://alhotmanndevhub-code.github.io/Schichtbuch/
+- Live: https://montagebuch.de/ (seit 21.10.2026; Domain bei united-domains mit E-Mail-Weiterleitung kontakt@montagebuch.de, ausgeliefert über GitHub Pages als Custom domain). Die alte Adresse https://alhotmanndevhub-code.github.io/Schichtbuch/ leitet dorthin weiter. Die Daten der Nutzer hängen an https://montagebuch.de: Den Anbieter dahinter kann man ohne Datenverlust wechseln, die Adresse nicht. Spätestens vor dem Abo zu einem Anbieter mit erlaubtem Geschäftsbetrieb umziehen (geplant: Hetzner Webhosting).
 - Repository: `alhotmanndevhub-code/schichtbuch`, Branch `main`
 - Nutzer: der Inhaber des Repositorys (kein Entwickler, schreibt Deutsch) und ein Freund als Tester. Später ist ein Abo geplant (etwa 1 € im Monat).
 
@@ -58,6 +58,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
 - Veröffentlicht wird nur nach bestandenen Tests, und nur wenn unter Settings > Pages die Quelle „GitHub Actions“ eingestellt ist. Sonst veröffentlicht GitHub Pages direkt aus `main`.
 - Für die Webseite werden nur die App-Dateien veröffentlicht, nicht `tests/` oder diese Datei.
 - Impressum und Datenschutzerklärung (`impressum.html`, `datenschutz.html`, Stand Oktober 2026, noch nicht live und noch nicht in der App verlinkt): Name und Adresse stehen nur in den geheimen Werten `IMPRESSUM_NAME`, `IMPRESSUM_STRASSE` und `IMPRESSUM_ORT` (Settings > Secrets and variables > Actions, vom Inhaber eingetragen). `.github/impressum.js` setzt sie beim Veröffentlichen in `_site` ein und bricht ab, wenn einer fehlt. Im Repository stehen nur Platzhalter in eckigen Klammern, `tests/impressum.test.js` prüft das. Die Datenschutzerklärung beschreibt die App ohne Server; kommen Konto oder Sicherung auf einem Server dazu, vorher anpassen.
+- Android-App für Google Play (seit Oktober 2026, im Test): Trusted Web Activity, gebaut mit Bubblewrap 1.27.0 im Ordner `Desktop\MontageBuch-Android` (nicht im Repository). Paketname `de.montagebuch.app` (nie änderbar), Ziel Android 16 (API 36). `projekt-erzeugen.js` erzeugt das Projekt aus https://montagebuch.de/manifest.webmanifest, `bauen.sh` baut AAB und APK. Das Passwort des Upload-Schlüssels steht nur in der Benutzer-Umgebungsvariable `MONTAGEBUCH_KEY_PASSWORD`, der Schlüssel `android.keystore` nur in diesem Ordner (Kopie beim Inhaber), nie im Repository (`.gitignore`, `tests/android.test.js`). `.well-known/assetlinks.json` verknüpft App und Webseite und braucht die Fingerabdrücke von Upload-Schlüssel und App-Signatur von Google. Web-Änderungen kommen ohne neue Android-Version an; die Hülle nur neu bauen (mit höherem `appVersionCode`), wenn Google bis zum 31. August eine neue Zielversion verlangt oder sich Name oder Symbol ändern.
 
 ## Steuerregeln (im Code umgesetzt, Stand 2026)
 
@@ -101,7 +102,7 @@ MontageBuch (bis Version 1.4 „Schichtbuch“) ist eine Web-App (PWA) für Sich
   - Version für den Play Store
   - Prüfung der Rechenlogik durch einen Steuerberater, mehr Tester
 - Stufe 3: Teamversion für Sicherungsfirmen, Auslandspauschalen, mehrere Sprachen.
-- Bekannte Lücken: Vertragsänderungen ab einem Datum (z. B. neuer Sammelpunkt ab Juli) lassen sich nicht abbilden. Feiertage richten sich nach dem Bundesland in den Einstellungen, nicht nach dem Einsatzort. Alle GitHub-Pages-Seiten eines Kontos teilen sich die Adresse alhotmanndevhub-code.github.io und damit localStorage und IndexedDB: Bis zum eigenen Hosting keine weitere Seite unter diesem Konto veröffentlichen.
+- Bekannte Lücken: Vertragsänderungen ab einem Datum (z. B. neuer Sammelpunkt ab Juli) lassen sich nicht abbilden. Feiertage richten sich nach dem Bundesland in den Einstellungen, nicht nach dem Einsatzort. Auf der alten Adresse alhotmanndevhub-code.github.io teilen sich alle GitHub-Pages-Seiten des Kontos localStorage und IndexedDB; seit dem Umzug auf montagebuch.de betrifft das die App nicht mehr, alte Stände dort lassen sich aber nur über eine Sicherungsdatei mitnehmen.
 
 ## Sonstiges
 

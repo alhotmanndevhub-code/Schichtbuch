@@ -3,3 +3,6 @@ node_modules/
 MontageBuch_Design_Pack/
 .claude/
 .impeccable/
+# Signaturschlüssel der Android-App liegen nie im Repository (siehe CLAUDE.md, Android-App)
+*.keystore
+*.jks
